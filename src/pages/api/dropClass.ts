@@ -11,7 +11,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 	}
 
 	const email = session.user?.email ?? '';
-	const classId = req.body.classId;
+	const sectionId = req.body.sectionId;
+	
 	if (req.method === 'POST') {
 		try {
 			const updatedUser = await prisma.user.update({
@@ -19,13 +20,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 					email: email,
 				},
 				data: {
-					classes_test: {
+					sections: {
 						disconnect: {
-							id: classId,
+							id: sectionId,
 						},
 					},
 				},
 			});
+			console.log("drop", updatedUser);
 			res.status(200).json(updatedUser);
 		} catch (e) {
 			res.status(500).json({ message: 'Something went wrong' });

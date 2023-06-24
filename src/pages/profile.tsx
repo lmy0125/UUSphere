@@ -1,5 +1,6 @@
 import type { ChangeEvent } from 'react';
 import { useCallback, useEffect, useState } from 'react';
+import type { GetServerSideProps } from 'next';
 import MessageChatSquareIcon from '@untitled-ui/icons-react/build/esm/MessageChatSquare';
 import DotsHorizontalIcon from '@untitled-ui/icons-react/build/esm/DotsHorizontal';
 import Image01Icon from '@untitled-ui/icons-react/build/esm/Image01';
@@ -31,6 +32,11 @@ import { paths } from '@/paths';
 import EnrolledClassesList from '@/components/EnrolledClassesList';
 import type { Page as PageType } from '@/types/page';
 import type { Connection, Post, Profile } from '@/types/social';
+import prisma from '@/lib/prisma';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from './api/auth/[...nextauth]';
+import { User } from '@prisma/client';
+import Calendar from '@/components/Calendar';
 
 const tabs = [
 	{ label: 'Timeline', value: 'timeline' },
@@ -139,7 +145,11 @@ const useProfile = (): Profile | null => {
 //   });
 // };
 
-export const Page: PageType = () => {
+interface ProfileProps {
+	currentUser: User;
+}
+
+export const ProfilePage: PageType<ProfileProps> = ({ currentUser }) => {
 	const profile = useProfile();
 	const [currentTab, setCurrentTab] = useState<string>('timeline');
 	const [status, setStatus] = useState<string>('not_connected');
@@ -186,7 +196,6 @@ export const Page: PageType = () => {
 				}}>
 				<Container maxWidth="lg">
 					<div>
-						HAHAHA
 						<Box
 							style={{ backgroundImage: `url(${profile.cover})` }}
 							sx={{
@@ -233,7 +242,7 @@ export const Page: PageType = () => {
 						<Stack alignItems="center" direction="row" spacing={2} sx={{ mt: 5 }}>
 							<Stack alignItems="center" direction="row" spacing={2}>
 								<Avatar
-									src={profile.avatar}
+									src={currentUser.image ?? ''}
 									sx={{
 										height: 64,
 										width: 64,
@@ -241,9 +250,9 @@ export const Page: PageType = () => {
 								/>
 								<div>
 									<Typography color="text.secondary" variant="overline">
-										{profile.bio}
+										{profile.bio} bio
 									</Typography>
-									<Typography variant="h6">{profile.name}</Typography>
+									<Typography variant="h6">{currentUser.name}</Typography>
 								</div>
 							</Stack>
 							<Box sx={{ flexGrow: 1 }} />
@@ -323,7 +332,12 @@ export const Page: PageType = () => {
 								query={connectionsQuery}
 							/>
 						)} */}
-						{currentTab === 'schedule' && <EnrolledClassesList />}
+						{currentTab === 'schedule' && (
+							<>
+								<EnrolledClassesList />
+								<Calendar />
+							</>
+						)}
 					</Box>
 				</Container>
 			</Box>
@@ -331,6 +345,39 @@ export const Page: PageType = () => {
 	);
 };
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+export const getServerSideProps: GetServerSideProps<ProfileProps> = async (context) => {
+	const session = await getServerSession(context.req, context.res, authOptions);
+	console.log('session', session);
 
-export default Page;
+	if (!session) {
+		return {
+			redirect: {
+				destination: '/',
+				permanent: false,
+			},
+		};
+	}
+
+	const currentUser = await prisma.user.findUnique({
+		where: {
+			id: session.user.id,
+		},
+	});
+
+	if (!currentUser) {
+		return {
+			redirect: {
+				destination: '/',
+				permanent: false,
+			},
+		};
+	}
+
+	return {
+		props: { currentUser: JSON.parse(JSON.stringify(currentUser)) },
+	};
+};
+
+ProfilePage.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+
+export default ProfilePage;

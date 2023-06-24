@@ -1,7 +1,7 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
 import { StreamChat, Channel } from 'stream-chat';
 import { useSession } from 'next-auth/react';
-import { Class_test } from '@prisma/client';
+import { Class } from '@prisma/client';
 import axios from 'axios';
 
 interface ChatContextType {
@@ -30,6 +30,7 @@ export default function ChatContextProvider({ children }: { children: React.Reac
 				await client.connectUser(session.user, session.streamChatToken);
 				setChatClient(client);
 				console.log('chat connected');
+				
 				// create/watch channel of every enrolled class
 				// const response = await axios.get(`/api/getEnrolledClasses`);
 				// const classes: Class_test[] = response.data;
@@ -46,9 +47,9 @@ export default function ChatContextProvider({ children }: { children: React.Reac
 			}
 		};
 
-		if (session) {
-			initChat();
-		}
+		// if (session && !chatClient) {
+		// 	initChat();
+		// }
 
 		return () => {
 			// if (chatClient) {
@@ -58,17 +59,17 @@ export default function ChatContextProvider({ children }: { children: React.Reac
 		};
 	}, [session]);
 
-	useEffect(() => {
-		const getUserChannels = async () => {
-			const channels = await chatClient?.queryChannels({
-				members: { $in: [session?.user.id ?? ''] },
-			});
-			setUserChannels(channels);
-		};
-		if (chatClient) {
-			getUserChannels();
-		}
-	}, [chatClient]);
+	// useEffect(() => {
+	// 	const getUserChannels = async () => {
+	// 		const channels = await chatClient?.queryChannels({
+	// 			members: { $in: [session?.user.id ?? ''] },
+	// 		});
+	// 		setUserChannels(channels);
+	// 	};
+	// 	if (chatClient) {
+	// 		getUserChannels();
+	// 	}
+	// }, [chatClient]);
 
 	return (
 		<ChatContext.Provider value={{ client: chatClient, userChannels: userChannels }}>

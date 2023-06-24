@@ -6,7 +6,7 @@ import { Box, Chip, Divider, Input, Stack, SvgIcon, Typography, Button } from '@
 import axios from 'axios';
 // import { MultiSelect } from '@/components/multi-select';
 // import { useUpdateEffect } from '@/hooks/use-update-effect';
-import { Class_test } from '@prisma/client';
+import { Class } from '@prisma/client';
 
 interface Filters {
 	name?: string;

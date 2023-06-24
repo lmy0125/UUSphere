@@ -10,6 +10,7 @@ import {
 	Box,
 	Button,
 	CardContent,
+	Collapse,
 	Divider,
 	Grid,
 	IconButton,
@@ -29,10 +30,10 @@ import {
 	Typography,
 } from '@mui/material';
 import { Scrollbar } from '@/components/scrollbar';
-import { Class_test } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
 import { useChatContext } from '@/contexts/ChatContext';
+import { ClassInfo, Section } from '@/types/class';
 
 // interface Filters {
 // 	name?: string;
@@ -127,7 +128,7 @@ import { useChatContext } from '@/contexts/ChatContext';
 
 interface ClassTableProps {
 	count?: number;
-	items?: Class_test[];
+	items?: ClassInfo[];
 	onPageChange?: (event: MouseEvent<HTMLButtonElement> | null, newPage: number) => void;
 	onRowsPerPageChange?: (event: ChangeEvent<HTMLInputElement>) => void;
 	page?: number;
@@ -143,7 +144,6 @@ export const ClassTable: FC<ClassTableProps> = (props) => {
 		page = 0,
 		rowsPerPage = 0,
 	} = props;
-	const [currentProduct, setCurrentProduct] = useState<string | null>(null);
 
 	return (
 		<div>
@@ -151,17 +151,18 @@ export const ClassTable: FC<ClassTableProps> = (props) => {
 				<Table sx={{ minWidth: 800 }}>
 					<TableHead>
 						<TableRow>
-							<TableCell width="20%">Name</TableCell>
-							<TableCell width="30%">Instructor</TableCell>
-							<TableCell>Seats</TableCell>
-							<TableCell>Actions</TableCell>
+							<TableCell />
+							<TableCell>Name</TableCell>
+							<TableCell width="40%">Title</TableCell>
+							<TableCell width="25%">Instructor</TableCell>
+							<TableCell>Total Seats</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
 						{items
 							.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-							.map((classChannel) => {
-								return <ClassRow key={classChannel.id} classChannel={classChannel} />;
+							.map((classInfo) => {
+								return <ClassRow key={classInfo.id} classInfo={classInfo} />;
 							})}
 					</TableBody>
 				</Table>
@@ -189,109 +190,215 @@ ClassTable.propTypes = {
 };
 
 import AuthModal from '@/components/AuthModal';
-const ClassRow: FC<{ classChannel: Class_test }> = ({ classChannel }) => {
-	const { client } = useChatContext();
-	const { data: session, status } = useSession();
-	const [hasClass, setHasClass] = useState(false);
-	const [authModal, setAuthModal] = useState(false);
 
-	async () => {
-		const test = await client?.queryChannels({ id: 'd7151316-27f4-41c8-92e6-73c8f224a480' });
-		console.log('test', test);
+const ClassRow: FC<{ classInfo: ClassInfo }> = ({ classInfo: classInfo }) => {
+	// const { client } = useChatContext();
+	const [selected, setSelected] = useState(false);
+
+	const handleProductToggle = () => {
+		setSelected(!selected);
 	};
 
-	const handleJoinClass = async (data: { classId: string }) => {
+	return (
+		<>
+			<TableRow hover key={classInfo.id}>
+				<TableCell
+					padding="checkbox"
+					sx={{
+						...(selected && {
+							position: 'relative',
+							'&:after': {
+								position: 'absolute',
+								content: '" "',
+								top: 0,
+								left: 0,
+								backgroundColor: 'primary.main',
+								width: 3,
+								height: 'calc(100% + 1px)',
+							},
+						}),
+					}}
+					width="25%">
+					<IconButton onClick={() => handleProductToggle()}>
+						<SvgIcon>{selected ? <ChevronDownIcon /> : <ChevronRightIcon />}</SvgIcon>
+					</IconButton>
+				</TableCell>
+				<TableCell>
+					<Box sx={{ cursor: 'pointer' }}>
+						<Typography variant="subtitle2">{classInfo.code}</Typography>
+					</Box>
+				</TableCell>
+				<TableCell>
+					<Typography variant="subtitle2">{classInfo.name}</Typography>
+				</TableCell>
+				<TableCell>
+					<Box sx={{ cursor: 'pointer' }}>
+						<Typography variant="subtitle2">{classInfo.instructor}</Typography>
+					</Box>
+				</TableCell>
+				<TableCell>
+					<LinearProgress
+						value={5}
+						variant="determinate"
+						color="success"
+						sx={{
+							height: 8,
+							width: 80,
+						}}
+					/>
+					<Typography color="text.secondary" variant="body2">
+						0 / 100
+					</Typography>
+				</TableCell>
+			</TableRow>
+
+			<TableRow>
+				<TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+					<Collapse in={selected} timeout="auto" unmountOnExit>
+						<Box sx={{ margin: 1 }}>
+							<Table size="small" aria-label="purchases">
+								<TableHead>
+									<TableRow>
+										<TableCell>Section ID</TableCell>
+										<TableCell>Section</TableCell>
+										<TableCell>Total Seats</TableCell>
+										<TableCell>Lecture</TableCell>
+										<TableCell>Action</TableCell>
+									</TableRow>
+								</TableHead>
+								<TableBody>
+									{classInfo.sections.map((section: Section) => {
+										return <SectionRow key={section.id} section={section} />;
+									})}
+								</TableBody>
+							</Table>
+						</Box>
+					</Collapse>
+				</TableCell>
+			</TableRow>
+		</>
+	);
+};
+
+const SectionRow: FC<{ section: Section }> = ({ section: section }) => {
+	const { data: session, status } = useSession();
+	const [hasSection, setHasSection] = useState(false);
+	const [authModal, setAuthModal] = useState(false);
+
+	const quantityColor = section.total_seats! <= 100 ? 'success' : 'error';
+	const lecture = section.meetings.filter((meeting) => meeting.type == 'LE');
+
+	const startTime = lecture[0]?.startTime;
+	const endTime = lecture[0]?.endTime;
+	const days = ['M', 'Tu', 'W', 'Th', 'F', 'Sa', 'Su'];
+	const daysOfWeek = lecture[0]?.daysOfWeek.map((i) => days[i - 1]);
+
+	const handleJoinClass = async (data: { sectionId: string }) => {
 		// if not authenticated
 		if (!session) {
 			setAuthModal(!authModal);
 			return;
 		}
 		// Add in database
-		axios.post('api/joinClass', data);
-		setHasClass(true);
-		// Join chat channel
-		const channels = await client?.queryChannels({ id: classChannel.id });
-		if (channels?.length == 0 || !channels) {
-			const channel = client?.channel('messaging', classChannel.id, {
-				name: classChannel.class_name ?? '',
-				members: [session.user.id],
-			});
-			await channel?.watch();
-		} else {
-			await channels[0].addMembers([session.user.id]);
+		try {
+			axios.post('api/joinClass', data);
+			setHasSection(true);
+		} catch (err) {
+			alert('Something went wrong' + err);
 		}
+
+		// Join chat channel
+		// console.log('query channel', client, classChannel.id);
+		// const channels = await client?.queryChannels({});
+		// console.log('query', channels);
+		// if (channels?.length == 0 || !channels) {
+		// 	console.log('create');
+		// 	const channel = client?.channel('messaging', classChannel.id, {
+		// 		name: classChannel.class_name ?? '',
+		// 		members: [client.userID],
+		// 	});
+		// 	await channel?.create();
+		// } else {
+		// 	console.log('add');
+		// 	await channels[0].addMembers([client.userID]);
+		// }
 	};
 
-	const handleDropClass = async (data: { classId: string }) => {
+	const handleDropClass = async (data: { sectionId: string }) => {
 		// if not authenticated
 		if (!session) {
 			setAuthModal(!authModal);
 			return;
 		}
 		// Remove in databse
-		axios.post('api/dropClass', data);
-		setHasClass(false);
+		try {
+			axios.post('api/dropClass', data);
+			setHasSection(false);
+		} catch (err) {
+			alert('Something went wrong' + err);
+		}
 		// Leave chat channel
-		const channels = await client?.queryChannels({ id: classChannel.id });
-		if (channels?.length == 0 || !channels) return;
-		await channels[0].removeMembers([session.user.id]);
+		// const channels = await client?.queryChannels(filter);
+		// console.log('drop', channels);
+		// if (channels?.length == 0 || !channels) return;
+		// await channels[0].removeMembers([session.user.id]);
 	};
-	
-	const checkHasClass = async (classId: string | null) => {
+
+	const checkHasSection = async (sectionId: string | null) => {
 		// if not authenticated
 		if (!session) {
-			setHasClass(false);
+			setHasSection(false);
 			return;
 		}
 		try {
-			let res = await axios.post('api/hasClass', { classId: classId });
+			let res = await axios.post('api/hasSection', { sectionId: sectionId });
 			if (res.data) {
-				setHasClass(true);
+				setHasSection(true);
 			} else {
-				setHasClass(false);
+				setHasSection(false);
 			}
 		} catch (err) {
-			console.log('err', err);
+			// alert('Something went wrong' + err);
 		}
 	};
 
 	useEffect(() => {
-		checkHasClass(classChannel.id);
-	}, [classChannel]);
+		checkHasSection(section.id);
+	}, [section]);
 
 	return (
-		<TableRow hover key={classChannel.id}>
-			<TableCell>
-				<Box sx={{ cursor: 'pointer' }}>
-					<Typography variant="subtitle2">{classChannel.class_name}</Typography>
-				</Box>
+		<TableRow key={section.school_id} style={hasSection ? { backgroundColor: '#d5f7ea' } : {}}>
+			<TableCell component="th" scope="row">
+				{section.school_id}
 			</TableCell>
+			<TableCell>{section.code}</TableCell>
 			<TableCell>
-				<Box sx={{ cursor: 'pointer' }}>
-					<Typography variant="subtitle2">{classChannel.instructor}</Typography>
-				</Box>
-			</TableCell>
-			<TableCell>
-				{/* <LinearProgress
-                value={5}
-                variant="determinate"
-                color={quantityColor}
-                sx={{
-                    height: 8,
-                    width: 36,
-                }}
-            /> */}
+				<LinearProgress
+					value={section.total_seats!}
+					variant="determinate"
+					color={quantityColor}
+					sx={{
+						height: 8,
+						width: 80,
+					}}
+				/>
 				<Typography color="text.secondary" variant="body2">
-					{classChannel.total_seats}
+					0 / {section.total_seats}
 				</Typography>
 			</TableCell>
 			<TableCell>
-				{hasClass ? (
-					<Button onClick={() => handleDropClass({ classId: classChannel.id })} size="small">
+				{daysOfWeek}
+				<Typography color="text.secondary" variant="body2">
+					{startTime} -- {endTime}
+				</Typography>
+			</TableCell>
+			<TableCell>
+				{hasSection ? (
+					<Button onClick={() => handleDropClass({ sectionId: section.id })} size="small">
 						Drop
 					</Button>
 				) : (
-					<Button onClick={() => handleJoinClass({ classId: classChannel.id })} size="small">
+					<Button onClick={() => handleJoinClass({ sectionId: section.id })} size="small">
 						Join
 					</Button>
 				)}

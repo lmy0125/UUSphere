@@ -1,16 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { Class_test } from '@prisma/client';
+import { Section } from '@/types/class';
 import axios from 'axios';
 
 export default function EnrolledClassesList() {
-	const [classes, setClasses] = useState<Class_test[]>();
+	const [sections, setSections] = useState<Section[]>();
 
 	useEffect(() => {
 		const getEcrolledClasses = async () => {
 			try {
 				const response = await axios.get(`/api/getEnrolledClasses`);
+				// console.log(response);
+				// const updatedData = response.data.map((obj: any) => {
+				// 	const { class, classId, ...rest } = obj;
+				// 	rest.name = obj.class.code;
+				// 	rest.instructor = obj.instructor.name;
+				// 	return rest;
+				// });
 				// if (isMounted()) {
-				setClasses(response.data);
+				setSections(response.data.sections);
 				// }
 			} catch (err) {
 				console.error(err);
@@ -22,8 +29,8 @@ export default function EnrolledClassesList() {
 	return (
 		<>
 			<div>EnrolledClassesList</div>
-			{classes?.map((c) => (
-				<div key={c.id}>{c.class_name}</div>
+			{sections?.map((section) => (
+				<div key={section.id}>{section.class.code}</div>
 			))}
 		</>
 	);

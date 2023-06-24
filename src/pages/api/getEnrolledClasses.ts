@@ -11,16 +11,16 @@ export default async function getEnrolledClasses(req: NextApiRequest, res: NextA
 
 	if (req.method === 'GET') {
 		try {
-			const classes = await prisma.user.findUnique({
+			const sections = await prisma.user.findUnique({
 				where: {
 					id: session.user.id,
 				},
 				select: {
-					classes_test: true,
+					sections: { include: { class: { select: { code: true } }, meetings: true } },
 				},
 			});
-
-			res.status(200).json(classes?.classes_test);
+			// console.log(sections);
+			res.status(200).json(sections);
 		} catch (e) {
 			res.status(500).json({ message: 'Something went wrong' });
 		}

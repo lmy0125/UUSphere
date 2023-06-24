@@ -23,6 +23,7 @@ import { useRouter } from 'next/navigation';
 import { paths } from '@/paths';
 // import { Issuer } from 'src/utils/auth';
 import { signOut } from 'next-auth/react';
+import { useChatContext } from '@/contexts/ChatContext';
 
 interface AccountPopoverProps {
 	anchorEl: null | Element;
@@ -33,11 +34,12 @@ interface AccountPopoverProps {
 		email: string;
 		name: string;
 		image: string;
-	}
+	};
 }
 
 export const AccountPopover: FC<AccountPopoverProps> = (props) => {
 	const { anchorEl, onClose, open, user, ...other } = props;
+	const { client } = useChatContext();
 	const router = useRouter();
 	// const auth = useAuth();
 	// const user = useMockedUser();
@@ -81,6 +83,11 @@ export const AccountPopover: FC<AccountPopoverProps> = (props) => {
 	//   },
 	//   [auth, router, onClose]
 	// );
+
+	const handleLogOut = async () => {
+		signOut();
+		await client?.disconnectUser();
+	};
 
 	return (
 		<Popover
@@ -158,7 +165,7 @@ export const AccountPopover: FC<AccountPopoverProps> = (props) => {
 					p: 1,
 					justifyContent: 'center',
 				}}>
-				<Button color="inherit" onClick={() => signOut()} size="small">
+				<Button color="inherit" onClick={handleLogOut} size="small">
 					Logout
 				</Button>
 			</Box>

@@ -23,10 +23,11 @@ import { ClassSearch } from '@/components/ClassSearch';
 import { ClassTable } from '@/components/ClassTable';
 // import type { Page as PageType } from '@/types/page';
 import type { Page as PageType } from '@/types/page';
-import prisma from '@/lib/prisma';
-import { Class_test } from '@prisma/client';
+import { ClassInfo } from '@/types/class';
 import axios from 'axios';
 import useSWR from 'swr';
+import Calendar from '@/components/Calendar';
+
 
 interface Filters {
 	name?: string;
@@ -81,7 +82,7 @@ const useClassSearch = () => {
 };
 
 interface ClassStoreState {
-	classes: Class_test[];
+	classes: ClassInfo[];
 	classesCount: number;
 }
 
@@ -96,8 +97,37 @@ const useClassStore = (searchState: ClassSearchState) => {
 		try {
 			const response = await axios.get(`/api/getClasses/?name=${searchState.filters.name}`);
 			// if (isMounted()) {
+
+			// group classes with the same name and instructor
+			// const grouped: { [key: string]: Class_test2[] } = response.data.reduce(
+			// 	(result: { [key: string]: Class_test2[] }, obj: Class_test2) => {
+			// 		const key = obj.class_name + '-' + obj.instructor;
+
+			// 		if (!result[key]) {
+			// 			result[key] = [];
+			// 		}
+
+			// 		result[key].push(obj);
+
+			// 		return result;
+			// 	},
+			// 	{}
+			// );
+			// const groupedArray = Object.entries(grouped).map(([key, value]) => {
+			// 	const [class_name, instructor] = key.split('-');
+			// 	return { class_name, instructor, value };
+			// });
+			const updatedData = response.data.map((obj: any) => {
+				const { courseId, professorId, course, ...rest } = obj;
+				rest.name = obj.course.name;
+				rest.instructor = obj.instructor.name;
+				return rest;
+			});
+
+			console.log('grouped', updatedData);
+
 			setState({
-				classes: response.data,
+				classes: updatedData,
 				classesCount: response.data.length,
 			});
 			// }
@@ -120,35 +150,15 @@ const useClassStore = (searchState: ClassSearchState) => {
 };
 
 interface ClassStorage {
-	classes: Class_test[];
+	classes: ClassInfo[];
 }
 
 const Page: PageType<ClassStorage> = () => {
-	const [classes, setClasses] = useState<Class_test[] | undefined>(undefined);
+	const [classes, setClasses] = useState<ClassInfo[] | undefined>(undefined);
 	const classSearch = useClassSearch();
 	const classStore = useClassStore(classSearch.state);
 
 	// usePageView();
-	const [page, setPage] = useState(0);
-	const [rowsPerPage, setRowsPerPage] = useState(5);
-
-	const handleFiltersChange = (c: Class_test[]) => {
-		setClasses(c);
-	};
-
-	const handlePageChange = useCallback(
-		(event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
-			setPage(newPage);
-		},
-		[]
-	);
-
-	const handleChangeRowsPerPage = useCallback(
-		(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-			setRowsPerPage(parseInt(event.target.value, 10));
-		},
-		[]
-	);
 
 	return (
 		<>
@@ -197,6 +207,7 @@ const Page: PageType<ClassStorage> = () => {
 							/>
 						</Card>
 					</Stack>
+					<Calendar />
 				</Container>
 			</Box>
 		</>
@@ -204,16 +215,5 @@ const Page: PageType<ClassStorage> = () => {
 };
 
 Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
-
-export async function getStaticProps() {
-	// Get all homes
-	const classes: Class_test[] = await prisma.class_test.findMany({ take: 8 });
-	// Pass the data to the Home page
-	return {
-		props: {
-			classes: JSON.parse(JSON.stringify(classes)),
-		},
-	};
-}
 
 export default Page;

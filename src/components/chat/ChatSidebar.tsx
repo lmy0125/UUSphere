@@ -23,61 +23,23 @@ import type { Contact, Thread } from '@/types/chat';
 // import { ChatSidebarSearch } from './chat-sidebar-search';
 import { ChatThreadItem } from './ChatThreadItem';
 import { useChatContext } from '@/contexts/ChatContext';
-
-// const getThreadKey = (thread: Thread, userId: string): string | undefined => {
-//   let threadKey: string | undefined;
-
-//   if (thread.type === 'GROUP') {
-//     threadKey = thread.id;
-//   } else {
-//     // We hardcode the current user ID because the mocked that is not in sync
-//     // with the auth provider.
-//     // When implementing this app with a real database, replace this
-//     // ID with the ID from Auth Context.
-//     threadKey = thread.participantIds.find((participantId) => (
-//       participantId !== userId
-//     ));
-//   }
-
-//   return threadKey;
-// };
-
-// const useThreads = (): { byId: Record<string, Thread>, allIds: string[] } => {
-//   return useSelector((state) => state.chat.threads);
-// };
-
-// const useCurrentThreadId = (): string | undefined => {
-//   return useSelector((state) => state.chat.currentThreadId);
-// };
+import { ChannelSort, StreamChat } from 'stream-chat';
+import { ChannelList } from 'stream-chat-react';
 
 interface ChatSidebarProps {
 	container?: HTMLDivElement | null;
 	onClose?: () => void;
 	open?: boolean;
+	client: StreamChat;
 }
 
 export const ChatSidebar: FC<ChatSidebarProps> = (props) => {
-	const { container, onClose, open, ...other } = props;
+	const { client, container, onClose, open, ...other } = props;
 	const router = useRouter();
 	const { userChannels } = useChatContext();
 	// const [currentChannel, setCurrentChannel] = useState();
 	const currentChannelId = router.query.id;
 
-	const thread: Thread = {
-		id: '123',
-		messages: [],
-		participantIds: [],
-		participants: [],
-		type: 'ONE_TO_ONE',
-		unreadCount: 0,
-	};
-
-	const threads = {
-		byId: {
-			zz: thread,
-		},
-		allIds: ['123'],
-	};
 	const [searchFocused, setSearchFocused] = useState(false);
 	const [searchQuery, setSearchQuery] = useState<string>('');
 	//   const [searchResults, setSearchResults] = useState<Contact[]>([]);
@@ -133,13 +95,16 @@ export const ChatSidebar: FC<ChatSidebarProps> = (props) => {
 	//     [router]
 	//   );
 
+	const filters = { type: 'messaging', members: { $eq: [client.userID ?? ''] } };
+	const sort: ChannelSort = { last_message_at: -1 };
+
 	const content = (
 		<div>
 			<Stack alignItems="center" direction="row" spacing={2} sx={{ p: 2 }}>
 				<Typography variant="h5" sx={{ flexGrow: 1 }}>
 					Chats
 				</Typography>
-				<Button
+				{/* <Button
 					onClick={handleCompose}
 					startIcon={
 						<SvgIcon>
@@ -148,7 +113,7 @@ export const ChatSidebar: FC<ChatSidebarProps> = (props) => {
 					}
 					variant="contained">
 					Group
-				</Button>
+				</Button> */}
 				{!mdUp && (
 					<IconButton onClick={onClose}>
 						<SvgIcon>
@@ -167,7 +132,7 @@ export const ChatSidebar: FC<ChatSidebarProps> = (props) => {
         results={searchResults}
       /> */}
 			<Box sx={{ display: searchFocused ? 'none' : 'block' }}>
-				<Scrollbar>
+				{/* <Scrollbar>
 					<Stack
 						component="ul"
 						spacing={0.5}
@@ -185,7 +150,15 @@ export const ChatSidebar: FC<ChatSidebarProps> = (props) => {
 							/>
 						))}
 					</Stack>
-				</Scrollbar>
+				</Scrollbar> */}
+				<ChannelList
+					// List={CustomList}
+					filters={filters}
+					sort={sort}
+					// Preview={CustomChannelPreview}
+					// LoadingErrorIndicator={CustomErrorIndicator}
+					// LoadingIndicator={CustomLoadingIndicator}
+				/>
 			</Box>
 		</div>
 	);
@@ -242,4 +215,5 @@ ChatSidebar.propTypes = {
 	container: PropTypes.any,
 	onClose: PropTypes.func,
 	open: PropTypes.bool,
+	client: PropTypes.any,
 };

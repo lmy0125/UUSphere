@@ -6,49 +6,20 @@ generator client {
 datasource db {
   provider   = "postgresql"
   url        = env("DATABASE_URL")
-  extensions = [uuidOssp(map: "uuid-ossp")]
+  extensions = [uuid_ossp(map: "uuid-ossp")]
 }
-
-// model User {
-//   id           String       @id @default(uuid())
-//   name         String
-//   email        String
-//   avatarUrl    String?
-//   created_at   DateTime     @default(now())
-//   classes_wi23 Class_WI23[] @relation("Class_WI23ToUser")
-// }
 
 model User {
-  id           String       @id @default(cuid())
-  name         String?
-  email        String?      @unique
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  image         String?
+  created_at    DateTime  @default(now())
   emailVerified DateTime?
-  image        String?
-  accounts     Account[]
-  sessions     Session[]
-  created_at   DateTime     @default(now())
-  classes_wi23 Class_WI23[] @relation("Class_WI23ToUser")
-  classes_test Class_test[]
-}
-
-model Class_WI23 {
-  class_name  String
-  instructor  String
-  total_seats Int?
-  sections    String?
-  id          String   @id @default(uuid())
-  created_at  DateTime @default(now())
-  students    User[]   @relation("Class_WI23ToUser")
-}
-
-model Class_test {
-  id          String    @id @unique @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  class_name  String?
-  instructor  String?
-  total_seats Int?
-  sections    String?
-  created_at  DateTime? @default(now()) @db.Timestamptz(6)
-  students    User[]
+  accounts      Account[]
+  sessions      Session[]
+  classes       Class[]
+  sections      Section[]
 }
 
 model Account {
@@ -57,17 +28,16 @@ model Account {
   type               String
   provider           String
   providerAccountId  String
-  refresh_token      String? @db.Text
-  access_token       String? @db.Text
+  refresh_token      String?
+  access_token       String?
   expires_at         Int?
   token_type         String?
   scope              String?
-  id_token           String? @db.Text
+  id_token           String?
   session_state      String?
   oauth_token_secret String?
   oauth_token        String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user               User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -86,4 +56,54 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Course {
+  department  String
+  code        String  @unique
+  name        String?
+  units       String?
+  description String?
+  id          String  @id @default(dbgenerated("uuid_generate_v1()")) @db.Uuid
+  offered     Class[]
+}
+
+model Class {
+  id          String    @id @default(dbgenerated("uuid_generate_v1()")) @db.Uuid
+  quarter     String
+  code        String
+  courseId    String?   @db.Uuid
+  professorId String    @db.Uuid
+  course      Course?   @relation(fields: [courseId], references: [id])
+  instructor  Professor @relation(fields: [professorId], references: [id])
+  sections    Section[]
+  students    User[]
+}
+
+model Section {
+  code        String
+  total_seats Int
+  school_id   String    @unique
+  id          String    @id @default(dbgenerated("uuid_generate_v1()")) @db.Uuid
+  meetings    Meeting[]
+  class       Class     @relation(fields: [classId], references: [id])
+  classId     String    @db.Uuid
+  students    User[]
+}
+
+model Meeting {
+  id         String  @id @default(dbgenerated("uuid_generate_v1()")) @db.Uuid
+  type       String?
+  daysOfWeek Int[]
+  startTime  String?
+  endTime    String?
+  location   String?
+  section    Section @relation(fields: [sectionId], references: [id])
+  sectionId  String  @db.Uuid
+}
+
+model Professor {
+  id      String  @id @default(dbgenerated("uuid_generate_v1()")) @db.Uuid
+  name    String  @unique
+  classes Class[]
 }

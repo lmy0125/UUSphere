@@ -21,7 +21,7 @@ import {
 import 'stream-chat-react/dist/css/v2/index.css';
 import Menu01Icon from '@untitled-ui/icons-react/build/esm/Menu01';
 import type { Theme } from '@mui/material';
-import { Box, Divider, IconButton, SvgIcon, useMediaQuery } from '@mui/material';
+import { Stack, Box, Divider, IconButton, SvgIcon, useMediaQuery } from '@mui/material';
 // import { Seo } from 'src/components/seo';
 // import { usePageView } from 'src/hooks/use-page-view';
 import { Layout as DashboardLayout } from '@/layouts/dashboard';
@@ -33,6 +33,8 @@ import { ChatChannel } from '@/components/chat/ChatChannel';
 // import { useDispatch } from 'src/store';
 // import { thunks } from 'src/thunks/chat';
 import type { Page as PageType } from '@/types/page';
+import { useSession } from 'next-auth/react';
+
 
 /**
  * NOTE:
@@ -112,14 +114,17 @@ const useSidebar = () => {
 
 const Page: PageType = () => {
 	const { client } = useChatContext();
+	const { data: session, status } = useSession();
 	const rootRef = useRef<HTMLDivElement | null>(null);
 	const searchParams = useSearchParams();
 	//   const compose = searchParams.get('compose') === 'true';
 	const channelId = searchParams.get('channelId') || undefined;
 	const sidebar = useSidebar();
 
-	const filters = { type: 'messaging' };
-	const sort: ChannelSort = { last_message_at: -1 };
+	if (!session) {
+		return (<h1>Need to Log in</h1>)
+	}
+
 	//   usePageView();
 
 	//   useThreads();
@@ -129,7 +134,6 @@ const Page: PageType = () => {
 	//     : compose
 	//       ? 'compose'
 	//       : 'blank';
-
 	if (!client) {
 		return <LoadingIndicator />;
 	}
@@ -157,13 +161,11 @@ const Page: PageType = () => {
 						top: 0,
 					}}>
 					<Chat client={client} theme="str-chat__theme-light">
-						<ChannelList
-							// List={CustomList}
-							filters={filters}
-							sort={sort}
-							// Preview={CustomChannelPreview}
-							// LoadingErrorIndicator={CustomErrorIndicator}
-							// LoadingIndicator={CustomLoadingIndicator}
+						<ChatSidebar
+							container={rootRef.current}
+							onClose={sidebar.handleClose}
+							open={sidebar.open}
+							client={client}
 						/>
 						<ChatContainer open={sidebar.open}>
 							{/* <Box sx={{ p: 2 }}>
@@ -174,23 +176,25 @@ const Page: PageType = () => {
 								</IconButton>
 							</Box> */}
 							<Divider />
-							<Channel>
-								<Window>
-									<ChannelHeader />
-									<MessageList
-									// Message={CustomMessage}
-									/>
-									<MessageInput />
-								</Window>
-								<Thread />
-							</Channel>
+							<Stack
+								sx={{
+									flexGrow: 1,
+									overflow: 'hidden',
+								}}>
+								<Channel>
+									<Window>
+										<ChannelHeader />
+										<MessageList
+										// Message={CustomMessage}
+										/>
+										<Divider />
+										<MessageInput />
+									</Window>
+									<Thread />
+								</Channel>
+							</Stack>
 						</ChatContainer>
 					</Chat>
-					{/* <ChatSidebar
-						container={rootRef.current}
-						onClose={sidebar.handleClose}
-						open={sidebar.open}
-					/> */}
 				</Box>
 			</Box>
 		</>

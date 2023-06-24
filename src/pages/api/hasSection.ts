@@ -11,23 +11,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 	}
 
 	const email = session.user?.email ?? '';
-	const classId = req.body.classId;
+	const sectionId = req.body.sectionId;
+
 	if (req.method === 'POST') {
 		try {
 			const user = await prisma.user.findFirst({
 				where: {
 					email: email,
-					classes_test: {
+					sections: {
 						some: {
-							id: classId,
+							id: sectionId,
 						},
 					},
 				},
-				include: {
-					classes_test: { select: { class_name: true } },
-				},
+				// include: {
+				// 	classes_test: { select: { class_name: true } },
+				// },
 			});
-			// console.log('has class', req.body);
+			console.log("has", user);
 			res.status(200).json(user);
 		} catch (e) {
 			res.status(500).json({ message: 'Something went wrong' });

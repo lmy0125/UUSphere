@@ -27,16 +27,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 		}
 		// Initialize a Server Client
 		const serverClient = StreamChat.getInstance(
-			process.env.STREAMCHAT_KEY! as string,
-			process.env.STREAMCHAT_SECRET! as string
+			'ye8gadqbrbyn',
+			'z8zp34zqx3p6a2g9x7xregs8zvunarm9kxdct99j4rurrjew6xdrnsdgsjdnz5et'
 		);
 		console.log('asdsadas', serverClient);
+
 		// Create User Token
 		const token = serverClient.createToken(user?.id);
 		serverClient.disconnectUser();
 		res.status(200).json({
 			user: user,
 			token: token,
+			z: serverClient,
 		});
 	}
 	// HTTP method not supported!
