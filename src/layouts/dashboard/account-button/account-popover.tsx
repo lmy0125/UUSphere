@@ -102,7 +102,7 @@ export const AccountPopover: FC<AccountPopoverProps> = (props) => {
 			PaperProps={{ sx: { width: 200 } }}
 			{...other}>
 			<Box sx={{ p: 2 }}>
-				<Typography variant="body1">{user.name}Name</Typography>
+				<Typography variant="body1">{user.name}</Typography>
 				<Typography color="text.secondary" variant="body2">
 					{user.email}
 				</Typography>
@@ -111,7 +111,7 @@ export const AccountPopover: FC<AccountPopoverProps> = (props) => {
 			<Box sx={{ p: 1 }}>
 				<ListItemButton
 					component={RouterLink}
-					href={paths.profile}
+					href={`/profile/${user.id}`}
 					onClick={onClose}
 					sx={{
 						borderRadius: 1,
