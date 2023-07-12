@@ -30,19 +30,6 @@ interface UpdateDialogData {
 	eventId?: string;
 }
 
-interface Event {
-	groupId: string;
-	color: string | null;
-	description: string | null;
-	startTime: string | null;
-	endTime: string | null;
-	startRecur: string | null;
-	endRecur: string | null;
-	title: string | null;
-	daysOfWeek: number[];
-	editable: boolean;
-}
-
 // const useEvents = (): CalendarEvent[] => {
 //   const dispatch = useDispatch();
 //   const events = useSelector((state) => state.calendar.events);
@@ -127,7 +114,6 @@ const Calendar: PageType = () => {
 				// 	return getMeetings(section);
 				// });
 				// if (isMounted()) {
-				console.log(response.data.sections);
 				setEvents(eventsArray);
 				// }
 			} catch (err) {
@@ -136,23 +122,6 @@ const Calendar: PageType = () => {
 		};
 		getEcrolledClasses();
 	}, []);
-
-	console.log('events: ', events);
-	// let e = [
-	// 	{
-	// 		groupId: 'string',
-	// 		color: 'string',
-	// 		description: 'description',
-	// 		startTime: '11:00',
-	// 		endTime: '13:00',
-	// 		startRecur: '2023-05-30',
-	// 		endRecur: '2023-06-30',
-	// 		title: 'CSE 101',
-	// 		daysOfWeek: [1, 3, 5],
-	// 		editable: false,
-	// 	},
-	// ];
-	// console.log('work events: ', e);
 
 	const mdUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('md'));
 	const [date, setDate] = useState<Date>(new Date());
@@ -304,7 +273,6 @@ const Calendar: PageType = () => {
 				component="main"
 				sx={{
 					flexGrow: 1,
-					py: 8,
 				}}>
 				<Container maxWidth="xl">
 					<Stack spacing={3}>

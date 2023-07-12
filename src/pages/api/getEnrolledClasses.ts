@@ -6,7 +6,7 @@ import { authOptions } from './auth/[...nextauth]';
 export default async function getEnrolledClasses(req: NextApiRequest, res: NextApiResponse) {
 	const session = await getServerSession(req, res, authOptions);
 	if (!session) {
-		return res.status(401).json({ message: 'Unauthorized.' });
+		return;
 	}
 
 	if (req.method === 'GET') {

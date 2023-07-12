@@ -28,7 +28,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 				// 	classes_test: { select: { class_name: true } },
 				// },
 			});
-			console.log("has", user);
 			res.status(200).json(user);
 		} catch (e) {
 			res.status(500).json({ message: 'Something went wrong' });

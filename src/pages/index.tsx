@@ -28,7 +28,6 @@ import axios from 'axios';
 import useSWR from 'swr';
 import Calendar from '@/components/Calendar';
 
-
 interface Filters {
 	name?: string;
 }
@@ -124,8 +123,6 @@ const useClassStore = (searchState: ClassSearchState) => {
 				return rest;
 			});
 
-			console.log('grouped', updatedData);
-
 			setState({
 				classes: updatedData,
 				classesCount: response.data.length,
@@ -149,11 +146,7 @@ const useClassStore = (searchState: ClassSearchState) => {
 	};
 };
 
-interface ClassStorage {
-	classes: ClassInfo[];
-}
-
-const Page: PageType<ClassStorage> = () => {
+const Page: PageType = () => {
 	const [classes, setClasses] = useState<ClassInfo[] | undefined>(undefined);
 	const classSearch = useClassSearch();
 	const classStore = useClassStore(classSearch.state);

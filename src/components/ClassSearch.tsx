@@ -3,10 +3,8 @@ import { FormEvent, useCallback, useMemo, useRef, useState, useEffect } from 're
 import PropTypes from 'prop-types';
 import SearchMdIcon from '@untitled-ui/icons-react/build/esm/SearchMd';
 import { Box, Chip, Divider, Input, Stack, SvgIcon, Typography, Button } from '@mui/material';
-import axios from 'axios';
 // import { MultiSelect } from '@/components/multi-select';
 // import { useUpdateEffect } from '@/hooks/use-update-effect';
-import { Class } from '@prisma/client';
 
 interface Filters {
 	name?: string;
