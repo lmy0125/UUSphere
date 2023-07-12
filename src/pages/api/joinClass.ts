@@ -11,30 +11,38 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 		return res.status(401).json({ message: 'Unauthorized.' });
 	}
 	const email = session.user?.email ?? '';
-	// const classId = req.body.classId;
 	const sectionId = req.body.sectionId;
 	console.log(email, ' ', sectionId);
 
 	if (req.method === 'POST') {
 		try {
+			const section = await prisma.section.findUnique({
+				where: { id: sectionId },
+				select: {
+					class: { select: { id: true } },
+				},
+			});
+
+			console.log('classId', section);
+
 			const updatedUser = await prisma.user.update({
 				where: {
 					email: email,
 				},
 				data: {
-					// classes: {
-					// 	connect: {
-					// 		id: classId,
-					// 	},
-					// },
 					sections: {
 						connect: {
 							id: sectionId,
 						},
 					},
+					classes: {
+						connect: {
+							id: section?.class.id,
+						},
+					},
 				},
 			});
-			console.log('join', updatedUser);
+
 			res.status(200).json(updatedUser);
 		} catch (e) {
 			res.status(500).json({ message: 'Something went wrong' });

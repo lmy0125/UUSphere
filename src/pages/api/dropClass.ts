@@ -12,9 +12,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
 	const email = session.user?.email ?? '';
 	const sectionId = req.body.sectionId;
-	
+
 	if (req.method === 'POST') {
 		try {
+			const section = await prisma.section.findUnique({
+				where: { id: sectionId },
+				select: {
+					class: { select: { id: true } },
+				},
+			});
+
 			const updatedUser = await prisma.user.update({
 				where: {
 					email: email,
@@ -25,9 +32,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 							id: sectionId,
 						},
 					},
+					classes: {
+						disconnect: {
+							id: section?.class.id,
+						},
+					},
 				},
 			});
-			console.log("drop", updatedUser);
 			res.status(200).json(updatedUser);
 		} catch (e) {
 			res.status(500).json({ message: 'Something went wrong' });
