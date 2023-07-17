@@ -28,7 +28,9 @@ import { Chip, SvgIcon } from '@mui/material';
 // import Users03Icon from 'src/icons/untitled-ui/duocolor/users-03';
 // import XSquareIcon from 'src/icons/untitled-ui/duocolor/x-square';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
+import SchoolIcon from '@mui/icons-material/School';
 import ChatBubbleOutlineOutlinedIcon from '@mui/icons-material/ChatBubbleOutlineOutlined';
+import Diversity3Icon from '@mui/icons-material/Diversity3';
 import { tokens } from '@/locales/tokens';
 import { paths } from '@/paths';
 
@@ -59,7 +61,16 @@ export const useSections = () => {
 						path: paths.index,
 						icon: (
 							<SvgIcon fontSize="small">
-								<HomeOutlinedIcon />
+								<SchoolIcon />
+							</SvgIcon>
+						),
+					},
+					{
+						title: t(tokens.nav.mutualClassmates),
+						path: paths.mutualClassmates,
+						icon: (
+							<SvgIcon fontSize="small">
+								<Diversity3Icon />
 							</SvgIcon>
 						),
 					},
