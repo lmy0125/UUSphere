@@ -15,6 +15,11 @@ import {
 	Tabs,
 	Tooltip,
 	Typography,
+	Dialog,
+	DialogTitle,
+	DialogContent,
+	DialogContentText,
+	DialogActions,
 } from '@mui/material';
 import { blueGrey } from '@mui/material/colors';
 // import { socialApi } from 'src/api/social';
@@ -34,6 +39,11 @@ import { authOptions } from '../api/auth/[...nextauth]';
 import { User } from '@prisma/client';
 import Calendar from '@/components/Calendar';
 import { useSession } from 'next-auth/react';
+import About from '@/components/Profile/About';
+import ProfileEditForm from '@/components/ProfileEditForm';
+import MaleIcon from '@mui/icons-material/Male';
+import FemaleIcon from '@mui/icons-material/Female';
+import HorizontalRuleIcon from '@mui/icons-material/HorizontalRule';
 
 const tabs = [
 	{ label: 'About', value: 'about' },
@@ -41,49 +51,6 @@ const tabs = [
 	{ label: 'Schedule', value: 'schedule' },
 	{ label: 'Clubs', value: 'clubs' },
 ];
-
-const useProfile = (): Profile | null => {
-	const isMounted = useMounted();
-	const [profile, setProfile] = useState<Profile | null>(null);
-
-	const handleProfileGet = useCallback(async () => {
-		try {
-			//   const response = await socialApi.getProfile();
-
-			if (isMounted()) {
-				setProfile({
-					id: '5e86809283e28b96d2d38537',
-					avatar: '',
-					bio: 'Product Designer',
-					connectedStatus: 'not_connected',
-					cover: 'assets/errors/error-401.png',
-					currentCity: 'Bucharest',
-					currentJobCompany: 'Devias IO',
-					currentJobTitle: 'Product Designer',
-					email: 'anika.visser@devias.io',
-					name: 'Anika Visser',
-					originCity: 'Rm. Valcea',
-					previousJobCompany: 'Focus Aesthetic Dynamics',
-					previousJobTitle: 'UX Designer',
-					profileProgress: 50,
-					quote: 'Everyone thinks of changing the world, but no one thinks of changing himself.',
-				});
-			}
-		} catch (err) {
-			console.error(err);
-		}
-	}, [isMounted]);
-
-	useEffect(
-		() => {
-			handleProfileGet();
-		},
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[]
-	);
-
-	return profile;
-};
 
 // const usePosts = (): Post[] => {
 //   const isMounted = useMounted();
@@ -158,15 +125,15 @@ export const ProfilePage: PageType<ProfileProps> = ({ user }) => {
 					pb: 8,
 				}}>
 				<Container maxWidth="lg">
-					<h1>User not exist.</h1>
+					<h1>User does not exist.</h1>
 				</Container>
 			</Box>
 		);
 	}
 
-	const profile = useProfile();
 	const [currentTab, setCurrentTab] = useState<string>('about');
 	const [status, setStatus] = useState<string>('not_connected');
+	const [profileFormToggle, setProfileFormToggle] = useState(false);
 	//   const posts = usePosts();
 	const [connectionsQuery, setConnectionsQuery] = useState<string>('');
 	//   const connections = useConnections(connectionsQuery);
@@ -178,6 +145,8 @@ export const ProfilePage: PageType<ProfileProps> = ({ user }) => {
 	}, [session, user]);
 
 	//   usePageView();
+
+	const handleEditProfile = () => {};
 
 	const handleConnectionAdd = useCallback((): void => {
 		setStatus('pending');
@@ -197,10 +166,6 @@ export const ProfilePage: PageType<ProfileProps> = ({ user }) => {
 		},
 		[]
 	);
-
-	if (!profile) {
-		return null;
-	}
 
 	const showConnect = status === 'not_connected';
 	const showPending = status === 'pending';
@@ -261,7 +226,7 @@ export const ProfilePage: PageType<ProfileProps> = ({ user }) => {
 						<Stack alignItems="center" direction="row" spacing={2} sx={{ mt: 5 }}>
 							<Stack alignItems="center" direction="row" spacing={2}>
 								<Avatar
-									src={user.image ?? ''}
+									src={user.image}
 									sx={{
 										height: 64,
 										width: 64,
@@ -269,9 +234,25 @@ export const ProfilePage: PageType<ProfileProps> = ({ user }) => {
 								/>
 								<div>
 									<Typography color="text.secondary" variant="overline">
-										{profile.bio} bio
+										Rookie
 									</Typography>
-									<Typography variant="h6">{user.name}</Typography>
+									<Typography
+										variant="h6"
+										style={{
+											display: 'flex',
+											justifyContent: 'center',
+										}}>
+										{user.name}
+										{user.gender === 'Male' && (
+											<MaleIcon fontSize="small" sx={{ ml: 1 }} />
+										)}
+										{user.gender === 'Female' && (
+											<FemaleIcon fontSize="small" sx={{ ml: 1 }} />
+										)}
+										{user.gender === 'Non-binary' && (
+											<HorizontalRuleIcon fontSize="small" sx={{ ml: 1 }} />
+										)}
+									</Typography>
 								</div>
 							</Stack>
 							<Box sx={{ flexGrow: 1 }} />
@@ -287,7 +268,7 @@ export const ProfilePage: PageType<ProfileProps> = ({ user }) => {
 										},
 									}}>
 									<Button
-										onClick={handleConnectionAdd}
+										onClick={() => setProfileFormToggle(true)}
 										size="small"
 										startIcon={
 											<SvgIcon>
@@ -297,6 +278,20 @@ export const ProfilePage: PageType<ProfileProps> = ({ user }) => {
 										variant="outlined">
 										Edit Profile
 									</Button>
+									<Dialog
+										open={profileFormToggle}
+										onClose={() => setProfileFormToggle(false)}
+										scroll="body">
+										<DialogContent>
+											<ProfileEditForm user={user} />
+											{/* <Typography id="modal-modal-title" variant="h6" component="h2">
+												Text in a modal
+											</Typography>
+											<Typography id="modal-modal-description" sx={{ mt: 2 }}>
+												Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
+											</Typography> */}
+										</DialogContent>
+									</Dialog>
 								</Stack>
 							) : (
 								<Stack
@@ -369,6 +364,20 @@ export const ProfilePage: PageType<ProfileProps> = ({ user }) => {
 								query={connectionsQuery}
 							/>
 						)} */}
+						{currentTab === 'about' && (
+							<About
+								user={user}
+								currentCity="{profile.currentCity}"
+								currentJobCompany="{profile.currentJobCompany}"
+								currentJobTitle="{profile.currentJobTitle}"
+								email="{profile.email}"
+								originCity="{profile.originCity}"
+								previousJobCompany="{profile.previousJobCompany}"
+								previousJobTitle="{profile.previousJobTitle}"
+								profileProgress={10}
+								quote="{profile.quote} "
+							/>
+						)}
 						{currentTab === 'schedule' && <Calendar />}
 					</Box>
 				</Container>
