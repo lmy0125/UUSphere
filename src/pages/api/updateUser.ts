@@ -25,7 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 					grade: data.grade,
 					college: data.college,
 					major: data.major,
-					country: data.homeland,
+					homeland: data.homeland,
 				},
 			});
 			res.status(200).json(updatedUser);
