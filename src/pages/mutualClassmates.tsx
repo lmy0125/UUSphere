@@ -3,7 +3,7 @@ import type { Page as PageType } from '@/types/page';
 import { Layout as DashboardLayout } from '@/layouts/dashboard';
 import { Container, Tab, Tabs, Box, Stack, Typography } from '@mui/material';
 import axios from 'axios';
-
+import useSWR from 'swr';
 import ProfileCard from '@/components/ProfileCard';
 import { ConnectionStatus } from '@/types/social';
 import { User } from '@prisma/client';
@@ -18,16 +18,21 @@ interface MutualClassmates {
 }
 
 const MutualClassmatesPage: PageType = () => {
-	const [mutualClassmates, setMutualClassmates] = useState<MutualClassmates>({});
+	const fetcher = (url: string) => axios.get(url).then((res) => res.data);
+	let {
+		data: mutualClassmates,
+		error,
+		isLoading,
+	} = useSWR<MutualClassmates>('/api/getMutualClassmates', fetcher);
 
 	function sortByNumOfMutualClass(nestedDict: MutualClassmates) {
 		// Filter out entries with at least two common classes
 		const filteredEntries = Object.entries(nestedDict).filter(([key, value]) => {
 			return value['mutualClassCount'] >= 2;
-		  });
+		});
 
 		const sortedEntries = filteredEntries.sort((a, b) => {
-			return b[1]['mutualClassCount'] - a[1]['mutualClassCount'] ;
+			return b[1]['mutualClassCount'] - a[1]['mutualClassCount'];
 		});
 
 		const sortedDict: MutualClassmates = {};
@@ -37,17 +42,10 @@ const MutualClassmatesPage: PageType = () => {
 
 		return sortedDict;
 	}
+	mutualClassmates = sortByNumOfMutualClass(mutualClassmates ?? {});
 
-	useEffect(() => {
-		const fetchData = async () => {
-			const response = await axios.get('/api/getMutualClassmates');
-			setMutualClassmates(sortByNumOfMutualClass(response.data));
-		};
-		fetchData();
-	}, []);
-
-	const { data: session } = useSession();
-	if (!session) {
+	const { data: session, status } = useSession();
+	if (!session && status === 'unauthenticated') {
 		return <div>Login First</div>;
 	}
 
@@ -55,7 +53,7 @@ const MutualClassmatesPage: PageType = () => {
 		<Container maxWidth="xl">
 			<Stack spacing={2}>
 				<Typography variant="h4">Students who take the same class as you</Typography>
-				{Object.entries(mutualClassmates).map(([key, value]) => {
+				{Object.entries(mutualClassmates ?? {}).map(([key, value]) => {
 					let status = 'not_connected';
 					const connection = {
 						id: key,

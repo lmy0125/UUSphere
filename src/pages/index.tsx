@@ -86,68 +86,33 @@ interface ClassStoreState {
 }
 
 const useClassStore = (searchState: ClassSearchState) => {
-	// const isMounted = useMounted();
-	const [state, setState] = useState<ClassStoreState>({
-		classes: [],
-		classesCount: 0,
+	const fetcher = (url: string) => axios.get(url).then((res) => res.data);
+	const { data, error, isLoading } = useSWR(
+		`/api/getClasses/?name=${searchState.filters.name}`,
+		fetcher
+	);
+	if (error) {
+		console.error('Failed to get classes', error);
+		return { classes: [], classesCount: 0 };
+	}
+	if (isLoading) {
+		return { classes: [], classesCount: 0 };
+	}
+
+	const classes = data.map((obj: any) => {
+		const { courseId, professorId, course, ...rest } = obj;
+		rest.name = obj.course.name;
+		rest.instructor = obj.instructor.name;
+		return rest;
 	});
 
-	const handleGetClasses = useCallback(async () => {
-		try {
-			const response = await axios.get(`/api/getClasses/?name=${searchState.filters.name}`);
-			// if (isMounted()) {
-
-			// group classes with the same name and instructor
-			// const grouped: { [key: string]: Class_test2[] } = response.data.reduce(
-			// 	(result: { [key: string]: Class_test2[] }, obj: Class_test2) => {
-			// 		const key = obj.class_name + '-' + obj.instructor;
-
-			// 		if (!result[key]) {
-			// 			result[key] = [];
-			// 		}
-
-			// 		result[key].push(obj);
-
-			// 		return result;
-			// 	},
-			// 	{}
-			// );
-			// const groupedArray = Object.entries(grouped).map(([key, value]) => {
-			// 	const [class_name, instructor] = key.split('-');
-			// 	return { class_name, instructor, value };
-			// });
-			const updatedData = response.data.map((obj: any) => {
-				const { courseId, professorId, course, ...rest } = obj;
-				rest.name = obj.course.name;
-				rest.instructor = obj.instructor.name;
-				return rest;
-			});
-
-			setState({
-				classes: updatedData,
-				classesCount: response.data.length,
-			});
-			// }
-		} catch (err) {
-			console.error(err);
-		}
-	}, [searchState]);
-
-	useEffect(
-		() => {
-			handleGetClasses();
-		},
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[searchState]
-	);
-
 	return {
-		...state,
+		classes: classes,
+		classesCount: classes.length,
 	};
 };
 
 const Page: PageType = () => {
-	const [classes, setClasses] = useState<ClassInfo[] | undefined>(undefined);
 	const classSearch = useClassSearch();
 	const classStore = useClassStore(classSearch.state);
 
@@ -163,7 +128,7 @@ const Page: PageType = () => {
 					pb: 8,
 				}}>
 				<Container maxWidth="xl">
-					<Stack spacing={4}>
+					<Stack spacing={2}>
 						<Stack direction="row" justifyContent="space-between" spacing={4}>
 							<Stack spacing={1}>
 								<Typography variant="h4">Classes</Typography>

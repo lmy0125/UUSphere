@@ -17,6 +17,7 @@ import {
 import type { Connection } from '@/types/social';
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
+import useSWR from 'swr';
 import { Class, User } from '@prisma/client';
 import { useTheme } from '@mui/material/styles';
 
@@ -31,21 +32,19 @@ interface ProfileCardInfo extends User {
 	mutualClasses: string[];
 }
 
-const SocialConnection: FC<ProfileCardProps> = (props) => {
+const ProfileCard: FC<ProfileCardProps> = (props) => {
 	const theme = useTheme();
 	const { connection } = props;
 	const [status, setStatus] = useState(connection.status);
-	const [profileCardInfo, setProfileCardInfo] = useState<ProfileCardInfo>();
-	// Todo: check connection status here
+	// Todo: check connection status here for add friend functionality
 	const { data: session } = useSession();
 
-	useEffect(() => {
-		const fetchData = async () => {
-			const response = await axios.get(`/api/getProfileCardInfo?userId=${props.userId}`);
-			setProfileCardInfo(response.data);
-		};
-		fetchData();
-	}, []);
+	const fetcher = (url: string) => axios.get(url).then((res) => res.data);
+	const {
+		data: profileCardInfo,
+		error,
+		isLoading,
+	} = useSWR<ProfileCardInfo>(`/api/getProfileCardInfo?userId=${props.userId}`, fetcher);
 
 	// put mutual classes at the front of the array
 	function sortWithMutualClasses(longerArray: Class[], subsetArray: string[]) {
@@ -53,27 +52,22 @@ const SocialConnection: FC<ProfileCardProps> = (props) => {
 		const commonElements = longerArray.filter((obj) =>
 			subsetArray.some((subsetObj) => subsetObj === obj.code)
 		);
-
 		// Sort the longer array based on the position of common elements in the subset array
 		longerArray.sort((a, b) => {
 			const aCommon = commonElements.some((obj) => obj.code === a.code);
 			const bCommon = commonElements.some((obj) => obj.code === b.code);
-
 			// If both elements are common, maintain their order in the longer array
 			if (aCommon && bCommon) {
 				return 0;
 			}
-
 			// If only 'a' is common, prioritize it to be before 'b' in the longer array
 			if (aCommon) {
 				return -1;
 			}
-
 			// If only 'b' is common, prioritize it to be before 'a' in the longer array
 			if (bCommon) {
 				return 1;
 			}
-
 			// If neither 'a' nor 'b' are common, maintain their original order
 			return 0;
 		});
@@ -169,9 +163,9 @@ const SocialConnection: FC<ProfileCardProps> = (props) => {
 	);
 };
 
-SocialConnection.propTypes = {
+ProfileCard.propTypes = {
 	// @ts-ignore
 	connection: PropTypes.object,
 };
 
-export default SocialConnection;
+export default ProfileCard;
