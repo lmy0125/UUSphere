@@ -34,7 +34,7 @@ const ProfileEditForm = ({ user }: { user: User }) => {
 		grade: user.grade ?? '',
 		college: user.college || '',
 		major: user.college ?? '',
-		homeland: user.country ?? '',
+		homeland: user.homeland ?? '',
 	});
 
 	const onSubmit = async () => {
