@@ -18,11 +18,6 @@ interface MutualClassmates {
 }
 
 const MutualClassmatesPage: PageType = () => {
-	const { data: session } = useSession();
-	if (!session) {
-		return <div>Login First</div>;
-	}
-
 	const [mutualClassmates, setMutualClassmates] = useState<MutualClassmates>({});
 
 	function sortByNumOfMutualClass(nestedDict: MutualClassmates) {
@@ -51,12 +46,15 @@ const MutualClassmatesPage: PageType = () => {
 		fetchData();
 	}, []);
 
-	// sort classmates by the number of mutual class
+	const { data: session } = useSession();
+	if (!session) {
+		return <div>Login First</div>;
+	}
 
 	return (
 		<Container maxWidth="xl">
 			<Stack spacing={2}>
-				<Typography variant="h4">Number of mutual class</Typography>
+				<Typography variant="h4">Students who take the same class as you</Typography>
 				{Object.entries(mutualClassmates).map(([key, value]) => {
 					let status = 'not_connected';
 					const connection = {
