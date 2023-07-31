@@ -1,4 +1,4 @@
-import type { ChangeEvent, FC, MouseEvent } from 'react';
+import type { ChangeEvent, Dispatch, FC, MouseEvent, SetStateAction } from 'react';
 import { Fragment, useCallback, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { toast } from 'react-hot-toast';
@@ -194,14 +194,47 @@ import AuthModal from '@/components/AuthModal';
 const ClassRow: FC<{ classInfo: ClassInfo }> = ({ classInfo: classInfo }) => {
 	// const { client } = useChatContext();
 	const [selected, setSelected] = useState(false);
+	const [hasClass, setHasClass] = useState(false);
+	const [sectionTakenId, setSectionTakenId] = useState('');
+	const [numOfEnrolledStudentForClass, setNumOfEnrolledStudentForClass] = useState(0);
+	const [totalSeats, setTotalSeats] = useState(0);
 
 	const handleProductToggle = () => {
 		setSelected(!selected);
 	};
 
+	const checkHasClass = async () => {
+		try {
+			const res = await axios.post('api/checkHasClass', { classId: classInfo.id });
+			if (res.data) {
+				setHasClass(true);
+				setSectionTakenId(res.data.classes[0].sections[0].school_id);
+			}
+		} catch (err) {
+			console.error('Failed to checkHasSection' + err);
+		}
+	};
+
+	const getNumOfEnrolledStudent = async () => {
+		try {
+			const res = await axios.get(`api/getNumOfEnrolledStudentForClass?classId=${classInfo.id}`);
+			if (res.data) {
+				setNumOfEnrolledStudentForClass(res.data.numOfStudent);
+				setTotalSeats(res.data.total_seats);
+			}
+		} catch (err) {
+			console.error('Failed to checkHasSection' + err);
+		}
+	};
+
+	useEffect(() => {
+		checkHasClass();
+		getNumOfEnrolledStudent();
+	}, []);
+
 	return (
 		<>
-			<TableRow hover key={classInfo.id}>
+			<TableRow hover key={classInfo.id} style={hasClass ? { backgroundColor: '#d5f7ea' } : {}}>
 				<TableCell
 					padding="checkbox"
 					sx={{
@@ -247,7 +280,7 @@ const ClassRow: FC<{ classInfo: ClassInfo }> = ({ classInfo: classInfo }) => {
 						}}
 					/>
 					<Typography color="text.secondary" variant="body2">
-						0 / 100
+						{numOfEnrolledStudentForClass} / {totalSeats}
 					</Typography>
 				</TableCell>
 			</TableRow>
@@ -268,7 +301,19 @@ const ClassRow: FC<{ classInfo: ClassInfo }> = ({ classInfo: classInfo }) => {
 								</TableHead>
 								<TableBody>
 									{classInfo.sections.map((section: Section) => {
-										return <SectionRow key={section.id} section={section} />;
+										return (
+											<SectionRow
+												key={section.id}
+												section={section}
+												sectionTakenId={sectionTakenId}
+												setSectionTakenId={setSectionTakenId}
+												hasClass={hasClass}
+												setHasClass={setHasClass}
+												setNumOfEnrolledStudentForClass={
+													setNumOfEnrolledStudentForClass
+												}
+											/>
+										);
 									})}
 								</TableBody>
 							</Table>
@@ -280,9 +325,27 @@ const ClassRow: FC<{ classInfo: ClassInfo }> = ({ classInfo: classInfo }) => {
 	);
 };
 
-const SectionRow: FC<{ section: Section }> = ({ section: section }) => {
-	const { data: session, status } = useSession();
-	const [hasSection, setHasSection] = useState(false);
+const SectionRow: FC<{
+	section: Section;
+	sectionTakenId: string;
+	setSectionTakenId: Dispatch<SetStateAction<string>>;
+	hasClass: boolean;
+	setHasClass: Dispatch<SetStateAction<boolean>>;
+	setNumOfEnrolledStudentForClass: Dispatch<SetStateAction<number>>;
+}> = ({
+	section: section,
+	sectionTakenId: sectionTakenId,
+	setSectionTakenId: setSectionTakenId,
+	hasClass: hasClass,
+	setHasClass: setHasClass,
+	setNumOfEnrolledStudentForClass: setNumOfEnrolledStudentForClass,
+}) => {
+	const { data: session } = useSession();
+	const [hasSection, setHasSection] = useState(section.school_id === sectionTakenId);
+	const [inOtherSection, setInOtherSection] = useState(
+		section.school_id !== sectionTakenId && hasClass === true
+	);
+	const [numOfEnrolledStudentForSection, setNumOfEnrolledStudentForSection] = useState(0);
 	const [authModal, setAuthModal] = useState(false);
 
 	const quantityColor = section.total_seats! <= 100 ? 'success' : 'error';
@@ -303,6 +366,10 @@ const SectionRow: FC<{ section: Section }> = ({ section: section }) => {
 		try {
 			axios.post('api/joinClass', data);
 			setHasSection(true);
+			setHasClass(true);
+			setSectionTakenId(section.school_id ?? '');
+			setNumOfEnrolledStudentForSection((prevCount: number) => prevCount + 1);
+			setNumOfEnrolledStudentForClass((prevCount: number) => prevCount + 1);
 		} catch (err) {
 			alert('Something went wrong' + err);
 		}
@@ -334,6 +401,10 @@ const SectionRow: FC<{ section: Section }> = ({ section: section }) => {
 		try {
 			axios.post('api/dropClass', data);
 			setHasSection(false);
+			setHasClass(false);
+			setSectionTakenId('');
+			setNumOfEnrolledStudentForSection((prevCount: number) => prevCount - 1);
+			setNumOfEnrolledStudentForClass((prevCount: number) => prevCount - 1);
 		} catch (err) {
 			alert('Something went wrong' + err);
 		}
@@ -344,27 +415,26 @@ const SectionRow: FC<{ section: Section }> = ({ section: section }) => {
 		// await channels[0].removeMembers([session.user.id]);
 	};
 
-	const checkHasSection = async (sectionId: string | null) => {
-		// if not authenticated
-		if (!session) {
-			setHasSection(false);
-			return;
-		}
+	const getNumOfEnrolledStudent = async () => {
 		try {
-			let res = await axios.post('api/hasSection', { sectionId: sectionId });
+			const res = await axios.get(
+				`api/getNumOfEnrolledStudentForSection?sectionId=${section.id}`
+			);
 			if (res.data) {
-				setHasSection(true);
-			} else {
-				setHasSection(false);
+				setNumOfEnrolledStudentForSection(res.data);
 			}
 		} catch (err) {
-			// alert('Something went wrong' + err);
+			console.error('Failed to checkHasSection' + err);
 		}
 	};
 
 	useEffect(() => {
-		checkHasSection(section.id);
-	}, [section]);
+		getNumOfEnrolledStudent();
+	}, []);
+
+	useEffect(() => {
+		setInOtherSection(section.school_id !== sectionTakenId && hasClass);
+	}, [hasClass, sectionTakenId]);
 
 	return (
 		<TableRow key={section.school_id} style={hasSection ? { backgroundColor: '#d5f7ea' } : {}}>
@@ -383,7 +453,7 @@ const SectionRow: FC<{ section: Section }> = ({ section: section }) => {
 					}}
 				/>
 				<Typography color="text.secondary" variant="body2">
-					0 / {section.total_seats}
+					{numOfEnrolledStudentForSection} / {section.total_seats}
 				</Typography>
 			</TableCell>
 			<TableCell>
@@ -398,7 +468,10 @@ const SectionRow: FC<{ section: Section }> = ({ section: section }) => {
 						Drop
 					</Button>
 				) : (
-					<Button onClick={() => handleJoinClass({ sectionId: section.id })} size="small">
+					<Button
+						onClick={() => handleJoinClass({ sectionId: section.id })}
+						size="small"
+						disabled={inOtherSection}>
 						Join
 					</Button>
 				)}
