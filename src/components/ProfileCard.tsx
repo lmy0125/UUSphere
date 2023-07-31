@@ -130,7 +130,7 @@ const ProfileCard: FC<ProfileCardProps> = (props) => {
 										key={c.id}
 										variant="caption"
 										color={
-											profileCardInfo.mutualClasses.includes(c.code)
+											profileCardInfo.mutualClasses?.includes(c.code)
 												? 'blue'
 												: 'text.secondary'
 										}

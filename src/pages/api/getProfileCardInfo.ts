@@ -5,12 +5,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { User } from '@prisma/client';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-	// Check if user is authenticated
 	const session = await getServerSession(req, res, authOptions);
-	if (!session) {
-		return res.status(401).json({ message: 'Unauthorized.' });
-	}
-
 	const userId = req.query.userId?.toString();
 
 	if (req.method === 'GET') {
