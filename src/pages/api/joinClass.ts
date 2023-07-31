@@ -12,7 +12,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 	}
 	const email = session.user?.email ?? '';
 	const sectionId = req.body.sectionId;
-	console.log(email, ' ', sectionId);
 
 	if (req.method === 'POST') {
 		try {
