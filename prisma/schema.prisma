@@ -10,16 +10,23 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  image         String?
-  created_at    DateTime  @default(now())
-  emailVerified DateTime?
-  accounts      Account[]
-  sessions      Session[]
-  classes       Class[]
-  sections      Section[]
+  id              String    @id @default(cuid())
+  name            String
+  email           String    @unique
+  image           String
+  created_at      DateTime  @default(now())
+  emailVerified   DateTime?
+  accounts        Account[]
+  sessions        Session[]
+  classes         Class[]
+  sections        Section[]
+  verifiedStudent Boolean?
+  gender          String?
+  grade           String?
+  college         String?
+  major           String?
+  homeland        String?
+  bio             String?
 }
 
 model Account {
