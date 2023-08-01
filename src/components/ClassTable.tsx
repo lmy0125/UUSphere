@@ -198,6 +198,7 @@ const ClassRow: FC<{ classInfo: ClassInfo }> = ({ classInfo: classInfo }) => {
 	const [sectionTakenId, setSectionTakenId] = useState('');
 	const [numOfEnrolledStudentForClass, setNumOfEnrolledStudentForClass] = useState(0);
 	const [totalSeats, setTotalSeats] = useState(0);
+	const [enrollmentRatio, setEnrollmentRatio] = useState(0);
 
 	const handleProductToggle = () => {
 		setSelected(!selected);
@@ -221,6 +222,7 @@ const ClassRow: FC<{ classInfo: ClassInfo }> = ({ classInfo: classInfo }) => {
 			if (res.data) {
 				setNumOfEnrolledStudentForClass(res.data.numOfStudent);
 				setTotalSeats(res.data.total_seats);
+				setEnrollmentRatio(res.data.numOfStudent / res.data.total_seats);
 			}
 		} catch (err) {
 			console.error('Failed to checkHasSection' + err);
@@ -271,9 +273,15 @@ const ClassRow: FC<{ classInfo: ClassInfo }> = ({ classInfo: classInfo }) => {
 				</TableCell>
 				<TableCell>
 					<LinearProgress
-						value={5}
+						value={enrollmentRatio * 100}
 						variant="determinate"
-						color="success"
+						color={
+							enrollmentRatio <= 0.5
+								? 'success'
+								: enrollmentRatio <= 0.75
+								? 'warning'
+								: 'error'
+						}
 						sx={{
 							height: 8,
 							width: 80,
@@ -346,9 +354,9 @@ const SectionRow: FC<{
 		section.school_id !== sectionTakenId && hasClass === true
 	);
 	const [numOfEnrolledStudentForSection, setNumOfEnrolledStudentForSection] = useState(0);
+	const [enrollmentRatio, setEnrollmentRatio] = useState(0);
 	const [authModal, setAuthModal] = useState(false);
 
-	const quantityColor = section.total_seats! <= 100 ? 'success' : 'error';
 	const lecture = section.meetings.filter((meeting) => meeting.type == 'LE');
 
 	const startTime = lecture[0]?.startTime;
@@ -422,6 +430,7 @@ const SectionRow: FC<{
 			);
 			if (res.data) {
 				setNumOfEnrolledStudentForSection(res.data);
+				setEnrollmentRatio(res.data / section.total_seats!);
 			}
 		} catch (err) {
 			console.error('Failed to checkHasSection' + err);
@@ -444,9 +453,11 @@ const SectionRow: FC<{
 			<TableCell>{section.code}</TableCell>
 			<TableCell>
 				<LinearProgress
-					value={section.total_seats!}
+					value={enrollmentRatio * 100}
 					variant="determinate"
-					color={quantityColor}
+					color={
+						enrollmentRatio <= 0.5 ? 'success' : enrollmentRatio <= 0.75 ? 'warning' : 'error'
+					}
 					sx={{
 						height: 8,
 						width: 80,
