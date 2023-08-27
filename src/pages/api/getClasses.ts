@@ -4,17 +4,19 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 	if (req.method === 'GET') {
 		try {
-			let query = req.query.name?.toString().toUpperCase() ?? '';
-			query = insertSpaceBeforeNonLetter(query);
-			if (query == '') {
+			let className = req.query.name?.toString().toUpperCase() ?? '';
+			className = insertSpaceBeforeNonLetter(className);
+			const quarter = req.query.quarter?.toString();
+			if (className == '') {
 				res.status(200).json([]);
 				return;
 			}
 			const classes = await prisma.class.findMany({
 				where: {
 					code: {
-						contains: `${query}`,
+						contains: `${className}`,
 					},
+					quarter: quarter,
 				},
 				include: {
 					sections: {

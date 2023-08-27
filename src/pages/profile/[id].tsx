@@ -44,6 +44,8 @@ import ProfileEditForm from '@/components/ProfileEditForm';
 import MaleIcon from '@mui/icons-material/Male';
 import FemaleIcon from '@mui/icons-material/Female';
 import HorizontalRuleIcon from '@mui/icons-material/HorizontalRule';
+import axios from 'axios';
+import useSWR from 'swr';
 
 const tabs = [
 	{ label: 'About', value: 'about' },
@@ -111,12 +113,12 @@ const tabs = [
 // };
 
 interface ProfileProps {
-	user: User;
+	initUser: User;
 }
 
-export const ProfilePage: PageType<ProfileProps> = ({ user }) => {
+export const ProfilePage: PageType<ProfileProps> = ({ initUser }) => {
 	// User Id doesn't exist
-	if (!user) {
+	if (!initUser) {
 		return (
 			<Box
 				component="main"
@@ -131,6 +133,7 @@ export const ProfilePage: PageType<ProfileProps> = ({ user }) => {
 		);
 	}
 
+	const [user, setUser] = useState<User>(initUser);
 	const [currentTab, setCurrentTab] = useState<string>('about');
 	const [status, setStatus] = useState<string>('not_connected');
 	const [profileFormToggle, setProfileFormToggle] = useState(false);
@@ -139,6 +142,8 @@ export const ProfilePage: PageType<ProfileProps> = ({ user }) => {
 	//   const connections = useConnections(connectionsQuery);
 	const [isAuthenticatedUser, setIsAuthenticatedUser] = useState(false);
 	const { data: session } = useSession();
+	// const fetcher = (url: string) => axios.get(url).then((res) => res.data);
+	// const { data, error } = useSWR('api/user', fetcher);
 
 	useEffect(() => {
 		setIsAuthenticatedUser(session?.user.id == user.id);
@@ -283,7 +288,7 @@ export const ProfilePage: PageType<ProfileProps> = ({ user }) => {
 										onClose={() => setProfileFormToggle(false)}
 										scroll="body">
 										<DialogContent>
-											<ProfileEditForm user={user} />
+											<ProfileEditForm user={user} setProfileFormToggle={setProfileFormToggle} setUser={setUser} />
 											{/* <Typography id="modal-modal-title" variant="h6" component="h2">
 												Text in a modal
 											</Typography>
@@ -365,18 +370,7 @@ export const ProfilePage: PageType<ProfileProps> = ({ user }) => {
 							/>
 						)} */}
 						{currentTab === 'about' && (
-							<About
-								user={user}
-								currentCity="{profile.currentCity}"
-								currentJobCompany="{profile.currentJobCompany}"
-								currentJobTitle="{profile.currentJobTitle}"
-								email="{profile.email}"
-								originCity="{profile.originCity}"
-								previousJobCompany="{profile.previousJobCompany}"
-								previousJobTitle="{profile.previousJobTitle}"
-								profileProgress={10}
-								quote="{profile.quote} "
-							/>
+							<About user={user} setProfileFormToggle={setProfileFormToggle} />
 						)}
 						{currentTab === 'schedule' && <Calendar />}
 					</Box>
@@ -396,7 +390,7 @@ export const getServerSideProps: GetServerSideProps<ProfileProps> = async (conte
 	});
 
 	return {
-		props: { user: JSON.parse(JSON.stringify(user)) },
+		props: { initUser: JSON.parse(JSON.stringify(user)) },
 	};
 };
 

@@ -36,8 +36,7 @@ const About: FC<SocialAboutProps> = (props) => {
 				<CardHeader title="About" />
 				<CardContent>
 					<Typography color="text.secondary" sx={{ mb: 2 }} variant="subtitle2">
-						&quot;
-						{user?.name} is lazy and letf nothing here. &quot;
+						{user.bio ? user.bio : user?.name + ' is lazy and letf nothing here.'}
 					</Typography>
 					<List disablePadding>
 						{(user.grade || user.id === session?.user.id) && (

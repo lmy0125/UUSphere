@@ -1,4 +1,4 @@
-import NextAuth, { AuthOptions, Awaitable, Session, User } from 'next-auth';
+import NextAuth, { AuthOptions, Awaitable, Session, User, Profile, Account } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
 import { AdapterUser } from 'next-auth/adapters';
 // import EmailProvider from 'next-auth/providers/email';
@@ -86,7 +86,7 @@ export const authOptions = {
 			// Create User Token
 			token = serverClient.createToken(user?.id);
 			session.streamChatToken = token;
-			session.user.id = user.id;
+			session.user = user;
 			return session;
 		},
 		async redirect({ url, baseUrl }: { url: string; baseUrl: string }) {
@@ -95,6 +95,14 @@ export const authOptions = {
 			// // Allows callback URLs on the same origin
 			// else if (new URL(url).origin === baseUrl) return url;
 			return baseUrl;
+		},
+		async signIn({ user, account }: { user: User | AdapterUser; account: Account | null }) {
+			// Check if the user is signing in for the first time
+			if (account?.provider === 'google' && user.id === account?.id) {
+				// Redirect to a different URL for first-time login
+				return '/first-time-login'; // Replace with your desired URL
+			}
+			return true;
 		},
 	},
 

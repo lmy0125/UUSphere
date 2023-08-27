@@ -1,5 +1,5 @@
 import React from 'react';
-import {useState} from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
 import { signIn } from 'next-auth/react';
 import { Modal, Box, Typography, Button, Container, Stack } from '@mui/material';
@@ -35,11 +35,9 @@ export default function AuthModal({
 						flexDirection: 'column',
 						alignItems: 'center',
 					}}>
-					<Typography variant="h5">Payment successful</Typography>
-					<Typography align="center" color="text.secondary" sx={{ mt: 1 }} variant="body2">
-						Lorem ipsum dolor, sit amet consectetur adipisicing elit. Provident facere eum
-						obcaecati pariatur magnam eius fugit nostrum sint enim, amet rem aspernatur
-						distinctio tempora repudiandae, maiores quod. Ad, expedita assumenda!
+					<Typography variant="h5">Sign up/Sign in</Typography>
+					<Typography align="center" color="text.primary" sx={{ mt: 2 }} variant="body2">
+						Use your school email to obtain full access of the application.
 					</Typography>
 				</Box>
 				<Stack alignItems="center" direction="row" spacing={3} sx={{ mt: 4 }}>

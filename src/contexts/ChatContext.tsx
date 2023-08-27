@@ -3,13 +3,14 @@ import { StreamChat, Channel } from 'stream-chat';
 import { useSession } from 'next-auth/react';
 import { Class } from '@prisma/client';
 import axios from 'axios';
+import { useUserContext } from './UserContext';
 
 interface ChatContextType {
-	client: StreamChat | undefined;
+	chatClient: StreamChat | undefined;
 	userChannels: Channel[] | undefined;
 }
 
-const ChatContext = createContext<ChatContextType>({ client: undefined, userChannels: undefined });
+const ChatContext = createContext<ChatContextType>({ chatClient: undefined, userChannels: undefined });
 
 const steam_api_key = process.env.NEXT_PUBLIC_STREAMCHAT_KEY as string;
 
@@ -19,38 +20,25 @@ export default function ChatContextProvider({ children }: { children: React.Reac
 	const { data: session, status } = useSession();
 
 	useEffect(() => {
-		const initChat = async () => {
-			console.log('init', session);
+		const initStreamChat = async () => {
 			if (!session) {
 				return;
 			}
 			const client = new StreamChat(steam_api_key);
 			try {
+				console.log('session', session.user);
 				// connect user to stream chat
 				await client.connectUser(session.user, session.streamChatToken);
 				setChatClient(client);
+				console.log('init chat', client);
 				console.log('chat connected');
-				
-				// create/watch channel of every enrolled class
-				// const response = await axios.get(`/api/getEnrolledClasses`);
-				// const classes: Class_test[] = response.data;
-				// for (let c of classes) {
-				// 	const channel = client.channel('messaging', c.id, {
-				// 		name: c.class_name ?? '',
-				// 		members: [session.user.id],
-				// 	});
-				// 	await channel.watch();
-				// 	console.log('watching', c.class_name);
-				// }
 			} catch (err) {
-				console.log(err);
+				console.log("Failed to connect stream chat", err);
 			}
 		};
-
-		// if (session && !chatClient) {
-		// 	initChat();
-		// }
-
+		
+		initStreamChat();
+		
 		return () => {
 			// if (chatClient) {
 			// 	chatClient.disconnectUser();
@@ -59,20 +47,8 @@ export default function ChatContextProvider({ children }: { children: React.Reac
 		};
 	}, [session]);
 
-	// useEffect(() => {
-	// 	const getUserChannels = async () => {
-	// 		const channels = await chatClient?.queryChannels({
-	// 			members: { $in: [session?.user.id ?? ''] },
-	// 		});
-	// 		setUserChannels(channels);
-	// 	};
-	// 	if (chatClient) {
-	// 		getUserChannels();
-	// 	}
-	// }, [chatClient]);
-
 	return (
-		<ChatContext.Provider value={{ client: chatClient, userChannels: userChannels }}>
+		<ChatContext.Provider value={{ chatClient: chatClient, userChannels: userChannels }}>
 			{children}
 		</ChatContext.Provider>
 	);

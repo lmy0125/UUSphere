@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import type { FC } from 'react';
+import { useState, useEffect, FormEvent } from 'react';
+import type { Dispatch, FC, SetStateAction } from 'react';
 import {
 	Autocomplete,
 	Box,
@@ -19,31 +19,50 @@ import axios from 'axios';
 interface PersonalInfo {
 	name: string;
 	email: string;
-	gender?: string;
-	grade?: string;
-	college?: string;
-	major?: string;
-	homeland?: string;
+	gender: string;
+	grade: string;
+	college: string;
+	major: string;
+	homeland: string;
+	bio: string;
 }
 
-const ProfileEditForm = ({ user }: { user: User }) => {
+interface ProfileEditFormProps {
+	user: User;
+	setUser: Dispatch<SetStateAction<User>>;
+	setProfileFormToggle: Dispatch<SetStateAction<boolean>>;
+}
+
+const ProfileEditForm: FC<ProfileEditFormProps> = ({ user, setUser, setProfileFormToggle }) => {
 	const [personalInfo, setPersonalInfo] = useState<PersonalInfo>({
 		name: user.name,
 		email: user.email,
 		gender: user.gender ?? '',
 		grade: user.grade ?? '',
-		college: user.college || '',
-		major: user.college ?? '',
+		college: user.college ?? '',
+		major: user.major ?? '',
 		homeland: user.homeland ?? '',
+		bio: user.bio ?? '',
 	});
 
-	const onSubmit = async () => {
-		const res = await axios.post('/api/updateUser', personalInfo);
-		console.log('res', res);
+	const handleSubmit =  (event: FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
+		axios.post('/api/updateUser', personalInfo);
+		setUser({
+			...user,
+			name: personalInfo.name,
+			gender: personalInfo.gender,
+			grade: personalInfo.grade,
+			college: personalInfo.college,
+			major: personalInfo.major,
+			homeland: personalInfo.homeland,
+			bio: personalInfo.bio,
+		});
+		setProfileFormToggle(false);
 	};
 
 	return (
-		<>
+		<form onSubmit={(e)=>handleSubmit(e)}>
 			<CardHeader
 				title="Edit Profile"
 				sx={{ textAlign: 'center', py: 1, pb: 0 }}
@@ -56,18 +75,19 @@ const ProfileEditForm = ({ user }: { user: User }) => {
 							fullWidth
 							label="Name"
 							name="name"
-							required
 							value={personalInfo.name}
 							onChange={(e) => {
 								setPersonalInfo({ ...personalInfo, name: e.target.value });
 							}}
+							required
+							error={personalInfo.name.trim() === ''}
+							helperText={personalInfo.name.trim() === '' ? 'Name is required!' : ''}
 						/>
 					</Grid>
-
 					<Grid xs={12} md={6}>
 						<Autocomplete
 							// getOptionLabel={(option) => option.text}
-							defaultValue={personalInfo.gender}
+							value={personalInfo.gender || null}
 							options={genders}
 							renderInput={(params): JSX.Element => (
 								<TextField {...params} fullWidth label="Gender" name="gender" />
@@ -79,7 +99,7 @@ const ProfileEditForm = ({ user }: { user: User }) => {
 					</Grid>
 					<Grid xs={12} md={6}>
 						<Autocomplete
-							defaultValue={personalInfo.grade}
+							value={personalInfo.grade || null}
 							options={grades}
 							renderInput={(params): JSX.Element => (
 								<TextField {...params} fullWidth label="Grade" name="grade" />
@@ -91,7 +111,7 @@ const ProfileEditForm = ({ user }: { user: User }) => {
 					</Grid>
 					<Grid xs={12} md={6}>
 						<Autocomplete
-							defaultValue={personalInfo.college}
+							value={personalInfo.college || null}
 							options={colleges}
 							renderInput={(params): JSX.Element => (
 								<TextField {...params} fullWidth label="College" name="college" />
@@ -103,7 +123,7 @@ const ProfileEditForm = ({ user }: { user: User }) => {
 					</Grid>
 					<Grid xs={12} md={6}>
 						<Autocomplete
-							defaultValue={personalInfo.major}
+							value={personalInfo.major || null}
 							options={majors}
 							renderInput={(params): JSX.Element => (
 								<TextField {...params} fullWidth label="Major" name="major" />
@@ -116,8 +136,13 @@ const ProfileEditForm = ({ user }: { user: User }) => {
 					<Grid xs={12} md={6}>
 						<Autocomplete
 							// getOptionLabel={(option) => option.label}
-							defaultValue={{ code: '', label: personalInfo.homeland, phone: '' }}
+							value={
+								personalInfo.homeland
+									? { code: '', label: personalInfo.homeland, phone: '' }
+									: null
+							}
 							options={homelands}
+							isOptionEqualToValue={(option, value) => option.label === value.label}
 							renderOption={(props, option) => (
 								<Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
 									<img
@@ -134,8 +159,21 @@ const ProfileEditForm = ({ user }: { user: User }) => {
 								<TextField {...params} fullWidth label="Homeland" name="homeland" />
 							)}
 							onChange={(e, values) => {
-								setPersonalInfo({ ...personalInfo, homeland: values?.label });
+								setPersonalInfo({ ...personalInfo, homeland: values?.label ?? '' });
 							}}
+						/>
+					</Grid>
+					<Grid xs={12}>
+						<TextField
+							fullWidth
+							label="Bio"
+							name="bio"
+							value={personalInfo.bio}
+							onChange={(e) => {
+								setPersonalInfo({ ...personalInfo, bio: e.target.value });
+							}}
+							multiline
+							rows={2}
 						/>
 					</Grid>
 				</Grid>
@@ -145,11 +183,11 @@ const ProfileEditForm = ({ user }: { user: User }) => {
 					justifyContent: 'flex-end',
 					p: 2,
 				}}>
-				<Button color="primary" variant="contained" onClick={onSubmit}>
+				<Button color="primary" variant="contained" type="submit">
 					Submit
 				</Button>
 			</CardActions>
-		</>
+		</form>
 	);
 };
 

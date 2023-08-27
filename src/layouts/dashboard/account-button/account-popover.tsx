@@ -39,7 +39,7 @@ interface AccountPopoverProps {
 
 export const AccountPopover: FC<AccountPopoverProps> = (props) => {
 	const { anchorEl, onClose, open, user, ...other } = props;
-	const { client } = useChatContext();
+	const { chatClient: client } = useChatContext();
 	const router = useRouter();
 	// const auth = useAuth();
 	// const user = useMockedUser();

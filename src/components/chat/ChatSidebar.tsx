@@ -8,6 +8,7 @@ import type { Theme } from '@mui/material';
 import {
 	Box,
 	Button,
+	Divider,
 	Drawer,
 	IconButton,
 	Stack,
@@ -24,7 +25,10 @@ import type { Contact, Thread } from '@/types/chat';
 import { ChatThreadItem } from './ChatThreadItem';
 import { useChatContext } from '@/contexts/ChatContext';
 import { ChannelSort, StreamChat } from 'stream-chat';
-import { ChannelList } from 'stream-chat-react';
+import { ChannelList, SearchResultItemProps, SearchResultsListProps } from 'stream-chat-react';
+import { useSession } from 'next-auth/react';
+import { CustomChannelPreview, CustomChannelList } from './CustomChannelEntry';
+import { CustomDropdown, CustomResultItem } from './CustomSearch';
 
 interface ChatSidebarProps {
 	container?: HTMLDivElement | null;
@@ -35,6 +39,7 @@ interface ChatSidebarProps {
 
 export const ChatSidebar: FC<ChatSidebarProps> = (props) => {
 	const { client, container, onClose, open, ...other } = props;
+	const { data: session } = useSession();
 	const router = useRouter();
 	const { userChannels } = useChatContext();
 	// const [currentChannel, setCurrentChannel] = useState();
@@ -95,8 +100,21 @@ export const ChatSidebar: FC<ChatSidebarProps> = (props) => {
 	//     [router]
 	//   );
 
-	const filters = { type: 'messaging', members: { $eq: [client.userID ?? ''] } };
+	const classroomFilter = { type: 'classroom', members: { $in: [session?.user.id ?? ''] } };
+	const messageFilter = { type: 'messaging', members: { $in: [session?.user.id ?? ''] } };
 	const sort: ChannelSort = { last_message_at: -1 };
+
+	const DropDown = (props: SearchResultsListProps) => <CustomDropdown {...props} />;
+	const SearchResult = (props: SearchResultItemProps) => <CustomResultItem {...props} />;
+	const additionalProps = {
+		DropdownContainer: DropDown,
+		SearchResultItem: SearchResult,
+		searchForChannels: true,
+	};
+
+	const EmptyClassroomList = () => {
+		return (<div>empty</div>)
+	}
 
 	const content = (
 		<div>
@@ -104,6 +122,7 @@ export const ChatSidebar: FC<ChatSidebarProps> = (props) => {
 				<Typography variant="h5" sx={{ flexGrow: 1 }}>
 					Chats
 				</Typography>
+
 				{/* <Button
 					onClick={handleCompose}
 					startIcon={
@@ -113,15 +132,16 @@ export const ChatSidebar: FC<ChatSidebarProps> = (props) => {
 					}
 					variant="contained">
 					Group
-				</Button> */}
+				</Button>
 				{!mdUp && (
 					<IconButton onClick={onClose}>
 						<SvgIcon>
 							<XIcon />
 						</SvgIcon>
 					</IconButton>
-				)}
+				)} */}
 			</Stack>
+			<Divider />
 			{/* <ChatSidebarSearch
         isFocused={searchFocused}
         onChange={handleSearchChange}
@@ -151,13 +171,30 @@ export const ChatSidebar: FC<ChatSidebarProps> = (props) => {
 						))}
 					</Stack>
 				</Scrollbar> */}
+				<Typography variant="subtitle2" sx={{ px: 2, py: 1 }}>
+					Classrooms
+				</Typography>
+
 				<ChannelList
-					// List={CustomList}
-					filters={filters}
+					filters={classroomFilter}
 					sort={sort}
-					// Preview={CustomChannelPreview}
+					// showChannelSearch
+					additionalChannelSearchProps={additionalProps}
+					Preview={CustomChannelPreview}
+					// List={CustomChannelList}
 					// LoadingErrorIndicator={CustomErrorIndicator}
 					// LoadingIndicator={CustomLoadingIndicator}
+				/>
+				<Divider />
+				<Typography variant="subtitle2" sx={{ px: 2, py: 1 }}>
+					Personal
+				</Typography>
+				<ChannelList
+					filters={messageFilter}
+					sort={sort}
+					additionalChannelSearchProps={additionalProps}
+					Preview={CustomChannelPreview}
+					// EmptyStateIndicator={customEmptyStateIndicator}
 				/>
 			</Box>
 		</div>

@@ -113,7 +113,7 @@ const CustomLoadingIndicator = () => {
 };
 
 const ChatHome: PageType = () => {
-	const { client } = useChatContext();
+	const { chatClient: client } = useChatContext();
 
 	if (!client) {
 		return <LoadingIndicator />;

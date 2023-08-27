@@ -12,6 +12,7 @@ import {
 	Thread,
 	Window,
 	LoadingIndicator,
+	VirtualizedMessageList,
 	useMessageContext,
 	ChannelListMessengerProps,
 	ChatDownProps,
@@ -34,7 +35,11 @@ import { ChatChannel } from '@/components/chat/ChatChannel';
 // import { thunks } from 'src/thunks/chat';
 import type { Page as PageType } from '@/types/page';
 import { useSession } from 'next-auth/react';
-
+import CustomChannelHeader from '@/components/chat/CustomChannelHeader';
+import CustomMessageInput from '@/components/chat/CustomMessageInput';
+// import  CustomTriggerProvider  from '@/components/chat/CustomTriggerProvider';
+import ChannelInfoSidebar from '@/components/chat/ChannelInfoSidebar';
+import CustomMessage from '@/components/chat/CustomMessage';
 
 /**
  * NOTE:
@@ -112,8 +117,9 @@ const useSidebar = () => {
 	};
 };
 
-const Page: PageType = () => {
-	const { client } = useChatContext();
+const ChatPage: PageType = () => {
+	const [isChannelInfoOpen, setIsChannelInfoOpen] = useState(false);
+	const { chatClient: client } = useChatContext();
 	const { data: session, status } = useSession();
 	const rootRef = useRef<HTMLDivElement | null>(null);
 	const searchParams = useSearchParams();
@@ -122,7 +128,7 @@ const Page: PageType = () => {
 	const sidebar = useSidebar();
 
 	if (!session) {
-		return (<h1>Need to Log in</h1>)
+		return <h1>Need to Log in</h1>;
 	}
 
 	//   usePageView();
@@ -175,24 +181,32 @@ const Page: PageType = () => {
 									</SvgIcon>
 								</IconButton>
 							</Box> */}
-							<Divider />
-							<Stack
+							{/* <Divider /> */}
+							{/* <Stack
 								sx={{
 									flexGrow: 1,
 									overflow: 'hidden',
-								}}>
+								}}> */}
 								<Channel>
-									<Window>
-										<ChannelHeader />
+									<Window hideOnThread>
+										{/* <ChannelHeader /> */}
+										<CustomChannelHeader setIsChannelInfoOpen={setIsChannelInfoOpen} />
 										<MessageList
-										// Message={CustomMessage}
+										Message={CustomMessage}
 										/>
 										<Divider />
-										<MessageInput />
+										<MessageInput
+											grow
+											// Input={CustomMessageInput}
+										/>
 									</Window>
 									<Thread />
+									<ChannelInfoSidebar
+										isOpen={isChannelInfoOpen}
+										onClose={() => setIsChannelInfoOpen((prev) => !prev)}
+									/>
 								</Channel>
-							</Stack>
+							{/* </Stack> */}
 						</ChatContainer>
 					</Chat>
 				</Box>
@@ -201,6 +215,6 @@ const Page: PageType = () => {
 	);
 };
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+ChatPage.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
 
-export default Page;
+export default ChatPage;

@@ -10,6 +10,10 @@ import {
 	Stack,
 	SvgIcon,
 	Typography,
+	FormControl,
+	Select,
+	InputLabel,
+	MenuItem,
 } from '@mui/material';
 // import { productsApi } from 'src/api/products';
 // import { BreadcrumbsSeparator } from 'src/components/breadcrumbs-separator';
@@ -85,10 +89,10 @@ interface ClassStoreState {
 	classesCount: number;
 }
 
-const useClassStore = (searchState: ClassSearchState) => {
+const useClassStore = (searchState: ClassSearchState, quarter: string) => {
 	const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 	const { data, error, isLoading } = useSWR(
-		`/api/getClasses/?name=${searchState.filters.name}`,
+		`/api/getClasses/?name=${searchState.filters.name}&quarter=${quarter}`,
 		fetcher
 	);
 	if (error) {
@@ -113,8 +117,9 @@ const useClassStore = (searchState: ClassSearchState) => {
 };
 
 const Page: PageType = () => {
+	const [quarter, setQuarter] = useState('FA23');
 	const classSearch = useClassSearch();
-	const classStore = useClassStore(classSearch.state);
+	const classStore = useClassStore(classSearch.state, quarter);
 
 	// usePageView();
 
@@ -129,10 +134,28 @@ const Page: PageType = () => {
 				}}>
 				<Container maxWidth="xl">
 					<Stack spacing={2}>
-						<Stack direction="row" justifyContent="space-between" spacing={4}>
-							<Stack spacing={1}>
-								<Typography variant="h4">Classes</Typography>
-								{/* <Breadcrumbs separator={<BreadcrumbsSeparator />}>
+						{/* <Stack direction="row" justifyContent="space-between" spacing={4}> */}
+						<Stack spacing={4} direction="row" alignItems="flex-end">
+							<Typography variant="h4">Classes</Typography>
+							<FormControl
+								variant="standard"
+								sx={{
+									pb: 0.5,
+									minWidth: 80,
+									'& .MuiInput-underline': {
+										border: 'none !important',
+									},
+								}}>
+								<InputLabel>Quarter</InputLabel>
+								<Select
+									value={quarter}
+									onChange={(event) => setQuarter(event.target.value)}
+									label="Quarter">
+									<MenuItem value="FA23">FA 23</MenuItem>
+									<MenuItem value="SP24">SP 24</MenuItem>
+								</Select>
+							</FormControl>
+							{/* <Breadcrumbs separator={<BreadcrumbsSeparator />}>
 									<Link
 										color="text.primary"
 										component={RouterLink}
@@ -151,8 +174,8 @@ const Page: PageType = () => {
 										List
 									</Typography>
 								</Breadcrumbs> */}
-							</Stack>
 						</Stack>
+						{/* </Stack> */}
 						<Card>
 							<ClassSearch onFiltersChange={classSearch.handleFiltersChange} />
 							<ClassTable

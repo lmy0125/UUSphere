@@ -19,7 +19,7 @@ export const ChatMessage: FC<ChatMessageProps> = (props) => {
 	const { messageInfo } = props;
 	const [position, setPosition] = useState('left');
 	const [author, setAuthor] = useState<User>();
-	const { client } = useChatContext();
+	const { chatClient: client } = useChatContext();
 	const contentType = 'text';
 
 	useEffect(() => {

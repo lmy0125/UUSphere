@@ -1,8 +1,9 @@
-import { PrismaClient, Section, Meeting } from '@prisma/client';
-import classes from './classes.json' assert { type: 'json' };
+import { PrismaClient } from '@prisma/client';
+import classes from './classes_FA23_08.25.2023.json' assert { type: 'json' };
 
 const prisma = new PrismaClient();
 
+// insert the classes.json to the database
 async function main() {
 	for (let c of classes) {
 		const sections = eval(c.sections);
@@ -23,7 +24,7 @@ async function main() {
 				instructor: {
 					connectOrCreate: {
 						where: { name: c.instructor },
-						create: { name: c.instructor },
+						create: { name: c.instructor, school: 'UCSD' },
 					},
 				},
 				sections: {

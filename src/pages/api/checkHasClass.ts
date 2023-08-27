@@ -2,7 +2,6 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from './auth/[...nextauth]';
 import prisma from '@/lib/prisma';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { StreamChat } from 'stream-chat';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 	// Check if user is authenticated
@@ -10,37 +9,30 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 	if (!session) {
 		return res.status(401).json({ message: 'Unauthorized.' });
 	}
+
 	const email = session.user?.email ?? '';
-	const sectionId = req.body.sectionId;
+	const classId = req.body.classId;
 
 	if (req.method === 'POST') {
 		try {
-			const section = await prisma.section.findUnique({
-				where: { id: sectionId },
-				select: {
-					class: { select: { id: true } },
-				},
-			});
-
-			const updatedUser = await prisma.user.update({
+			const user = await prisma.user.findFirst({
 				where: {
 					email: email,
-				},
-				data: {
-					sections: {
-						connect: {
-							id: sectionId,
+					classes: {
+						some: {
+							id: classId,
 						},
 					},
+				},
+                // include the section that the user is in for this specific class
+				include: {
 					classes: {
-						connect: {
-							id: section?.class.id,
-						},
+						where: { id: classId },
+						select: { sections: { where: { students: { some: { email: email } } } } },
 					},
 				},
 			});
-
-			res.status(200).json(updatedUser);
+			res.status(200).json(user);
 		} catch (e) {
 			res.status(500).json({ message: 'Something went wrong' });
 		}

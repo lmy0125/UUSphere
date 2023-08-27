@@ -18,6 +18,7 @@ import type { CalendarEvent, CalendarView } from '@/types/calendar';
 import type { Page as PageType } from '@/types/page';
 import { Section } from '@/types/class';
 import axios from 'axios';
+import { useSession } from 'next-auth/react';
 
 interface CreateDialogData {
 	range?: {
@@ -67,6 +68,7 @@ const useCurrentEvent = (
 
 const Calendar: PageType = () => {
 	// const dispatch = useDispatch();
+	const { data: session } = useSession();
 	const calendarRef = useRef<FullCalendar | null>(null);
 	const [sections, setSections] = useState<Section[]>();
 	const [events, setEvents] = useState<EventInput[]>();
@@ -75,7 +77,6 @@ const Calendar: PageType = () => {
 		const getEcrolledClasses = async () => {
 			try {
 				const response = await axios.get(`/api/getEnrolledClasses`);
-				// console.log(response);
 				const getMeetings = (section: Section, color: string): EventInput[] => {
 					const meetings = section.meetings.map((meeting) => {
 						const event: EventInput = {
@@ -120,12 +121,14 @@ const Calendar: PageType = () => {
 				console.error(err);
 			}
 		};
-		getEcrolledClasses();
+		if (session) {
+			getEcrolledClasses();
+		}
 	}, []);
 
 	const mdUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('md'));
 	const [date, setDate] = useState<Date>(new Date());
-	const [view, setView] = useState<CalendarView>(mdUp ? 'timeGridDay' : 'dayGridMonth');
+	const [view, setView] = useState<CalendarView>(mdUp ? 'timeGridDay' : 'timeGridWeek');
 	const createDialog = useDialog<CreateDialogData>();
 	const updateDialog = useDialog<UpdateDialogData>();
 	// const updatingEvent = useCurrentEvent(events, updateDialog.data);
@@ -135,7 +138,7 @@ const Calendar: PageType = () => {
 
 		if (calendarEl) {
 			const calendarApi = calendarEl.getApi();
-			const newView = mdUp ? 'dayGridMonth' : 'timeGridDay';
+			const newView = mdUp ? 'timeGridWeek' : 'timeGridDay';
 
 			calendarApi.changeView(newView);
 			setView(newView);

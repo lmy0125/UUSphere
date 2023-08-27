@@ -40,17 +40,8 @@ interface SearchResult {
 const SearchResultPage: PageType<SearchResult> = ({ users }) => {
 	const [currentTab, setCurrentTab] = useState(0);
 	const searchParams = useSearchParams();
-	const { data } = useSession();
-
-	const query = searchParams.get('query');
-
-	const connection: Connection = {
-		id: '123',
-		avatar: '123',
-		commonConnections: 5,
-		name: 'Jack',
-		status: 'not_connected',
-	};
+	const { data: session } = useSession();
+console.log(users);
 	return (
 		<Container maxWidth="xl">
 			<Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -70,19 +61,19 @@ const SearchResultPage: PageType<SearchResult> = ({ users }) => {
 			<TabPanel value={currentTab} index={0}>
 				{users?.map((user) => {
 					let status = 'not_connected';
-					if (user.id == data?.user.id) {
+					if (user.id == session?.user.id) {
 						status = 'self';
 					}
 					const connection = {
 						id: user.id,
-						avatar: user.image ?? '',
+						avatar: user.image,
 						commonConnections: 0,
-						name: user.name ?? 'Need a name',
+						name: user.name,
 						status: status as ConnectionStatus,
 					};
 					return (
 						<Box sx={{ mb: 3 }} key={connection.id}>
-							<ProfileCard connection={connection} />
+							<ProfileCard userId={user.id} connection={connection} />
 						</Box>
 					);
 				})}
@@ -128,7 +119,7 @@ export const getServerSideProps: GetServerSideProps<SearchResult> = async (conte
 			props: { users: [] },
 		};
 	}
-	console.log('query', query);
+
 	const users = await prisma.user.findMany({
 		where: {
 			OR: [

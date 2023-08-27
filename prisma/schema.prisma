@@ -1,12 +1,10 @@
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["postgresqlExtensions"]
 }
 
 datasource db {
   provider   = "postgresql"
   url        = env("DATABASE_URL")
-  extensions = [uuid_ossp(map: "uuid-ossp")]
 }
 
 model User {
@@ -16,17 +14,17 @@ model User {
   image           String
   created_at      DateTime  @default(now())
   emailVerified   DateTime?
-  accounts        Account[]
-  sessions        Session[]
-  classes         Class[]
-  sections        Section[]
-  verifiedStudent Boolean?
+  college         String?
   gender          String?
   grade           String?
-  college         String?
   major           String?
+  verifiedStudent Boolean?
   homeland        String?
   bio             String?
+  accounts        Account[]
+  sessions        Session[]
+  classes         Class[]   @relation("ClassToUser")
+  sections        Section[] @relation("SectionToUser")
 }
 
 model Account {
@@ -71,12 +69,12 @@ model Course {
   name        String?
   units       String?
   description String?
-  id          String  @id @default(dbgenerated("uuid_generate_v1()")) @db.Uuid
+  id          String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   offered     Class[]
 }
 
 model Class {
-  id          String    @id @default(dbgenerated("uuid_generate_v1()")) @db.Uuid
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   quarter     String
   code        String
   courseId    String?   @db.Uuid
@@ -84,33 +82,34 @@ model Class {
   course      Course?   @relation(fields: [courseId], references: [id])
   instructor  Professor @relation(fields: [professorId], references: [id])
   sections    Section[]
-  students    User[]
+  students    User[]    @relation("ClassToUser")
 }
 
 model Section {
   code        String
   total_seats Int
-  school_id   String    @unique
-  id          String    @id @default(dbgenerated("uuid_generate_v1()")) @db.Uuid
+  school_id   String
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  classId     String    @db.Uuid
   meetings    Meeting[]
   class       Class     @relation(fields: [classId], references: [id])
-  classId     String    @db.Uuid
-  students    User[]
+  students    User[]    @relation("SectionToUser")
 }
 
 model Meeting {
-  id         String  @id @default(dbgenerated("uuid_generate_v1()")) @db.Uuid
+  id         String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   type       String?
   daysOfWeek Int[]
   startTime  String?
   endTime    String?
   location   String?
-  section    Section @relation(fields: [sectionId], references: [id])
   sectionId  String  @db.Uuid
+  section    Section @relation(fields: [sectionId], references: [id])
 }
 
 model Professor {
-  id      String  @id @default(dbgenerated("uuid_generate_v1()")) @db.Uuid
+  id      String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name    String  @unique
+  school  String?
   classes Class[]
 }

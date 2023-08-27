@@ -35,97 +35,6 @@ import axios from 'axios';
 import { useChatContext } from '@/contexts/ChatContext';
 import { ClassInfo, Section } from '@/types/class';
 
-// interface Filters {
-// 	name?: string;
-// }
-
-// interface ClassSearchState {
-// 	filters: Filters;
-// 	page: number;
-// 	rowsPerPage: number;
-// }
-
-// const useClassSearch = () => {
-// 	const [state, setState] = useState<ClassSearchState>({
-// 		filters: {
-// 			name: undefined,
-// 		},
-// 		page: 0,
-// 		rowsPerPage: 5,
-// 	});
-
-// 	const handleFiltersChange = useCallback((filters: Filters): void => {
-// 		setState((prevState) => ({
-// 			...prevState,
-// 			filters,
-// 		}));
-// 	}, []);
-
-// 	const handlePageChange = useCallback(
-// 		(event: MouseEvent<HTMLButtonElement> | null, page: number): void => {
-// 			setState((prevState) => ({
-// 				...prevState,
-// 				page,
-// 			}));
-// 		},
-// 		[]
-// 	);
-
-// 	const handleRowsPerPageChange = useCallback((event: ChangeEvent<HTMLInputElement>): void => {
-// 		setState((prevState) => ({
-// 			...prevState,
-// 			rowsPerPage: parseInt(event.target.value, 10),
-// 		}));
-// 	}, []);
-
-// 	return {
-// 		handleFiltersChange,
-// 		handlePageChange,
-// 		handleRowsPerPageChange,
-// 		state,
-// 	};
-// };
-
-// interface ClassesStoreState {
-// 	classes: Class_test[];
-// 	classesCount: number;
-// }
-
-// const useProductsStore = (searchState: ClassSearchState) => {
-// 	const isMounted = useMounted();
-// 	const [state, setState] = useState<ProductsStoreState>({
-// 		products: [],
-// 		productsCount: 0,
-// 	});
-
-// 	const handleProductsGet = useCallback(async () => {
-// 		try {
-// 			const response = await productsApi.getProducts(searchState);
-
-// 			if (isMounted()) {
-// 				setState({
-// 					products: response.data,
-// 					productsCount: response.count,
-// 				});
-// 			}
-// 		} catch (err) {
-// 			console.error(err);
-// 		}
-// 	}, [searchState, isMounted]);
-
-// 	useEffect(
-// 		() => {
-// 			handleProductsGet();
-// 		},
-// 		// eslint-disable-next-line react-hooks/exhaustive-deps
-// 		[searchState]
-// 	);
-
-// 	return {
-// 		...state,
-// 	};
-// };
-
 interface ClassTableProps {
 	count?: number;
 	items?: ClassInfo[];
@@ -192,7 +101,6 @@ ClassTable.propTypes = {
 import AuthModal from '@/components/AuthModal';
 
 const ClassRow: FC<{ classInfo: ClassInfo }> = ({ classInfo: classInfo }) => {
-	// const { client } = useChatContext();
 	const [selected, setSelected] = useState(false);
 	const [hasClass, setHasClass] = useState(false);
 	const [sectionTakenId, setSectionTakenId] = useState('');
@@ -209,7 +117,7 @@ const ClassRow: FC<{ classInfo: ClassInfo }> = ({ classInfo: classInfo }) => {
 			const res = await axios.post('api/checkHasClass', { classId: classInfo.id });
 			if (res.data) {
 				setHasClass(true);
-				setSectionTakenId(res.data.classes[0].sections[0].school_id);
+				setSectionTakenId(res.data.classes[0].sections[0].id);
 			}
 		} catch (err) {
 			console.error('Failed to checkHasSection' + err);
@@ -320,6 +228,7 @@ const ClassRow: FC<{ classInfo: ClassInfo }> = ({ classInfo: classInfo }) => {
 												setNumOfEnrolledStudentForClass={
 													setNumOfEnrolledStudentForClass
 												}
+												classInfo={classInfo}
 											/>
 										);
 									})}
@@ -340,6 +249,7 @@ const SectionRow: FC<{
 	hasClass: boolean;
 	setHasClass: Dispatch<SetStateAction<boolean>>;
 	setNumOfEnrolledStudentForClass: Dispatch<SetStateAction<number>>;
+	classInfo: ClassInfo;
 }> = ({
 	section: section,
 	sectionTakenId: sectionTakenId,
@@ -347,11 +257,13 @@ const SectionRow: FC<{
 	hasClass: hasClass,
 	setHasClass: setHasClass,
 	setNumOfEnrolledStudentForClass: setNumOfEnrolledStudentForClass,
+	classInfo: classInfo,
 }) => {
+	const { chatClient } = useChatContext();
 	const { data: session } = useSession();
-	const [hasSection, setHasSection] = useState(section.school_id === sectionTakenId);
+	const [hasSection, setHasSection] = useState(section.id === sectionTakenId);
 	const [inOtherSection, setInOtherSection] = useState(
-		section.school_id !== sectionTakenId && hasClass === true
+		section.id !== sectionTakenId && hasClass === true
 	);
 	const [numOfEnrolledStudentForSection, setNumOfEnrolledStudentForSection] = useState(0);
 	const [enrollmentRatio, setEnrollmentRatio] = useState(0);
@@ -370,12 +282,16 @@ const SectionRow: FC<{
 			setAuthModal(!authModal);
 			return;
 		}
+		if (!chatClient) {
+			alert('Chat service is down.');
+			return;
+		}
 		// Add in database
 		try {
 			axios.post('api/joinClass', data);
 			setHasSection(true);
 			setHasClass(true);
-			setSectionTakenId(section.school_id ?? '');
+			setSectionTakenId(section.id ?? '');
 			setNumOfEnrolledStudentForSection((prevCount: number) => prevCount + 1);
 			setNumOfEnrolledStudentForClass((prevCount: number) => prevCount + 1);
 		} catch (err) {
@@ -383,26 +299,24 @@ const SectionRow: FC<{
 		}
 
 		// Join chat channel
-		// console.log('query channel', client, classChannel.id);
-		// const channels = await client?.queryChannels({});
-		// console.log('query', channels);
-		// if (channels?.length == 0 || !channels) {
-		// 	console.log('create');
-		// 	const channel = client?.channel('messaging', classChannel.id, {
-		// 		name: classChannel.class_name ?? '',
-		// 		members: [client.userID],
-		// 	});
-		// 	await channel?.create();
-		// } else {
-		// 	console.log('add');
-		// 	await channels[0].addMembers([client.userID]);
-		// }
+		const channel = chatClient.channel('classroom', classInfo.id, {
+			code: classInfo.code,
+			name: classInfo.name ?? undefined,
+			instructor: classInfo.instructor,
+			quarter: classInfo.quarter,
+		});
+		await channel.watch();
+		await channel.addMembers([session.user.id]);
 	};
 
 	const handleDropClass = async (data: { sectionId: string }) => {
 		// if not authenticated
 		if (!session) {
 			setAuthModal(!authModal);
+			return;
+		}
+		if (!chatClient) {
+			alert('Chat service is down.');
 			return;
 		}
 		// Remove in databse
@@ -417,10 +331,13 @@ const SectionRow: FC<{
 			alert('Something went wrong' + err);
 		}
 		// Leave chat channel
-		// const channels = await client?.queryChannels(filter);
-		// console.log('drop', channels);
-		// if (channels?.length == 0 || !channels) return;
-		// await channels[0].removeMembers([session.user.id]);
+		const filter = { type: 'classroom', id: { $eq: classInfo.id } };
+
+		const channels = await chatClient.queryChannels(filter);
+		if (channels) {
+			await channels[0].stopWatching();
+			await channels[0].removeMembers([session.user.id]);
+		}
 	};
 
 	const getNumOfEnrolledStudent = async () => {
@@ -442,13 +359,13 @@ const SectionRow: FC<{
 	}, []);
 
 	useEffect(() => {
-		setInOtherSection(section.school_id !== sectionTakenId && hasClass);
+		setInOtherSection(section.id !== sectionTakenId && hasClass);
 	}, [hasClass, sectionTakenId]);
 
 	return (
-		<TableRow key={section.school_id} style={hasSection ? { backgroundColor: '#d5f7ea' } : {}}>
+		<TableRow key={section.id} style={hasSection ? { backgroundColor: '#d5f7ea' } : {}}>
 			<TableCell component="th" scope="row">
-				{section.school_id}
+				{section.id}
 			</TableCell>
 			<TableCell>{section.code}</TableCell>
 			<TableCell>
