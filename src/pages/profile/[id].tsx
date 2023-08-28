@@ -40,7 +40,7 @@ import { User } from '@prisma/client';
 import Calendar from '@/components/Calendar';
 import { useSession } from 'next-auth/react';
 import About from '@/components/Profile/About';
-import ProfileEditForm from '@/components/ProfileEditForm';
+import ProfileEditForm from '@/components/Profile/ProfileEditForm';
 import MaleIcon from '@mui/icons-material/Male';
 import FemaleIcon from '@mui/icons-material/Female';
 import HorizontalRuleIcon from '@mui/icons-material/HorizontalRule';
