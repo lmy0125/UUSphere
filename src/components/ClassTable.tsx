@@ -55,7 +55,7 @@ export const ClassTable: FC<ClassTableProps> = (props) => {
 	} = props;
 
 	return (
-		<div>
+		<>
 			<Scrollbar>
 				<Table sx={{ minWidth: 800 }}>
 					<TableHead>
@@ -85,7 +85,7 @@ export const ClassTable: FC<ClassTableProps> = (props) => {
 				rowsPerPage={rowsPerPage}
 				rowsPerPageOptions={[5, 10, 25]}
 			/>
-		</div>
+		</>
 	);
 };
 
@@ -282,10 +282,7 @@ const SectionRow: FC<{
 			setAuthModal(!authModal);
 			return;
 		}
-		if (!chatClient) {
-			alert('Chat service is down.');
-			return;
-		}
+
 		// Add in database
 		try {
 			axios.post('api/joinClass', data);
@@ -299,6 +296,10 @@ const SectionRow: FC<{
 		}
 
 		// Join chat channel
+		if (!chatClient) {
+			console.error('Chat service is down.');
+			return;
+		}
 		const channel = chatClient.channel('classroom', classInfo.id, {
 			code: classInfo.code,
 			name: classInfo.name ?? undefined,
@@ -315,10 +316,7 @@ const SectionRow: FC<{
 			setAuthModal(!authModal);
 			return;
 		}
-		if (!chatClient) {
-			alert('Chat service is down.');
-			return;
-		}
+		
 		// Remove in databse
 		try {
 			axios.post('api/dropClass', data);
@@ -329,6 +327,11 @@ const SectionRow: FC<{
 			setNumOfEnrolledStudentForClass((prevCount: number) => prevCount - 1);
 		} catch (err) {
 			alert('Something went wrong' + err);
+		}
+
+		if (!chatClient) {
+			console.error('Chat service is down.');
+			return;
 		}
 		// Leave chat channel
 		const filter = { type: 'classroom', id: { $eq: classInfo.id } };
@@ -365,7 +368,7 @@ const SectionRow: FC<{
 	return (
 		<TableRow key={section.id} style={hasSection ? { backgroundColor: '#d5f7ea' } : {}}>
 			<TableCell component="th" scope="row">
-				{section.id}
+				{section.school_id}
 			</TableCell>
 			<TableCell>{section.code}</TableCell>
 			<TableCell>

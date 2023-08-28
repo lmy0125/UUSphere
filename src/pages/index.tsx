@@ -25,12 +25,14 @@ import { Layout as DashboardLayout } from '@/layouts/dashboard';
 import { paths } from '@/paths';
 import { ClassSearch } from '@/components/ClassSearch';
 import { ClassTable } from '@/components/ClassTable';
+import ClassSchedule from '@/components/ClassSchedule';
 // import type { Page as PageType } from '@/types/page';
 import type { Page as PageType } from '@/types/page';
 import { ClassInfo } from '@/types/class';
 import axios from 'axios';
 import useSWR from 'swr';
 import Calendar from '@/components/Calendar';
+import { useSession } from 'next-auth/react';
 
 interface Filters {
 	name?: string;
@@ -116,12 +118,39 @@ const useClassStore = (searchState: ClassSearchState, quarter: string) => {
 	};
 };
 
-const Page: PageType = () => {
+const ClassEnrollmentPage: PageType = () => {
+	const { data: session } = useSession();
+	const [enrolledClasses, setEnrolledClasses] = useState<ClassInfo[]>([]);
 	const [quarter, setQuarter] = useState('FA23');
 	const classSearch = useClassSearch();
 	const classStore = useClassStore(classSearch.state, quarter);
 
 	// usePageView();
+
+	useEffect(() => {
+		const getEnrolledClasses = async () => {
+			try {
+				const response = await axios.get(`/api/getEnrolledClasses`);
+
+				const classes = response.data.classes.map((obj: any) => {
+					const { courseId, professorId, course, ...rest } = obj;
+					rest.name = obj.course.name;
+					rest.instructor = obj.instructor.name;
+					return rest;
+				});
+				console.log('cc', classes);
+				setEnrolledClasses(classes);
+				// console.log('enrolled', response);
+			} catch (err) {
+				console.error(err);
+			}
+		};
+
+		if (session) {
+			getEnrolledClasses();
+			console.log('enrolled  c', enrolledClasses);
+		}
+	}, [session]);
 
 	return (
 		<>
@@ -188,13 +217,14 @@ const Page: PageType = () => {
 							/>
 						</Card>
 					</Stack>
-					<Calendar />
+					<ClassSchedule enrolledClasses={enrolledClasses} />
+					{/* <Calendar /> */}
 				</Container>
 			</Box>
 		</>
 	);
 };
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+ClassEnrollmentPage.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
 
-export default Page;
+export default ClassEnrollmentPage;

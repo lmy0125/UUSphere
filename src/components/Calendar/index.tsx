@@ -74,7 +74,7 @@ const Calendar: PageType = () => {
 	const [events, setEvents] = useState<EventInput[]>();
 
 	useEffect(() => {
-		const getEcrolledClasses = async () => {
+		const getEnrolledClassesMeetings = async () => {
 			try {
 				const response = await axios.get(`/api/getEnrolledClasses`);
 				const getMeetings = (section: Section, color: string): EventInput[] => {
@@ -122,7 +122,7 @@ const Calendar: PageType = () => {
 			}
 		};
 		if (session) {
-			getEcrolledClasses();
+			getEnrolledClassesMeetings();
 		}
 	}, []);
 

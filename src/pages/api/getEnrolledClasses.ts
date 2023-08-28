@@ -16,7 +16,24 @@ export default async function getEnrolledClasses(req: NextApiRequest, res: NextA
 					id: session.user.id,
 				},
 				select: {
-					sections: { include: { class: { select: { code: true } }, meetings: true } },
+					sections: {
+						include: { class: { select: { code: true, instructor: true } }, meetings: true },
+					},
+					classes: {
+						include: {
+							sections: {
+								select: {
+									id: true,
+									school_id: true,
+									code: true,
+									total_seats: true,
+									meetings: true,
+								},
+							},
+							course: { select: { name: true } },
+							instructor: { select: { name: true } },
+						},
+					},
 				},
 			});
 			// console.log(sections);
