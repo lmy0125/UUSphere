@@ -138,7 +138,6 @@ const ClassEnrollmentPage: PageType = () => {
 					rest.instructor = obj.instructor.name;
 					return rest;
 				});
-				console.log('cc', classes);
 				setEnrolledClasses(classes);
 				// console.log('enrolled', response);
 			} catch (err) {
@@ -148,7 +147,6 @@ const ClassEnrollmentPage: PageType = () => {
 
 		if (session) {
 			getEnrolledClasses();
-			console.log('enrolled  c', enrolledClasses);
 		}
 	}, [session]);
 
