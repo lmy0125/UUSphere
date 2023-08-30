@@ -180,7 +180,7 @@ export const TopNav: FC<TopNavProps> = (props) => {
                     p: 0
                   }}
                 >
-                  <>
+                  {/* <>
                     {items.map((item) => {
                       const checkPath = !!(item.path && pathname);
                       const partialMatch = checkPath ? pathname.includes(item.path!) : false;
@@ -198,7 +198,7 @@ export const TopNav: FC<TopNavProps> = (props) => {
                         />
                       );
                     })}
-                  </>
+                  </> */}
                 </Stack>
               </Box>
             </Stack>
@@ -219,13 +219,13 @@ export const TopNav: FC<TopNavProps> = (props) => {
             >
               Purchase Now
             </Button>
-            {!mdUp && (
+            {/* {!mdUp && (
               <IconButton onClick={onMobileNavOpen}>
                 <SvgIcon fontSize="small">
                   <Menu01Icon />
                 </SvgIcon>
               </IconButton>
-            )}
+            )} */}
           </Stack>
         </Stack>
       </Container>

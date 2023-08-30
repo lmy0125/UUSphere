@@ -8,9 +8,9 @@ import {
   Typography,
   Unstable_Grid2 as Grid
 } from '@mui/material';
-import { Logo } from 'src/components/logo';
-import { RouterLink } from 'src/components/router-link';
-import { paths } from 'src/paths';
+// import { Logo } from 'src/components/logo';
+import { RouterLink } from '@/components/router-link';
+import { paths } from '@/paths';
 
 interface Section {
   title: string;
@@ -111,7 +111,7 @@ export const Footer: FC = (props) => (
               spacing={1}
               sx={{ textDecoration: 'none' }}
             >
-              <Box
+              {/* <Box
                 sx={{
                   display: 'inline-flex',
                   height: 24,
@@ -119,7 +119,7 @@ export const Footer: FC = (props) => (
                 }}
               >
                 <Logo />
-              </Box>
+              </Box> */}
               <Box
                 sx={{
                   color: 'text.primary',
