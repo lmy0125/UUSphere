@@ -4,24 +4,19 @@ import { Layout as MarketingLayout } from '@/layouts/marketing';
 import { RouterLink } from '@/components/router-link';
 import { paths } from '@/paths';
 import { Box, Button, Container, Paper, Stack, SvgIcon, Typography } from '@mui/material';
-import SignupForm from '@/components/SignupForm';
+// import SignupForm from '@/components/SignupForm';
+import Hero from '@/components/Onboarding/Hero';
 
 const OnboardingPage: PageType = () => {
 	return (
-		<Container component="main">
-			<Paper
-				sx={{
-					mt: { xs: 4, md: 8 },
-					mb: { xs: 4, md: 8 },
-					p: { xs: 2, md: 3 },
-				}}
-				elevation={24}>
-				<SignupForm />
-			</Paper>
-		</Container>
+		<>
+			<main>
+				<Hero />
+			</main>
+		</>
 	);
 };
 
-// OnboardingPage.getLayout = (page) => <MarketingLayout>{page}</MarketingLayout>;
+OnboardingPage.getLayout = (page) => <MarketingLayout>{page}</MarketingLayout>;
 
 export default OnboardingPage;
