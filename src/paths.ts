@@ -1,5 +1,6 @@
 export const paths = {
   index: '/',
+  playground: '/playground',
   mutualClassmates: '/mutualClassmates',
   chat: '/chat',
   profile: '/profile',

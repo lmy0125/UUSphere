@@ -6,6 +6,7 @@ export const tokens = {
 		class: 'Class',
 		mutualClassmates: 'Mutual Classmates',
 		chat: 'Chat',
+		playground: 'Playground',
 		// academy: 'nav.academy',
 		// account: 'nav.account',
 		// analytics: 'nav.analytics',
