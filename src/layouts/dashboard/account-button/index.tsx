@@ -6,14 +6,18 @@ import { Button, Avatar, Box, ButtonBase, SvgIcon, Skeleton } from '@mui/materia
 import { usePopover } from '@/hooks/use-popover';
 import { AccountPopover } from './account-popover';
 import AuthModal from '@/components/AuthModal';
-import { useUserContext } from '@/contexts/UserContext';
+import { useSession } from 'next-auth/react';
 
 export const AccountButton: FC = () => {
+	const { data: session, status } = useSession();
 	const [authModal, setAuthModal] = useState(false);
 	const popover = usePopover<HTMLButtonElement>();
-	const { user, isLoading } = useUserContext();
 
-	if (!user) {
+	if (status === 'loading') {
+		return <Skeleton variant="circular" width={40} height={40} />;
+	}
+
+	if (!session) {
 		return (
 			<>
 				<Button onClick={() => setAuthModal(!authModal)} variant="contained">
@@ -22,10 +26,6 @@ export const AccountButton: FC = () => {
 				<AuthModal open={authModal} setAuthModal={() => setAuthModal(false)} />
 			</>
 		);
-	}
-
-	if (isLoading) {
-		return <Skeleton variant="circular" width={40} height={40} />;
 	}
 
 	return (
@@ -49,7 +49,7 @@ export const AccountButton: FC = () => {
 						height: 32,
 						width: 32,
 					}}
-					src={user?.image as string | undefined}>
+					src={session.user?.image as string | undefined}>
 					<SvgIcon>
 						<User01Icon />
 					</SvgIcon>
@@ -59,7 +59,7 @@ export const AccountButton: FC = () => {
 				anchorEl={popover.anchorRef.current}
 				onClose={popover.handleClose}
 				open={popover.open}
-				user={user}
+				user={session.user}
 			/>
 		</>
 	);

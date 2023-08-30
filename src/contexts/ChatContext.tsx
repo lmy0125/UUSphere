@@ -3,7 +3,6 @@ import { StreamChat, Channel } from 'stream-chat';
 import { useSession } from 'next-auth/react';
 import { Class } from '@prisma/client';
 import axios from 'axios';
-import { useUserContext } from './UserContext';
 
 interface ChatContextType {
 	chatClient: StreamChat | undefined;

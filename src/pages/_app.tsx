@@ -10,7 +10,6 @@ import { createTheme } from '@/theme';
 import { SettingsConsumer, SettingsProvider } from '@/contexts/settings-context';
 import { SessionProvider as AuthProvider } from 'next-auth/react';
 import ChatContextProvider from '@/contexts/ChatContext';
-import UserContextProvider from '@/contexts/UserContext';
 // Remove if simplebar is not used
 import 'simplebar-react/dist/simplebar.min.css';
 
@@ -62,9 +61,7 @@ export default function App({
 									<SplashScreen />
 								) : ( */}
 									<>
-										<UserContextProvider>
-											{getLayout(<Component {...pageProps} />)}
-										</UserContextProvider>
+										{getLayout(<Component {...pageProps} />)}
 
 										{/* <SettingsButton onClick={settings.handleDrawerOpen} />
 										<SettingsDrawer
