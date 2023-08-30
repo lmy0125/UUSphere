@@ -104,13 +104,14 @@ export const ChatSidebar: FC<ChatSidebarProps> = (props) => {
 	const messageFilter = { type: 'messaging', members: { $in: [session?.user.id ?? ''] } };
 	const sort: ChannelSort = { last_message_at: -1 };
 
-	const DropDown = (props: SearchResultsListProps) => <CustomDropdown {...props} />;
-	const SearchResult = (props: SearchResultItemProps) => <CustomResultItem {...props} />;
-	const additionalProps = {
-		DropdownContainer: DropDown,
-		SearchResultItem: SearchResult,
-		searchForChannels: true,
-	};
+	// TODO: Search functionality
+	// const DropDown = (props: SearchResultsListProps) => <CustomDropdown {...props} />;
+	// const SearchResult = (props: SearchResultItemProps) => <CustomResultItem {...props} />;
+	// const additionalProps = {
+	// 	DropdownContainer: DropDown,
+	// 	SearchResultItem: SearchResult,
+	// 	searchForChannels: true,
+	// };
 
 	const EmptyClassroomList = () => {
 		return (<div>empty</div>)
@@ -179,9 +180,9 @@ export const ChatSidebar: FC<ChatSidebarProps> = (props) => {
 					filters={classroomFilter}
 					sort={sort}
 					// showChannelSearch
-					additionalChannelSearchProps={additionalProps}
+					// additionalChannelSearchProps={additionalProps}
 					Preview={CustomChannelPreview}
-					// List={CustomChannelList}
+					List={CustomChannelList}
 					// LoadingErrorIndicator={CustomErrorIndicator}
 					// LoadingIndicator={CustomLoadingIndicator}
 				/>
@@ -192,7 +193,7 @@ export const ChatSidebar: FC<ChatSidebarProps> = (props) => {
 				<ChannelList
 					filters={messageFilter}
 					sort={sort}
-					additionalChannelSearchProps={additionalProps}
+					// additionalChannelSearchProps={additionalProps}
 					Preview={CustomChannelPreview}
 					// EmptyStateIndicator={customEmptyStateIndicator}
 				/>
