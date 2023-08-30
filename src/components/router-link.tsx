@@ -6,9 +6,5 @@ import Link from 'next/link';
  * This is a wrapper over `next/link` component.
  * We use this to help us maintain consistency between CRA and Next.js
  */
-export const RouterLink = forwardRef((props: LinkProps, ref: any) => (
-  <Link
-    ref={ref}
-    {...props}
-  />
-));
+export const RouterLink = forwardRef((props: LinkProps, ref: any) => <Link ref={ref} {...props} />);
+RouterLink.displayName = 'RouterLink';

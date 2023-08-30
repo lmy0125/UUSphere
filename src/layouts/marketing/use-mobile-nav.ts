@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { usePathname } from 'src/hooks/use-pathname';
+import { usePathname } from '@/hooks/use-pathname';
 
 export const useMobileNav = () => {
   const pathname = usePathname();

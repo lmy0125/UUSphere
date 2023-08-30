@@ -140,7 +140,7 @@ const ClassRow: FC<{ classInfo: ClassInfo }> = ({ classInfo: classInfo }) => {
 	useEffect(() => {
 		checkHasClass();
 		getNumOfEnrolledStudent();
-	}, []);
+	});
 
 	return (
 		<>
@@ -316,7 +316,7 @@ const SectionRow: FC<{
 			setAuthModal(!authModal);
 			return;
 		}
-		
+
 		// Remove in databse
 		try {
 			axios.post('api/dropClass', data);
@@ -359,7 +359,7 @@ const SectionRow: FC<{
 
 	useEffect(() => {
 		getNumOfEnrolledStudent();
-	}, []);
+	});
 
 	useEffect(() => {
 		setInOtherSection(section.id !== sectionTakenId && hasClass);

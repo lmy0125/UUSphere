@@ -124,7 +124,7 @@ const Calendar: PageType = () => {
 		if (session) {
 			getEnrolledClassesMeetings();
 		}
-	}, []);
+	}, [session]);
 
 	const mdUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('md'));
 	const [date, setDate] = useState<Date>(new Date());

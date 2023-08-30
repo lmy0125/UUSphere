@@ -1,10 +1,10 @@
 import type { FC } from 'react';
 import PropTypes from 'prop-types';
 import { Box, ButtonBase, Drawer, Stack } from '@mui/material';
-import { Logo } from 'src/components/logo';
-import { RouterLink } from 'src/components/router-link';
-import { usePathname } from 'src/hooks/use-pathname';
-import { paths } from 'src/paths';
+// import { Logo } from 'src/components/logo';
+import { RouterLink } from '@/components/router-link';
+import { usePathname } from '@/hooks/use-pathname';
+import { paths } from '@/paths';
 import { SideNavItem } from './side-nav-item';
 
 interface Item {
@@ -305,7 +305,7 @@ export const SideNav: FC<SideNavProps> = (props) => {
               width: 24
             }}
           >
-            <Logo />
+            {/* <Logo /> */}
           </Box>
           <Box
             sx={{

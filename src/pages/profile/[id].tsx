@@ -117,22 +117,6 @@ interface ProfileProps {
 }
 
 export const ProfilePage: PageType<ProfileProps> = ({ initUser }) => {
-	// User Id doesn't exist
-	if (!initUser) {
-		return (
-			<Box
-				component="main"
-				sx={{
-					flexGrow: 1,
-					pb: 8,
-				}}>
-				<Container maxWidth="lg">
-					<h1>User does not exist.</h1>
-				</Container>
-			</Box>
-		);
-	}
-
 	const [user, setUser] = useState<User>(initUser);
 	const [currentTab, setCurrentTab] = useState<string>('about');
 	const [status, setStatus] = useState<string>('not_connected');
@@ -150,8 +134,6 @@ export const ProfilePage: PageType<ProfileProps> = ({ initUser }) => {
 	}, [session, user]);
 
 	//   usePageView();
-
-	const handleEditProfile = () => {};
 
 	const handleConnectionAdd = useCallback((): void => {
 		setStatus('pending');
@@ -174,6 +156,23 @@ export const ProfilePage: PageType<ProfileProps> = ({ initUser }) => {
 
 	const showConnect = status === 'not_connected';
 	const showPending = status === 'pending';
+
+	// User Id doesn't exist
+	if (!initUser) {
+		return (
+			<Box
+				component="main"
+				sx={{
+					flexGrow: 1,
+					pb: 8,
+				}}>
+				<Container maxWidth="lg">
+					<h1>User does not exist.</h1>
+				</Container>
+			</Box>
+		);
+	}
+
 	return (
 		<>
 			{/* <Seo title="Dashboard: Social Profile" /> */}
@@ -288,7 +287,11 @@ export const ProfilePage: PageType<ProfileProps> = ({ initUser }) => {
 										onClose={() => setProfileFormToggle(false)}
 										scroll="body">
 										<DialogContent>
-											<ProfileEditForm user={user} setProfileFormToggle={setProfileFormToggle} setUser={setUser} />
+											<ProfileEditForm
+												user={user}
+												setProfileFormToggle={setProfileFormToggle}
+												setUser={setUser}
+											/>
 											{/* <Typography id="modal-modal-title" variant="h6" component="h2">
 												Text in a modal
 											</Typography>

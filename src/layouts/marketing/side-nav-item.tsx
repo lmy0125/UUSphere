@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import ChevronDownIcon from '@untitled-ui/icons-react/build/esm/ChevronDown';
 import ChevronRightIcon from '@untitled-ui/icons-react/build/esm/ChevronRight';
 import { Box, ButtonBase, Collapse, SvgIcon } from '@mui/material';
-import { RouterLink } from 'src/components/router-link';
+import { RouterLink } from '@/components/router-link';
 
 interface SideNavItemProps {
   active?: boolean;

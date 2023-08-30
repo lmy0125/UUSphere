@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import ChevronDownIcon from '@untitled-ui/icons-react/build/esm/ChevronDown';
 import { Box, ButtonBase, Paper, Portal, SvgIcon, Typography } from '@mui/material';
 import { alpha } from '@mui/material/styles';
-import { RouterLink } from 'src/components/router-link';
+import { RouterLink } from '@/components/router-link';
 
 const TOP_NAV_HEIGHT: number = 64;
 const TOP_NAV_SPACE: number = 16;
