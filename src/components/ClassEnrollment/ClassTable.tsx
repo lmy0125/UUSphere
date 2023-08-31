@@ -24,6 +24,7 @@ import { useSession } from 'next-auth/react';
 import axios from 'axios';
 import { useChatContext } from '@/contexts/ChatContext';
 import { ClassInfo, Section } from '@/types/class';
+import AuthModal from '@/components/AuthModal';
 
 interface ClassTableProps {
 	count?: number;
@@ -87,8 +88,6 @@ ClassTable.propTypes = {
 	page: PropTypes.number,
 	rowsPerPage: PropTypes.number,
 };
-
-import AuthModal from '@/components/AuthModal';
 
 const ClassRow: FC<{ classInfo: ClassInfo }> = ({ classInfo: classInfo }) => {
 	const [expandSection, setExpandSection] = useState(false);
@@ -218,7 +217,6 @@ const ClassRow: FC<{ classInfo: ClassInfo }> = ({ classInfo: classInfo }) => {
 												setNumOfEnrolledStudentForClass={
 													setNumOfEnrolledStudentForClass
 												}
-												classInfo={classInfo}
 											/>
 										);
 									})}
@@ -239,7 +237,6 @@ const SectionRow: FC<{
 	hasClass: boolean;
 	setHasClass: Dispatch<SetStateAction<boolean>>;
 	setNumOfEnrolledStudentForClass: Dispatch<SetStateAction<number>>;
-	classInfo: ClassInfo;
 }> = ({
 	section: section,
 	sectionTakenId: sectionTakenId,
@@ -247,7 +244,6 @@ const SectionRow: FC<{
 	hasClass: hasClass,
 	setHasClass: setHasClass,
 	setNumOfEnrolledStudentForClass: setNumOfEnrolledStudentForClass,
-	classInfo: classInfo,
 }) => {
 	const { chatClient } = useChatContext();
 	const { data: session } = useSession();
@@ -345,7 +341,7 @@ const SectionRow: FC<{
 		} catch (err) {
 			console.error('Failed to getNumOfEnrolledStudent' + err);
 		}
-	},[section.id]);
+	}, [section.id]);
 
 	useEffect(() => {
 		getNumOfEnrolledStudent();
@@ -353,7 +349,7 @@ const SectionRow: FC<{
 
 	useEffect(() => {
 		setInOtherSection(section.id !== sectionTakenId && hasClass);
-	}, [hasClass, sectionTakenId, section.id ]);
+	}, [hasClass, sectionTakenId, section.id]);
 
 	return (
 		<TableRow key={section.id} style={hasSection ? { backgroundColor: '#d5f7ea' } : {}}>

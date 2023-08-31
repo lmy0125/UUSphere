@@ -47,7 +47,13 @@ const ClassSchedule: FC<ClassScheduleProps> = ({ enrolledClasses }) => {
 									<TableCell>{c.code}</TableCell>
 									<TableCell>{c.name}</TableCell>
 									<TableCell>{c.instructor}</TableCell>
-									<TableCell align="right">s</TableCell>
+									<TableCell align="right">
+										<Button
+											// onClick={() => handleDropClass({ sectionId: section.id })}
+											size="small">
+											Drop
+										</Button>
+									</TableCell>
 								</TableRow>
 							);
 						})}
