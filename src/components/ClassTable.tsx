@@ -1,32 +1,22 @@
 import type { ChangeEvent, Dispatch, FC, MouseEvent, SetStateAction } from 'react';
-import { Fragment, useCallback, useState, useEffect } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { toast } from 'react-hot-toast';
 import ChevronDownIcon from '@untitled-ui/icons-react/build/esm/ChevronDown';
 import ChevronRightIcon from '@untitled-ui/icons-react/build/esm/ChevronRight';
-import DotsHorizontalIcon from '@untitled-ui/icons-react/build/esm/DotsHorizontal';
-import Image01Icon from '@untitled-ui/icons-react/build/esm/Image01';
 import {
 	Box,
 	Button,
-	CardContent,
 	Collapse,
-	Divider,
-	Grid,
 	IconButton,
-	InputAdornment,
 	LinearProgress,
-	MenuItem,
-	Stack,
 	SvgIcon,
-	Switch,
 	Table,
 	TableBody,
 	TableCell,
 	TableHead,
 	TablePagination,
 	TableRow,
-	TextField,
 	Typography,
 } from '@mui/material';
 import { Scrollbar } from '@/components/scrollbar';
@@ -101,30 +91,30 @@ ClassTable.propTypes = {
 import AuthModal from '@/components/AuthModal';
 
 const ClassRow: FC<{ classInfo: ClassInfo }> = ({ classInfo: classInfo }) => {
-	const [selected, setSelected] = useState(false);
+	const [expandSection, setExpandSection] = useState(false);
 	const [hasClass, setHasClass] = useState(false);
 	const [sectionTakenId, setSectionTakenId] = useState('');
 	const [numOfEnrolledStudentForClass, setNumOfEnrolledStudentForClass] = useState(0);
 	const [totalSeats, setTotalSeats] = useState(0);
 	const [enrollmentRatio, setEnrollmentRatio] = useState(0);
 
-	const handleProductToggle = () => {
-		setSelected(!selected);
+	const handleClassToggle = () => {
+		setExpandSection(!expandSection);
 	};
 
-	const checkHasClass = async () => {
+	const checkHasClass = useCallback(async () => {
 		try {
 			const res = await axios.post('api/checkHasClass', { classId: classInfo.id });
-			if (res.data) {
+			if (res.data.classes.length == 1) {
 				setHasClass(true);
 				setSectionTakenId(res.data.classes[0].sections[0].id);
 			}
 		} catch (err) {
-			console.error('Failed to checkHasSection' + err);
+			console.error('Failed to checkHasClass' + err);
 		}
-	};
+	}, [classInfo.id]);
 
-	const getNumOfEnrolledStudent = async () => {
+	const getNumOfEnrolledStudent = useCallback(async () => {
 		try {
 			const res = await axios.get(`api/getNumOfEnrolledStudentForClass?classId=${classInfo.id}`);
 			if (res.data) {
@@ -133,14 +123,14 @@ const ClassRow: FC<{ classInfo: ClassInfo }> = ({ classInfo: classInfo }) => {
 				setEnrollmentRatio(res.data.numOfStudent / res.data.total_seats);
 			}
 		} catch (err) {
-			console.error('Failed to checkHasSection' + err);
+			console.error('Failed to getNumOfEnrolledStudent' + err);
 		}
-	};
+	}, [classInfo.id]);
 
 	useEffect(() => {
 		checkHasClass();
 		getNumOfEnrolledStudent();
-	});
+	}, [checkHasClass, getNumOfEnrolledStudent]);
 
 	return (
 		<>
@@ -148,7 +138,7 @@ const ClassRow: FC<{ classInfo: ClassInfo }> = ({ classInfo: classInfo }) => {
 				<TableCell
 					padding="checkbox"
 					sx={{
-						...(selected && {
+						...(expandSection && {
 							position: 'relative',
 							'&:after': {
 								position: 'absolute',
@@ -162,8 +152,8 @@ const ClassRow: FC<{ classInfo: ClassInfo }> = ({ classInfo: classInfo }) => {
 						}),
 					}}
 					width="25%">
-					<IconButton onClick={() => handleProductToggle()}>
-						<SvgIcon>{selected ? <ChevronDownIcon /> : <ChevronRightIcon />}</SvgIcon>
+					<IconButton onClick={() => handleClassToggle()}>
+						<SvgIcon>{expandSection ? <ChevronDownIcon /> : <ChevronRightIcon />}</SvgIcon>
 					</IconButton>
 				</TableCell>
 				<TableCell>
@@ -203,7 +193,7 @@ const ClassRow: FC<{ classInfo: ClassInfo }> = ({ classInfo: classInfo }) => {
 
 			<TableRow>
 				<TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-					<Collapse in={selected} timeout="auto" unmountOnExit>
+					<Collapse in={expandSection} timeout="auto" unmountOnExit>
 						<Box sx={{ margin: 1 }}>
 							<Table size="small" aria-label="purchases">
 								<TableHead>
@@ -276,7 +266,7 @@ const SectionRow: FC<{
 	const days = ['M', 'Tu', 'W', 'Th', 'F', 'Sa', 'Su'];
 	const daysOfWeek = lecture[0]?.daysOfWeek.map((i) => days[i - 1]);
 
-	const handleJoinClass = async (data: { sectionId: string }) => {
+	const handleJoinSection = async (data: { sectionId: string }) => {
 		// if not authenticated
 		if (!session) {
 			setAuthModal(!authModal);
@@ -296,21 +286,21 @@ const SectionRow: FC<{
 		}
 
 		// Join chat channel
-		if (!chatClient) {
-			console.error('Chat service is down.');
-			return;
-		}
-		const channel = chatClient.channel('classroom', classInfo.id, {
-			code: classInfo.code,
-			name: classInfo.name ?? undefined,
-			instructor: classInfo.instructor,
-			quarter: classInfo.quarter,
-		});
-		await channel.watch();
-		await channel.addMembers([session.user.id]);
+		// if (!chatClient) {
+		// 	console.error('Chat service is down.');
+		// 	return;
+		// }
+		// const channel = chatClient.channel('classroom', classInfo.id, {
+		// 	code: classInfo.code,
+		// 	name: classInfo.name ?? undefined,
+		// 	instructor: classInfo.instructor,
+		// 	quarter: classInfo.quarter,
+		// });
+		// await channel.watch();
+		// await channel.addMembers([session.user.id]);
 	};
 
-	const handleDropClass = async (data: { sectionId: string }) => {
+	const handleDropSection = async (data: { sectionId: string }) => {
 		// if not authenticated
 		if (!session) {
 			setAuthModal(!authModal);
@@ -334,16 +324,16 @@ const SectionRow: FC<{
 			return;
 		}
 		// Leave chat channel
-		const filter = { type: 'classroom', id: { $eq: classInfo.id } };
+		// const filter = { type: 'classroom', id: { $eq: classInfo.id } };
 
-		const channels = await chatClient.queryChannels(filter);
-		if (channels) {
-			await channels[0].stopWatching();
-			await channels[0].removeMembers([session.user.id]);
-		}
+		// const channels = await chatClient.queryChannels(filter);
+		// if (channels) {
+		// 	await channels[0].stopWatching();
+		// 	await channels[0].removeMembers([session.user.id]);
+		// }
 	};
 
-	const getNumOfEnrolledStudent = async () => {
+	const getNumOfEnrolledStudent = useCallback(async () => {
 		try {
 			const res = await axios.get(
 				`api/getNumOfEnrolledStudentForSection?sectionId=${section.id}`
@@ -353,17 +343,17 @@ const SectionRow: FC<{
 				setEnrollmentRatio(res.data / section.total_seats!);
 			}
 		} catch (err) {
-			console.error('Failed to checkHasSection' + err);
+			console.error('Failed to getNumOfEnrolledStudent' + err);
 		}
-	};
+	},[section.id]);
 
 	useEffect(() => {
 		getNumOfEnrolledStudent();
-	});
+	}, [getNumOfEnrolledStudent]);
 
 	useEffect(() => {
 		setInOtherSection(section.id !== sectionTakenId && hasClass);
-	}, [hasClass, sectionTakenId]);
+	}, [hasClass, sectionTakenId, section.id ]);
 
 	return (
 		<TableRow key={section.id} style={hasSection ? { backgroundColor: '#d5f7ea' } : {}}>
@@ -395,12 +385,12 @@ const SectionRow: FC<{
 			</TableCell>
 			<TableCell>
 				{hasSection ? (
-					<Button onClick={() => handleDropClass({ sectionId: section.id })} size="small">
+					<Button onClick={() => handleDropSection({ sectionId: section.id })} size="small">
 						Drop
 					</Button>
 				) : (
 					<Button
-						onClick={() => handleJoinClass({ sectionId: section.id })}
+						onClick={() => handleJoinSection({ sectionId: section.id })}
 						size="small"
 						disabled={inOtherSection}>
 						Join

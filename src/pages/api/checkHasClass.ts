@@ -15,17 +15,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
 	if (req.method === 'POST') {
 		try {
-			const user = await prisma.user.findFirst({
+			const user = await prisma.user.findUnique({
 				where: {
 					email: email,
-					classes: {
-						some: {
-							id: classId,
-						},
-					},
 				},
-                // include the section that the user is in for this specific class
-				include: {
+				// include the section that the user is in for this specific class
+				select: {
 					classes: {
 						where: { id: classId },
 						select: { sections: { where: { students: { some: { email: email } } } } },
