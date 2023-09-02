@@ -2,7 +2,7 @@ import React from 'react';
 import { useState } from 'react';
 import Image from 'next/image';
 import { signIn } from 'next-auth/react';
-import { Modal, Box, Typography, Button, Container, Stack } from '@mui/material';
+import { Modal, Box, Typography, Button, Stack } from '@mui/material';
 
 export default function AuthModal({
 	open,
@@ -28,7 +28,6 @@ export default function AuthModal({
 			aria-labelledby="modal-modal-title"
 			aria-describedby="modal-modal-description">
 			<Box sx={modalStyle}>
-				{/* <Container maxWidth="sm"> */}
 				<Box
 					sx={{
 						display: 'flex',
@@ -46,7 +45,6 @@ export default function AuthModal({
 						<Typography ml={1}>Sign in with Google</Typography>
 					</Button>
 				</Stack>
-				{/* </Container> */}
 			</Box>
 		</Modal>
 	);

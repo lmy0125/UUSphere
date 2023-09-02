@@ -26,11 +26,9 @@ import { Stack, Box, Divider, IconButton, SvgIcon, useMediaQuery } from '@mui/ma
 // import { Seo } from 'src/components/seo';
 // import { usePageView } from 'src/hooks/use-page-view';
 import { Layout as DashboardLayout } from '@/layouts/dashboard';
-import { ChatBlank } from '@/components/chat/ChatBlank';
 // import { ChatComposer } from 'src/sections/dashboard/chat/chat-composer';
 import { ChatContainer } from '@/components/chat/ChatContainer';
 import { ChatSidebar } from '@/components/chat/ChatSidebar';
-import { ChatChannel } from '@/components/chat/ChatChannel';
 // import { useDispatch } from 'src/store';
 // import { thunks } from 'src/thunks/chat';
 import type { Page as PageType } from '@/types/page';
@@ -187,25 +185,23 @@ const ChatPage: PageType = () => {
 									flexGrow: 1,
 									overflow: 'hidden',
 								}}> */}
-								<Channel>
-									<Window hideOnThread>
-										{/* <ChannelHeader /> */}
-										<CustomChannelHeader setIsChannelInfoOpen={setIsChannelInfoOpen} />
-										<MessageList
-										Message={CustomMessage}
-										/>
-										<Divider />
-										<MessageInput
-											grow
-											// Input={CustomMessageInput}
-										/>
-									</Window>
-									<Thread />
-									<ChannelInfoSidebar
-										isOpen={isChannelInfoOpen}
-										onClose={() => setIsChannelInfoOpen((prev) => !prev)}
+							<Channel>
+								<Window hideOnThread>
+									{/* <ChannelHeader /> */}
+									<CustomChannelHeader setIsChannelInfoOpen={setIsChannelInfoOpen} />
+									<MessageList Message={CustomMessage} />
+									<Divider />
+									<MessageInput
+										grow
+										// Input={CustomMessageInput}
 									/>
-								</Channel>
+								</Window>
+								<Thread />
+								<ChannelInfoSidebar
+									isOpen={isChannelInfoOpen}
+									onClose={() => setIsChannelInfoOpen((prev) => !prev)}
+								/>
+							</Channel>
 							{/* </Stack> */}
 						</ChatContainer>
 					</Chat>
