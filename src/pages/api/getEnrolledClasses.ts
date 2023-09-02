@@ -22,6 +22,9 @@ export default async function getEnrolledClasses(req: NextApiRequest, res: NextA
 					classes: {
 						include: {
 							sections: {
+								where: {
+									students: { some: { id: session.user.id } },
+								},
 								select: {
 									id: true,
 									school_id: true,

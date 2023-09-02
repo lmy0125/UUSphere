@@ -1,38 +1,28 @@
 import { ChangeEvent, MouseEvent, useCallback, useEffect, useState } from 'react';
-import PlusIcon from '@untitled-ui/icons-react/build/esm/Plus';
 import {
 	Box,
-	Breadcrumbs,
-	Button,
 	Card,
 	Container,
-	Link,
 	Stack,
-	SvgIcon,
 	Typography,
 	FormControl,
 	Select,
 	InputLabel,
 	MenuItem,
 } from '@mui/material';
-// import { productsApi } from 'src/api/products';
-// import { BreadcrumbsSeparator } from 'src/components/breadcrumbs-separator';
 // import { RouterLink } from 'src/components/router-link';
 // import { Seo } from 'src/components/seo';
 // import { useMounted } from 'src/hooks/use-mounted';
 // import { usePageView } from 'src/hooks/use-page-view';
 import { Layout as DashboardLayout } from '@/layouts/dashboard';
 import { paths } from '@/paths';
-import { ClassSearch } from '@/components/ClassSearch';
-import { ClassTable } from '@/components/ClassTable';
-import ClassSchedule from '@/components/ClassSchedule';
-// import type { Page as PageType } from '@/types/page';
+import { ClassSearch } from '@/components/ClassEnrollment/ClassSearch';
+import { ClassTable } from '@/components/ClassEnrollment/ClassTable';
+import ClassSchedule from '@/components/ClassEnrollment/ClassSchedule';
 import type { Page as PageType } from '@/types/page';
-import { ClassInfo } from '@/types/class';
 import axios from 'axios';
 import useSWR from 'swr';
-import Calendar from '@/components/Calendar';
-import { useSession } from 'next-auth/react';
+import { ClassEnrollmentContextProvider } from '@/contexts/ClassEnrollmentContext';
 
 interface Filters {
 	name?: string;
@@ -86,11 +76,6 @@ const useClassSearch = () => {
 	};
 };
 
-interface ClassStoreState {
-	classes: ClassInfo[];
-	classesCount: number;
-}
-
 const useClassStore = (searchState: ClassSearchState, quarter: string) => {
 	const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 	const { data, error, isLoading } = useSWR(
@@ -119,39 +104,14 @@ const useClassStore = (searchState: ClassSearchState, quarter: string) => {
 };
 
 const ClassEnrollmentPage: PageType = () => {
-	const { data: session } = useSession();
-	const [enrolledClasses, setEnrolledClasses] = useState<ClassInfo[]>([]);
 	const [quarter, setQuarter] = useState('FA23');
 	const classSearch = useClassSearch();
 	const classStore = useClassStore(classSearch.state, quarter);
 
 	// usePageView();
 
-	useEffect(() => {
-		const getEnrolledClasses = async () => {
-			try {
-				const response = await axios.get(`/api/getEnrolledClasses`);
-
-				const classes = response.data.classes.map((obj: any) => {
-					const { courseId, professorId, course, ...rest } = obj;
-					rest.name = obj.course.name;
-					rest.instructor = obj.instructor.name;
-					return rest;
-				});
-				setEnrolledClasses(classes);
-				// console.log('enrolled', response);
-			} catch (err) {
-				console.error(err);
-			}
-		};
-
-		if (session) {
-			getEnrolledClasses();
-		}
-	}, [session]);
-
 	return (
-		<>
+		<ClassEnrollmentContextProvider>
 			{/* <Seo title="Dashboard: Product List" /> */}
 			<Box
 				component="main"
@@ -161,7 +121,6 @@ const ClassEnrollmentPage: PageType = () => {
 				}}>
 				<Container maxWidth="xl">
 					<Stack spacing={2}>
-						{/* <Stack direction="row" justifyContent="space-between" spacing={4}> */}
 						<Stack spacing={4} direction="row" alignItems="flex-end">
 							<Typography variant="h4">Classes</Typography>
 							<FormControl
@@ -202,7 +161,7 @@ const ClassEnrollmentPage: PageType = () => {
 									</Typography>
 								</Breadcrumbs> */}
 						</Stack>
-						{/* </Stack> */}
+
 						<Card>
 							<ClassSearch onFiltersChange={classSearch.handleFiltersChange} />
 							<ClassTable
@@ -215,11 +174,10 @@ const ClassEnrollmentPage: PageType = () => {
 							/>
 						</Card>
 					</Stack>
-					<ClassSchedule enrolledClasses={enrolledClasses} />
-					{/* <Calendar /> */}
+					<ClassSchedule />
 				</Container>
 			</Box>
-		</>
+		</ClassEnrollmentContextProvider>
 	);
 };
 

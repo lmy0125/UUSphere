@@ -25,6 +25,8 @@ import axios from 'axios';
 import { useChatContext } from '@/contexts/ChatContext';
 import { ClassInfo, Section } from '@/types/class';
 import AuthModal from '@/components/AuthModal';
+import { JoinSectionModal, DropSectionModal } from '@/components/ClassEnrollment/ConfirmModals';
+import { useClassEnrollmentContext } from '@/contexts/ClassEnrollmentContext';
 
 interface ClassTableProps {
 	count?: number;
@@ -89,7 +91,9 @@ ClassTable.propTypes = {
 	rowsPerPage: PropTypes.number,
 };
 
-const ClassRow: FC<{ classInfo: ClassInfo }> = ({ classInfo: classInfo }) => {
+const ClassRow: FC<{
+	classInfo: ClassInfo;
+}> = ({ classInfo: classInfo }) => {
 	const [expandSection, setExpandSection] = useState(false);
 	const [hasClass, setHasClass] = useState(false);
 	const [sectionTakenId, setSectionTakenId] = useState('');
@@ -206,6 +210,13 @@ const ClassRow: FC<{ classInfo: ClassInfo }> = ({ classInfo: classInfo }) => {
 								</TableHead>
 								<TableBody>
 									{classInfo.sections.map((section: Section) => {
+										// Modify the classInfo so that it only contains one specific section
+										const oneSectionClassInfo = {
+											...classInfo,
+											sections: classInfo.sections.filter(
+												(item) => item.id === section.id
+											),
+										};
 										return (
 											<SectionRow
 												key={section.id}
@@ -217,6 +228,7 @@ const ClassRow: FC<{ classInfo: ClassInfo }> = ({ classInfo: classInfo }) => {
 												setNumOfEnrolledStudentForClass={
 													setNumOfEnrolledStudentForClass
 												}
+												classInfo={oneSectionClassInfo}
 											/>
 										);
 									})}
@@ -237,6 +249,7 @@ const SectionRow: FC<{
 	hasClass: boolean;
 	setHasClass: Dispatch<SetStateAction<boolean>>;
 	setNumOfEnrolledStudentForClass: Dispatch<SetStateAction<number>>;
+	classInfo: ClassInfo;
 }> = ({
 	section: section,
 	sectionTakenId: sectionTakenId,
@@ -244,7 +257,10 @@ const SectionRow: FC<{
 	hasClass: hasClass,
 	setHasClass: setHasClass,
 	setNumOfEnrolledStudentForClass: setNumOfEnrolledStudentForClass,
+	classInfo: classInfo,
 }) => {
+	const { sectionJoined, setSectionJoined, sectionDropped, setSectionDropped } =
+		useClassEnrollmentContext();
 	const { chatClient } = useChatContext();
 	const { data: session } = useSession();
 	const [hasSection, setHasSection] = useState(section.id === sectionTakenId);
@@ -254,6 +270,8 @@ const SectionRow: FC<{
 	const [numOfEnrolledStudentForSection, setNumOfEnrolledStudentForSection] = useState(0);
 	const [enrollmentRatio, setEnrollmentRatio] = useState(0);
 	const [authModal, setAuthModal] = useState(false);
+	const [joinSectionModal, setJoinSectionModal] = useState(false);
+	const [dropSectionModal, setDropSectionModal] = useState(false);
 
 	const lecture = section.meetings.filter((meeting) => meeting.type == 'LE');
 
@@ -262,71 +280,22 @@ const SectionRow: FC<{
 	const days = ['M', 'Tu', 'W', 'Th', 'F', 'Sa', 'Su'];
 	const daysOfWeek = lecture[0]?.daysOfWeek.map((i) => days[i - 1]);
 
-	const handleJoinSection = async (data: { sectionId: string }) => {
-		// if not authenticated
-		if (!session) {
-			setAuthModal(!authModal);
-			return;
-		}
-
-		// Add in database
-		try {
-			axios.post('api/joinClass', data);
-			setHasSection(true);
-			setHasClass(true);
-			setSectionTakenId(section.id ?? '');
-			setNumOfEnrolledStudentForSection((prevCount: number) => prevCount + 1);
-			setNumOfEnrolledStudentForClass((prevCount: number) => prevCount + 1);
-		} catch (err) {
-			alert('Something went wrong' + err);
-		}
-
-		// Join chat channel
-		// if (!chatClient) {
-		// 	console.error('Chat service is down.');
-		// 	return;
-		// }
-		// const channel = chatClient.channel('classroom', classInfo.id, {
-		// 	code: classInfo.code,
-		// 	name: classInfo.name ?? undefined,
-		// 	instructor: classInfo.instructor,
-		// 	quarter: classInfo.quarter,
-		// });
-		// await channel.watch();
-		// await channel.addMembers([session.user.id]);
+	const handleStateWhenJoinSection = () => {
+		setHasSection(true);
+		setHasClass(true);
+		setSectionTakenId(section.id ?? '');
+		setNumOfEnrolledStudentForSection((prevCount: number) => prevCount + 1);
+		setNumOfEnrolledStudentForClass((prevCount: number) => prevCount + 1);
+		// setEnrollmentRatio(numOfEnrolledStudentForSection / section.total_seats!);
 	};
 
-	const handleDropSection = async (data: { sectionId: string }) => {
-		// if not authenticated
-		if (!session) {
-			setAuthModal(!authModal);
-			return;
-		}
-
-		// Remove in databse
-		try {
-			axios.post('api/dropClass', data);
-			setHasSection(false);
-			setHasClass(false);
-			setSectionTakenId('');
-			setNumOfEnrolledStudentForSection((prevCount: number) => prevCount - 1);
-			setNumOfEnrolledStudentForClass((prevCount: number) => prevCount - 1);
-		} catch (err) {
-			alert('Something went wrong' + err);
-		}
-
-		if (!chatClient) {
-			console.error('Chat service is down.');
-			return;
-		}
-		// Leave chat channel
-		// const filter = { type: 'classroom', id: { $eq: classInfo.id } };
-
-		// const channels = await chatClient.queryChannels(filter);
-		// if (channels) {
-		// 	await channels[0].stopWatching();
-		// 	await channels[0].removeMembers([session.user.id]);
-		// }
+	const handleStateWhenDropSection = () => {
+		setHasSection(false);
+		setHasClass(false);
+		setSectionTakenId('');
+		setNumOfEnrolledStudentForSection((prevCount: number) => prevCount - 1);
+		setNumOfEnrolledStudentForClass((prevCount: number) => prevCount - 1);
+		// setEnrollmentRatio(numOfEnrolledStudentForSection / section.total_seats!);
 	};
 
 	const getNumOfEnrolledStudent = useCallback(async () => {
@@ -341,7 +310,7 @@ const SectionRow: FC<{
 		} catch (err) {
 			console.error('Failed to getNumOfEnrolledStudent' + err);
 		}
-	}, [section.id]);
+	}, [section.id, section.total_seats]);
 
 	useEffect(() => {
 		getNumOfEnrolledStudent();
@@ -350,6 +319,26 @@ const SectionRow: FC<{
 	useEffect(() => {
 		setInOtherSection(section.id !== sectionTakenId && hasClass);
 	}, [hasClass, sectionTakenId, section.id]);
+
+	// When user perform join or drop in the ClassSchedule or ConfirmModals component,
+	// it will trigger either of these hooks
+	useEffect(() => {
+		if (sectionJoined === section.id) {
+			handleStateWhenJoinSection();
+			setSectionJoined('');
+		}
+	}, [sectionJoined]);
+
+	useEffect(() => {
+		if (sectionDropped === section.id) {
+			handleStateWhenDropSection();
+			setSectionDropped('');
+		}
+	}, [sectionDropped]);
+
+	useEffect(() => {
+		setEnrollmentRatio(numOfEnrolledStudentForSection / section.total_seats!);
+	}, [numOfEnrolledStudentForSection]);
 
 	return (
 		<TableRow key={section.id} style={hasSection ? { backgroundColor: '#d5f7ea' } : {}}>
@@ -381,12 +370,18 @@ const SectionRow: FC<{
 			</TableCell>
 			<TableCell>
 				{hasSection ? (
-					<Button onClick={() => handleDropSection({ sectionId: section.id })} size="small">
+					<Button onClick={() => setDropSectionModal(true)} size="small">
 						Drop
 					</Button>
 				) : (
 					<Button
-						onClick={() => handleJoinSection({ sectionId: section.id })}
+						onClick={() => {
+							if (!session) {
+								setAuthModal(!authModal);
+								return;
+							}
+							setJoinSectionModal(true);
+						}}
 						size="small"
 						disabled={inOtherSection}>
 						Join
@@ -394,6 +389,18 @@ const SectionRow: FC<{
 				)}
 			</TableCell>
 			<AuthModal open={authModal} setAuthModal={() => setAuthModal(false)} />
+			<JoinSectionModal
+				open={joinSectionModal}
+				setJoinSectionModal={setJoinSectionModal}
+				classInfo={classInfo}
+				sectionId={section.id}
+			/>
+			<DropSectionModal
+				open={dropSectionModal}
+				setDropSectionModal={setDropSectionModal}
+				classInfo={classInfo}
+				sectionId={section.id}
+			/>
 		</TableRow>
 	);
 };
