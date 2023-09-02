@@ -8,7 +8,8 @@
 		"start": "next start",
 		"lint": "next lint",
 		"deleteData": "npx ts-node ./src/data/deletion.mts",
-		"insertData": "npx tsx ./src/data/insertion.ts"
+		"insertData": "npx tsx ./src/data/insertion.ts",
+		"postinstall": "prisma generate"
 	},
 	"dependencies": {
 		"@emotion/react": "^11.10.6",
