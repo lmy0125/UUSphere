@@ -94,6 +94,7 @@ ClassTable.propTypes = {
 const ClassRow: FC<{
 	classInfo: ClassInfo;
 }> = ({ classInfo: classInfo }) => {
+	const { data: session } = useSession();
 	const [expandSection, setExpandSection] = useState(false);
 	const [hasClass, setHasClass] = useState(false);
 	const [sectionTakenId, setSectionTakenId] = useState('');
@@ -106,6 +107,9 @@ const ClassRow: FC<{
 	};
 
 	const checkHasClass = useCallback(async () => {
+		if (!session) {
+			return;
+		}
 		try {
 			const res = await axios.post('api/checkHasClass', { classId: classInfo.id });
 			if (res.data.classes.length == 1) {
