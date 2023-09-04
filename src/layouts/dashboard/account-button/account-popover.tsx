@@ -1,9 +1,6 @@
 import type { FC } from 'react';
-import { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import toast from 'react-hot-toast';
-import CreditCard01Icon from '@untitled-ui/icons-react/build/esm/CreditCard01';
-import Settings04Icon from '@untitled-ui/icons-react/build/esm/Settings04';
 import User03Icon from '@untitled-ui/icons-react/build/esm/User03';
 import {
 	Box,
@@ -17,11 +14,8 @@ import {
 	Typography,
 } from '@mui/material';
 import { RouterLink } from '@/components/router-link';
-// import { useAuth } from 'src/hooks/use-auth';
-// import { useMockedUser } from 'src/hooks/use-mocked-user';
 import { useRouter } from 'next/navigation';
 import { paths } from '@/paths';
-// import { Issuer } from 'src/utils/auth';
 import { signOut } from 'next-auth/react';
 import { useChatContext } from '@/contexts/ChatContext';
 
@@ -124,38 +118,6 @@ export const AccountPopover: FC<AccountPopoverProps> = (props) => {
 						</SvgIcon>
 					</ListItemIcon>
 					<ListItemText primary={<Typography variant="body1">Profile</Typography>} />
-				</ListItemButton>
-				<ListItemButton
-					// component={RouterLink}
-					// href={paths.dashboard.account}
-					onClick={onClose}
-					sx={{
-						borderRadius: 1,
-						px: 1,
-						py: 0.5,
-					}}>
-					<ListItemIcon>
-						<SvgIcon fontSize="small">
-							<Settings04Icon />
-						</SvgIcon>
-					</ListItemIcon>
-					<ListItemText primary={<Typography variant="body1">Settings</Typography>} />
-				</ListItemButton>
-				<ListItemButton
-					// component={RouterLink}
-					// href={paths.dashboard.index}
-					onClick={onClose}
-					sx={{
-						borderRadius: 1,
-						px: 1,
-						py: 0.5,
-					}}>
-					<ListItemIcon>
-						<SvgIcon fontSize="small">
-							<CreditCard01Icon />
-						</SvgIcon>
-					</ListItemIcon>
-					<ListItemText primary={<Typography variant="body1">Billing</Typography>} />
 				</ListItemButton>
 			</Box>
 			<Divider sx={{ my: '0 !important' }} />
