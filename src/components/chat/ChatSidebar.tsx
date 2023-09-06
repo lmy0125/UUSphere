@@ -114,8 +114,27 @@ export const ChatSidebar: FC<ChatSidebarProps> = (props) => {
 	// };
 
 	const EmptyClassroomList = () => {
-		return (<div>empty</div>)
-	}
+		return (
+			<Stack sx={{ alignItems: 'center', py: 5 }}>
+				<Typography sx={{ mb: 2, fontWeight: 500 }} color="text.secondary" variant="h5">
+					You have no classes yet
+				</Typography>
+				<Button variant="contained" onClick={() => router.push(paths.index)}>
+					Join Classes
+				</Button>
+			</Stack>
+		);
+	};
+
+	const EmptyPersonalMessageList = () => {
+		return (
+			<Stack sx={{ alignItems: 'center', py: 5 }}>
+				<Typography sx={{ textAlign: 'center', mb: 2, fontWeight: 500 }} color="text.secondary" variant="h5">
+					You have no conversations yet
+				</Typography>
+			</Stack>
+		);
+	};
 
 	const content = (
 		<div>
@@ -172,7 +191,7 @@ export const ChatSidebar: FC<ChatSidebarProps> = (props) => {
 						))}
 					</Stack>
 				</Scrollbar> */}
-				<Typography variant="subtitle2" sx={{ px: 2, py: 1 }}>
+				<Typography variant="subtitle1" sx={{ px: 2, py: 1 }}>
 					Classrooms
 				</Typography>
 
@@ -183,11 +202,12 @@ export const ChatSidebar: FC<ChatSidebarProps> = (props) => {
 					// additionalChannelSearchProps={additionalProps}
 					Preview={CustomChannelPreview}
 					List={CustomChannelList}
+					EmptyStateIndicator={EmptyClassroomList}
 					// LoadingErrorIndicator={CustomErrorIndicator}
 					// LoadingIndicator={CustomLoadingIndicator}
 				/>
 				<Divider />
-				<Typography variant="subtitle2" sx={{ px: 2, py: 1 }}>
+				<Typography variant="subtitle1" sx={{ px: 2, py: 1 }}>
 					Personal
 				</Typography>
 				<ChannelList
@@ -195,7 +215,7 @@ export const ChatSidebar: FC<ChatSidebarProps> = (props) => {
 					sort={sort}
 					// additionalChannelSearchProps={additionalProps}
 					Preview={CustomChannelPreview}
-					// EmptyStateIndicator={customEmptyStateIndicator}
+					EmptyStateIndicator={EmptyPersonalMessageList}
 				/>
 			</Box>
 		</div>
