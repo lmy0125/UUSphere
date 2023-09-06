@@ -118,7 +118,7 @@ const ClassRow: FC<{
 		} catch (err) {
 			console.error('Failed to checkHasClass' + err);
 		}
-	}, [classInfo.id]);
+	}, [classInfo.id, session]);
 
 	const getNumOfEnrolledStudent = useCallback(async () => {
 		try {
@@ -282,23 +282,21 @@ const SectionRow: FC<{
 	const days = ['M', 'Tu', 'W', 'Th', 'F', 'Sa', 'Su'];
 	const daysOfWeek = lecture[0]?.daysOfWeek.map((i) => days[i - 1]);
 
-	const handleStateWhenJoinSection = () => {
+	const handleStateWhenJoinSection = useCallback(() => {
 		setHasSection(true);
+		setNumOfEnrolledStudentForSection((prevCount: number) => prevCount + 1);
 		setHasClass(true);
 		setSectionTakenId(section.id ?? '');
-		setNumOfEnrolledStudentForSection((prevCount: number) => prevCount + 1);
 		setNumOfEnrolledStudentForClass((prevCount: number) => prevCount + 1);
-		// setEnrollmentRatio(numOfEnrolledStudentForSection / section.total_seats!);
-	};
+	}, [section.id, setHasClass, setSectionTakenId, setNumOfEnrolledStudentForClass]);
 
-	const handleStateWhenDropSection = () => {
+	const handleStateWhenDropSection = useCallback(() => {
 		setHasSection(false);
+		setNumOfEnrolledStudentForSection((prevCount: number) => prevCount - 1);
 		setHasClass(false);
 		setSectionTakenId('');
-		setNumOfEnrolledStudentForSection((prevCount: number) => prevCount - 1);
 		setNumOfEnrolledStudentForClass((prevCount: number) => prevCount - 1);
-		// setEnrollmentRatio(numOfEnrolledStudentForSection / section.total_seats!);
-	};
+	}, [setHasClass, setSectionTakenId, setNumOfEnrolledStudentForClass]);
 
 	const getNumOfEnrolledStudent = useCallback(async () => {
 		try {
@@ -329,18 +327,18 @@ const SectionRow: FC<{
 			handleStateWhenJoinSection();
 			setSectionJoined('');
 		}
-	}, [sectionJoined]);
+	}, [sectionJoined, section.id, handleStateWhenJoinSection, setSectionJoined]);
 
 	useEffect(() => {
 		if (sectionDropped === section.id) {
 			handleStateWhenDropSection();
 			setSectionDropped('');
 		}
-	}, [sectionDropped]);
+	}, [sectionDropped, section.id, handleStateWhenDropSection, setSectionDropped]);
 
 	useEffect(() => {
 		setEnrollmentRatio(numOfEnrolledStudentForSection / section.total_seats!);
-	}, [numOfEnrolledStudentForSection]);
+	}, [numOfEnrolledStudentForSection, section.total_seats]);
 
 	return (
 		<TableRow key={section.id} style={hasSection ? { backgroundColor: '#d5f7ea' } : {}}>
