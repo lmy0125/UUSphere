@@ -47,7 +47,8 @@ export default function ChatContextProvider({ children }: { children: React.Reac
 				chatClient.disconnectUser();
 			}
 		};
-	}, [chatClient]);
+		// eslint-disable-next-line
+	}, []);
 
 	return (
 		<ChatContext.Provider value={{ chatClient: chatClient, userChannels: userChannels }}>
