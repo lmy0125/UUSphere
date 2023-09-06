@@ -14,6 +14,7 @@ import {
 import { ClassInfo } from '@/types/class';
 import { joinSection, dropSection } from '@/utils/ClassEnrollmentActions';
 import { useClassEnrollmentContext } from '@/contexts/ClassEnrollmentContext';
+import { useChatContext } from '@/contexts/ChatContext';
 
 const style = {
 	position: 'absolute' as 'absolute',
@@ -36,12 +37,15 @@ export const JoinSectionModal = ({
 	sectionId: string;
 	classInfo: ClassInfo;
 }) => {
+	const { chatClient } = useChatContext();
 	const { setSectionJoined, setClassInfoJoined } = useClassEnrollmentContext();
 	const handleClose = () => setJoinSectionModal(false);
 	const handleConfirm = () => {
 		setSectionJoined(sectionId);
 		setClassInfoJoined(classInfo);
-		joinSection(sectionId, classInfo);
+		if (chatClient) {
+			joinSection(sectionId, classInfo, chatClient);
+		}
 		setJoinSectionModal(false);
 	};
 
@@ -103,12 +107,15 @@ export const DropSectionModal = ({
 	sectionId: string;
 	classInfo: ClassInfo;
 }) => {
-	const { setSectionDropped, setClassInfoDropped} = useClassEnrollmentContext();
+	const { chatClient } = useChatContext();
+	const { setSectionDropped, setClassInfoDropped } = useClassEnrollmentContext();
 	const handleClose = () => setDropSectionModal(false);
 	const handleConfirm = () => {
 		setSectionDropped(sectionId);
 		setClassInfoDropped(classInfo);
-		dropSection(sectionId, classInfo.id);
+		if (chatClient) {
+			dropSection(sectionId, classInfo.id, chatClient);
+		}
 		setDropSectionModal(false);
 	};
 

@@ -22,7 +22,6 @@ import {
 import { Scrollbar } from '@/components/scrollbar';
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
-import { useChatContext } from '@/contexts/ChatContext';
 import { ClassInfo, Section } from '@/types/class';
 import AuthModal from '@/components/AuthModal';
 import { JoinSectionModal, DropSectionModal } from '@/components/ClassEnrollment/ConfirmModals';
@@ -265,7 +264,6 @@ const SectionRow: FC<{
 }) => {
 	const { sectionJoined, setSectionJoined, sectionDropped, setSectionDropped } =
 		useClassEnrollmentContext();
-	const { chatClient } = useChatContext();
 	const { data: session } = useSession();
 	const [hasSection, setHasSection] = useState(section.id === sectionTakenId);
 	const [inOtherSection, setInOtherSection] = useState(
