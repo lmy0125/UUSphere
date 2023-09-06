@@ -59,7 +59,7 @@ const PopupProfileCard: React.FC<ProfileCardProps> = ({ anchorEl, setAnchorEl, u
 		>
 			<ClickAwayListener onClickAway={() => setAnchorEl(null)}>
 				<Card sx={{ width: 320, height: 400 }}>
-					<CardMedia sx={{ height: 120, backgroundColor: 'gray' }} src='' />
+					<Box sx={{ height: 120, backgroundColor: 'gray' }} />
 					<CardContent sx={{ pt: 0 }}>
 						<Box
 							sx={{
