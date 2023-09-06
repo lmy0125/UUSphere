@@ -51,7 +51,7 @@ const ClassSchedule = () => {
 			setEnrolledClasses((prevArray) => [...prevArray, classInfoJoined]);
 			setClassInfoJoined(undefined);
 		}
-	}, [classInfoJoined]);
+	}, [classInfoJoined, setClassInfoJoined]);
 	useEffect(() => {
 		if (classInfoDropped) {
 			setEnrolledClasses((prevArray) =>
@@ -59,7 +59,7 @@ const ClassSchedule = () => {
 			);
 			setClassInfoDropped(undefined);
 		}
-	}, [classInfoDropped]);
+	}, [classInfoDropped, setClassInfoDropped]);
 
 	return (
 		<>
