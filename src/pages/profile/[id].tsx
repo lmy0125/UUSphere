@@ -8,7 +8,6 @@ import {
 	Button,
 	Container,
 	Divider,
-	IconButton,
 	Stack,
 	SvgIcon,
 	Tab,
@@ -16,12 +15,8 @@ import {
 	Tooltip,
 	Typography,
 	Dialog,
-	DialogTitle,
 	DialogContent,
-	DialogContentText,
-	DialogActions,
 } from '@mui/material';
-import { blueGrey } from '@mui/material/colors';
 // import { socialApi } from 'src/api/social';
 import { RouterLink } from '@/components/router-link';
 // import { Seo } from 'src/components/seo';
@@ -34,8 +29,6 @@ import { paths } from '@/paths';
 import type { Page as PageType } from '@/types/page';
 import type { Connection, Post, Profile } from '@/types/social';
 import prisma from '@/lib/prisma';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '../api/auth/[...nextauth]';
 import { User } from '@prisma/client';
 import Calendar from '@/components/Calendar';
 import { useSession } from 'next-auth/react';
@@ -45,7 +38,7 @@ import MaleIcon from '@mui/icons-material/Male';
 import FemaleIcon from '@mui/icons-material/Female';
 import HorizontalRuleIcon from '@mui/icons-material/HorizontalRule';
 import axios from 'axios';
-import useSWR from 'swr';
+import HowToRegIcon from '@mui/icons-material/HowToReg';
 
 const tabs = [
 	{ label: 'About', value: 'about' },
@@ -256,6 +249,14 @@ export const ProfilePage: PageType<ProfileProps> = ({ initUser }) => {
 										{user.gender === 'Non-binary' && (
 											<HorizontalRuleIcon fontSize="small" sx={{ ml: 1 }} />
 										)}
+										{user.verifiedStudent && (
+											<Tooltip title="Verified Student" arrow placement="top">
+												<HowToRegIcon
+													color="success"
+													sx={{ ml: 1, height: 22, width: 22 }}
+												/>
+											</Tooltip>
+										)}
 									</Typography>
 								</div>
 							</Stack>
@@ -292,12 +293,6 @@ export const ProfilePage: PageType<ProfileProps> = ({ initUser }) => {
 												setProfileFormToggle={setProfileFormToggle}
 												setUser={setUser}
 											/>
-											{/* <Typography id="modal-modal-title" variant="h6" component="h2">
-												Text in a modal
-											</Typography>
-											<Typography id="modal-modal-description" sx={{ mt: 2 }}>
-												Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-											</Typography> */}
 										</DialogContent>
 									</Dialog>
 								</Stack>
