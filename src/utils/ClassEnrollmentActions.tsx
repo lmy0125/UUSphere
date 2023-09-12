@@ -1,5 +1,6 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
-import { StreamChat, Channel, DefaultGenerics } from 'stream-chat';
+import { StreamChat } from 'stream-chat';
+import { CustomStreamChatGenerics } from '@/types/customStreamChat';
 import { useSession } from 'next-auth/react';
 import { Class } from '@prisma/client';
 import axios from 'axios';
@@ -8,7 +9,7 @@ import { ClassInfo } from '@/types/class';
 export const joinSection = async (
 	sectionId: string,
 	classInfo: ClassInfo,
-	chatClient: StreamChat<DefaultGenerics>
+	chatClient: StreamChat<CustomStreamChatGenerics>
 ) => {
 	// Add in database
 	try {
@@ -32,7 +33,7 @@ export const joinSection = async (
 export const dropSection = async (
 	sectionId: string,
 	classId: string,
-	chatClient: StreamChat<DefaultGenerics>
+	chatClient: StreamChat<CustomStreamChatGenerics>
 ) => {
 	// Remove in databse
 	try {
