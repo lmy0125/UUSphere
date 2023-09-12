@@ -1,14 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
 	Avatar,
 	Box,
 	Button,
-	IconButton,
-	Stack,
 	Popper,
 	Typography,
 	Card,
-	CardMedia,
 	CardContent,
 	Link,
 	ClickAwayListener,
@@ -16,13 +13,13 @@ import {
 } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import { UserResponse } from 'stream-chat';
-import { DefaultStreamChatGenerics } from 'stream-chat-react/dist/types/types';
+import { CustomStreamChatGenerics } from '@/types/customStreamChat';
 import { useChatContext } from 'stream-chat-react';
 
 interface ProfileCardProps {
 	anchorEl: HTMLElement | null;
 	setAnchorEl: React.Dispatch<React.SetStateAction<HTMLElement | null>>;
-	user: UserResponse<DefaultStreamChatGenerics> | undefined;
+	user: UserResponse<CustomStreamChatGenerics> | undefined;
 }
 
 const PopupProfileCard: React.FC<ProfileCardProps> = ({ anchorEl, setAnchorEl, user }) => {
@@ -58,7 +55,7 @@ const PopupProfileCard: React.FC<ProfileCardProps> = ({ anchorEl, setAnchorEl, u
 			// }}
 		>
 			<ClickAwayListener onClickAway={() => setAnchorEl(null)}>
-				<Card sx={{ width: 320, height: 400 }}>
+				<Card sx={{ width: 320, pb: 5 }}>
 					<Box sx={{ height: 120, backgroundColor: 'gray' }} />
 					<CardContent sx={{ pt: 0 }}>
 						<Box
@@ -78,6 +75,7 @@ const PopupProfileCard: React.FC<ProfileCardProps> = ({ anchorEl, setAnchorEl, u
 								}}
 							/>
 						</Box>
+
 						<Link
 							align="center"
 							color="text.primary"
@@ -91,39 +89,56 @@ const PopupProfileCard: React.FC<ProfileCardProps> = ({ anchorEl, setAnchorEl, u
 						<Divider sx={{ my: 2 }} />
 
 						<Grid container spacing={2} rowSpacing={1} pb={3}>
-							<Grid xs={3}>
-								<Typography variant="subtitle2">Major</Typography>
-							</Grid>
-							<Grid xs={9}>
-								<Typography color="text.secondary" variant="body2">
-									CS
-								</Typography>
-							</Grid>
-							<Grid xs={3}>
-								<Typography variant="subtitle2">College</Typography>
-							</Grid>
-							<Grid xs={9}>
-								<Typography color="text.secondary" variant="body2">
-									Budget
-								</Typography>
-							</Grid>
-							<Grid xs={3}>
-								<Typography variant="subtitle2">Grade</Typography>
-							</Grid>
-							<Grid xs={9}>
-								<Typography color="text.secondary" variant="body2">
-									Budget
-								</Typography>
-							</Grid>
+							{user?.major && (
+								<>
+									<Grid xs={3}>
+										<Typography variant="subtitle2">Major</Typography>
+									</Grid>
+									<Grid xs={9}>
+										<Typography color="text.secondary" variant="body2">
+											{user.major}
+										</Typography>
+									</Grid>
+								</>
+							)}
+
+							{user?.college && (
+								<>
+									<Grid xs={3}>
+										<Typography variant="subtitle2">College</Typography>
+									</Grid>
+									<Grid xs={9}>
+										<Typography color="text.secondary" variant="body2">
+											{user.college}
+										</Typography>
+									</Grid>
+								</>
+							)}
+
+							{user?.grade && (
+								<>
+									<Grid xs={3}>
+										<Typography variant="subtitle2">Grade</Typography>
+									</Grid>
+
+									<Grid xs={9}>
+										<Typography color="text.secondary" variant="body2">
+											{user.grade}
+										</Typography>
+									</Grid>
+								</>
+							)}
 						</Grid>
 
-						<Button
-							variant="contained"
-							color="primary"
-							onClick={handleMessageUser}
-							sx={{ float: 'right' }}>
-							Message
-						</Button>
+						{client.user?.id !== user?.id && (
+							<Button
+								variant="contained"
+								color="primary"
+								onClick={handleMessageUser}
+								sx={{ float: 'right' }}>
+								Message
+							</Button>
+						)}
 					</CardContent>
 				</Card>
 			</ClickAwayListener>

@@ -3,9 +3,10 @@ import { StreamChat, Channel } from 'stream-chat';
 import { useSession } from 'next-auth/react';
 import { Class } from '@prisma/client';
 import axios from 'axios';
+import { CustomStreamChatGenerics } from '@/types/customStreamChat';
 
 interface ChatContextType {
-	chatClient: StreamChat | undefined;
+	chatClient: StreamChat<CustomStreamChatGenerics> | undefined;
 	userChannels: Channel[] | undefined;
 }
 
@@ -17,20 +18,23 @@ const ChatContext = createContext<ChatContextType>({
 const steam_api_key = process.env.NEXT_PUBLIC_STREAMCHAT_KEY as string;
 
 export default function ChatContextProvider({ children }: { children: React.ReactNode }) {
-	const [chatClient, setChatClient] = useState<StreamChat>();
+	const [chatClient, setChatClient] = useState<StreamChat<CustomStreamChatGenerics>>();
 	const [userChannels, setUserChannels] = useState<Channel[]>();
 	const { data: session, status } = useSession();
 
 	useEffect(() => {
 		const initStreamChat = async () => {
-			if (!session) {
+			if (status !== "authenticated") {
+				console.log('return in initStreamChat')
 				return;
 			}
-			const client = new StreamChat(steam_api_key);
+			console.log('session', session);
+			const client = new StreamChat<CustomStreamChatGenerics>(steam_api_key);
 			try {
-				const { created_at, ...chatUser } = session.user;
+				const { created_at, emailVerified, ...chatUser } = session.user;
 
 				// connect user to stream chat
+				console.log('connect chat');
 				await client.connectUser(chatUser, session.streamChatToken);
 				setChatClient(client);
 			} catch (err) {
@@ -39,11 +43,12 @@ export default function ChatContextProvider({ children }: { children: React.Reac
 		};
 
 		initStreamChat();
-	}, [session]);
+	}, [status]);
 
 	useEffect(() => {
 		return () => {
 			if (chatClient) {
+				console.log("Chat disconnected");
 				chatClient.disconnectUser();
 			}
 		};

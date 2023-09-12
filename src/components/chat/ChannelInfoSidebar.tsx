@@ -21,6 +21,7 @@ import { useChannelPreviewInfo, useChannelStateContext } from 'stream-chat-react
 import PopUpProfileCard from './PopUpProfileCard';
 import { ChannelMemberResponse } from 'stream-chat';
 import { DefaultStreamChatGenerics } from 'stream-chat-react/dist/types/types';
+import { CustomStreamChatGenerics } from '@/types/customStreamChat';
 
 interface ChannelInfoSidebarProps {
 	isOpen: boolean;
@@ -28,7 +29,7 @@ interface ChannelInfoSidebarProps {
 }
 
 const ChannelInfoSidebar: React.FC<ChannelInfoSidebarProps> = ({ isOpen, onClose }) => {
-	const { channel, members } = useChannelStateContext();
+	const { channel, members } = useChannelStateContext<CustomStreamChatGenerics>();
 	const { displayImage, displayTitle } = useChannelPreviewInfo({ channel });
 
 	if (isOpen) {
@@ -133,7 +134,7 @@ const PopUpProfileMenuItem = ({
 	value,
 }: {
 	key: string;
-	value: ChannelMemberResponse<DefaultStreamChatGenerics>;
+	value: ChannelMemberResponse<CustomStreamChatGenerics>;
 }) => {
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 

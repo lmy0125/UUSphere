@@ -29,12 +29,13 @@ import { ChannelList, SearchResultItemProps, SearchResultsListProps } from 'stre
 import { useSession } from 'next-auth/react';
 import { CustomChannelPreview, CustomChannelList } from './CustomChannelEntry';
 import { CustomDropdown, CustomResultItem } from './CustomSearch';
+import { CustomStreamChatGenerics } from '@/types/customStreamChat';
 
 interface ChatSidebarProps {
 	container?: HTMLDivElement | null;
 	onClose?: () => void;
 	open?: boolean;
-	client: StreamChat;
+	client: StreamChat<CustomStreamChatGenerics>;
 }
 
 export const ChatSidebar: FC<ChatSidebarProps> = (props) => {
