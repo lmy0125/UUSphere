@@ -63,6 +63,19 @@ import { StreamChat } from 'stream-chat';
 // 	}
 // };
 
+function getEmailDomain(email: string): string | null {
+	// Use a regular expression to match the domain part of the email address
+	const domainMatch = email.match(/@([a-zA-Z0-9.-]+)$/);
+
+	// Check if the regular expression matched and extract the domain
+	if (domainMatch && domainMatch.length > 1) {
+		return domainMatch[1];
+	}
+
+	// If no match is found, return null or handle the case as needed
+	return null;
+}
+
 export const authOptions = {
 	pages: {
 		signIn: '/',
@@ -83,10 +96,23 @@ export const authOptions = {
 				process.env.STREAMCHAT_KEY! as string,
 				process.env.STREAMCHAT_SECRET! as string
 			);
+			// Set verified Student
+			const emailDomain = getEmailDomain(user.email);
+			user.verifiedStudent = emailDomain === 'ucsd.edu';
+			await prisma.user.update({
+				where: {
+					email: user.email,
+				},
+				data: {
+					verifiedStudent: user.verifiedStudent,
+				},
+			});
+
 			// Create User Token
 			token = serverClient.createToken(user?.id);
 			session.streamChatToken = token;
 			session.user = user;
+
 			return session;
 		},
 		async redirect({ url, baseUrl }: { url: string; baseUrl: string }) {
