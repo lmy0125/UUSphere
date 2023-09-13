@@ -49,19 +49,19 @@ const o: readonly FilmOptionType[] = [
 const SearchBox: FC = () => {
 	const router = useRouter();
 	const [searchQuery, setSearchQuery] = useState('');
-	const [serachOptions, setSearchOptions] = useState([]);
+	// const [serachOptions, setSearchOptions] = useState([]);
 
-	useEffect(() => {
-		const getSearchOptions = async () => {
-			try {
-				const response = await axios.get(`/api/getSearchOptions`);
-				setSearchOptions(response.data.sections);
-			} catch (err) {
-				console.error(err);
-			}
-		};
-		getSearchOptions();
-	}, []);
+	// useEffect(() => {
+	// 	const getSearchOptions = async () => {
+	// 		try {
+	// 			const response = await axios.get(`/api/getSearchOptions`);
+	// 			setSearchOptions(response.data.sections);
+	// 		} catch (err) {
+	// 			console.error(err);
+	// 		}
+	// 	};
+	// 	getSearchOptions();
+	// }, []);
 
 	const handleSearch = (searchQuery: string) => {
 		// Redirect to search results page with the search term as a query parameter

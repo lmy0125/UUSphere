@@ -48,7 +48,7 @@ const PostDisplay: FC<PostDisplayProps> = (props) => {
 	return (
 		<Card {...other}>
 			<CardHeader
-				avatar={<Avatar component="a" href="#" src="aaa" />}
+				avatar={<Avatar component="a" href="#" src="" />}
 				disableTypography
 				subheader={
 					<Stack alignItems="center" direction="row" spacing={1}>

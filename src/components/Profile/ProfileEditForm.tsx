@@ -45,7 +45,7 @@ const ProfileEditForm: FC<ProfileEditFormProps> = ({ user, setUser, setProfileFo
 		bio: user.bio ?? '',
 	});
 
-	const handleSubmit =  (event: FormEvent<HTMLFormElement>) => {
+	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		axios.post('/api/updateUser', personalInfo);
 		setUser({
@@ -62,7 +62,7 @@ const ProfileEditForm: FC<ProfileEditFormProps> = ({ user, setUser, setProfileFo
 	};
 
 	return (
-		<form onSubmit={(e)=>handleSubmit(e)}>
+		<form onSubmit={(e) => handleSubmit(e)}>
 			<CardHeader
 				title="Edit Profile"
 				sx={{ textAlign: 'center', py: 1, pb: 0 }}

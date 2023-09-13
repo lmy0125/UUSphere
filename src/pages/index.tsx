@@ -79,7 +79,9 @@ const useClassSearch = () => {
 const useClassStore = (searchState: ClassSearchState, quarter: string) => {
 	const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 	const { data, error, isLoading } = useSWR(
-		`/api/getClasses/?name=${searchState.filters.name}&quarter=${quarter}`,
+		searchState.filters.name
+			? `/api/getClasses/?name=${searchState.filters.name}&quarter=${quarter}`
+			: null,
 		fetcher
 	);
 	if (error) {
@@ -90,7 +92,7 @@ const useClassStore = (searchState: ClassSearchState, quarter: string) => {
 		return { classes: [], classesCount: 0 };
 	}
 
-	const classes = data.map((obj: any) => {
+	const classes = data?.map((obj: any) => {
 		const { courseId, professorId, course, ...rest } = obj;
 		rest.name = obj.course.name;
 		rest.instructor = obj.instructor.name;
@@ -99,7 +101,7 @@ const useClassStore = (searchState: ClassSearchState, quarter: string) => {
 
 	return {
 		classes: classes,
-		classesCount: classes.length,
+		classesCount: classes?.length,
 	};
 };
 
