@@ -119,14 +119,29 @@ const useSidebar = () => {
 };
 
 const ChatPage: PageType = () => {
-	const [isChannelInfoOpen, setIsChannelInfoOpen] = useState(false);
 	const [authModal, setAuthModal] = useState(false);
-	const { chatClient: client } = useChatContext();
-	const { setActiveChannel } = useStreamChatContext<CustomStreamChatGenerics>();
+	const { chatClient } = useChatContext();
 	const { status } = useSession();
+	if (status === 'loading') {
+		return <></>;
+	} else if (status !== 'authenticated' || !chatClient) {
+		return (
+			<Container maxWidth="xl" sx={{ mt: 2 }}>
+				<Typography variant="h4">Chat</Typography>
+				<Stack sx={{ alignItems: 'center', mt: 8 }}>
+					<Button variant="contained" onClick={() => setAuthModal(true)}>
+						Please login to use this feature
+					</Button>
+					<AuthModal open={authModal} setAuthModal={setAuthModal} />
+				</Stack>
+			</Container>
+		);
+	}
+
+	const [isChannelInfoOpen, setIsChannelInfoOpen] = useState(false);
+	const { client, setActiveChannel } = useStreamChatContext<CustomStreamChatGenerics>();
 	const rootRef = useRef<HTMLDivElement | null>(null);
 	const searchParams = useSearchParams();
-	//   const compose = searchParams.get('compose') === 'true';
 	const channelId = searchParams.get('channelId') || undefined;
 	const sidebar = useSidebar();
 
@@ -145,23 +160,7 @@ const ChatPage: PageType = () => {
 			}
 		};
 		displayChannel();
-	}, [setActiveChannel]);
-
-	if (status === 'loading') {
-		return <></>;
-	} else if (status !== 'authenticated' || !client) {
-		return (
-			<Container maxWidth="xl" sx={{ mt: 2 }}>
-				<Typography variant="h4">Chat</Typography>
-				<Stack sx={{ alignItems: 'center', mt: 8 }}>
-					<Button variant="contained" onClick={() => setAuthModal(true)}>
-						Please login to use this feature
-					</Button>
-					<AuthModal open={authModal} setAuthModal={setAuthModal} />
-				</Stack>
-			</Container>
-		);
-	}
+	}, [setActiveChannel, client]);
 
 	//   usePageView();
 

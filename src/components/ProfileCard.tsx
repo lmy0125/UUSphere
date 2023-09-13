@@ -9,8 +9,8 @@ import type { Connection } from '@/types/social';
 import axios from 'axios';
 import useSWR from 'swr';
 import { Class, User } from '@prisma/client';
-import { useChatContext } from 'stream-chat-react';
 import { useRouter } from 'next/router';
+import { useChatContext } from '@/contexts/ChatContext';
 
 interface ProfileCardProps {
 	userId: string;
@@ -28,7 +28,7 @@ const ProfileCard: FC<ProfileCardProps> = (props) => {
 	const [status, setStatus] = useState(connection.status);
 	// Todo: check connection status here for add friend functionality
 	const router = useRouter();
-	const { client } = useChatContext();
+	const { chatClient: client } = useChatContext();
 
 	const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 	const {
@@ -79,7 +79,7 @@ const ProfileCard: FC<ProfileCardProps> = (props) => {
 	const isSelf = status === 'self';
 
 	const handleMessageUser = async () => {
-		if (client.user) {
+		if (client && client.user) {
 			const channel = client.channel('messaging', {
 				members: [client.user.id, props.userId],
 			});
@@ -156,6 +156,7 @@ const ProfileCard: FC<ProfileCardProps> = (props) => {
 
 					{client?.user?.id !== props.userId && (
 						<Button
+							size="small"
 							variant="contained"
 							color="primary"
 							onClick={handleMessageUser}
