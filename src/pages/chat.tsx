@@ -22,7 +22,7 @@ import {
 import 'stream-chat-react/dist/css/v2/index.css';
 import Menu01Icon from '@untitled-ui/icons-react/build/esm/Menu01';
 import type { Theme } from '@mui/material';
-import { Stack, Box, Divider, IconButton, SvgIcon, useMediaQuery } from '@mui/material';
+import { Stack, Box, Divider, Button, Container, Typography, useMediaQuery } from '@mui/material';
 // import { Seo } from 'src/components/seo';
 // import { usePageView } from 'src/hooks/use-page-view';
 import { Layout as DashboardLayout } from '@/layouts/dashboard';
@@ -38,6 +38,7 @@ import CustomMessageInput from '@/components/chat/CustomMessageInput';
 // import  CustomTriggerProvider  from '@/components/chat/CustomTriggerProvider';
 import ChannelInfoSidebar from '@/components/chat/ChannelInfoSidebar';
 import CustomMessage from '@/components/chat/CustomMessage';
+import AuthModal from '@/components/AuthModal';
 
 /**
  * NOTE:
@@ -117,6 +118,7 @@ const useSidebar = () => {
 
 const ChatPage: PageType = () => {
 	const [isChannelInfoOpen, setIsChannelInfoOpen] = useState(false);
+	const [authModal, setAuthModal] = useState(false);
 	const { chatClient: client } = useChatContext();
 	const { data: session, status } = useSession();
 	const rootRef = useRef<HTMLDivElement | null>(null);
@@ -125,8 +127,20 @@ const ChatPage: PageType = () => {
 	const channelId = searchParams.get('channelId') || undefined;
 	const sidebar = useSidebar();
 
-	if (!session) {
-		return <h1>Need to Log in</h1>;
+	if (status === 'loading') {
+		return <></>;
+	} else if (status !== 'unauthenticated' || !client) {
+		return (
+			<Container maxWidth="xl" sx={{ mt: 2 }}>
+				<Typography variant="h4">Chat</Typography>
+				<Stack sx={{ alignItems: 'center', mt: 8 }}>
+					<Button variant="contained" onClick={() => setAuthModal(true)}>
+						Please login to use this feature
+					</Button>
+					<AuthModal open={authModal} setAuthModal={setAuthModal} />
+				</Stack>
+			</Container>
+		);
 	}
 
 	//   usePageView();
@@ -138,9 +152,9 @@ const ChatPage: PageType = () => {
 	//     : compose
 	//       ? 'compose'
 	//       : 'blank';
-	if (!client) {
-		return <LoadingIndicator />;
-	}
+	// else if (!client) {
+	// 	return <LoadingIndicator />;
+	// }
 
 	return (
 		<>

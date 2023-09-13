@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import type { Page as PageType } from '@/types/page';
 import { Layout as DashboardLayout } from '@/layouts/dashboard';
-import { Container, Tab, Tabs, Box, Stack, Typography } from '@mui/material';
+import { Container, Tab, Tabs, Box, Button, Stack, Typography } from '@mui/material';
 import axios from 'axios';
 import useSWR from 'swr';
 import ProfileCard from '@/components/ProfileCard';
 import { ConnectionStatus } from '@/types/social';
 import { User } from '@prisma/client';
 import { useSession } from 'next-auth/react';
+import AuthModal from '@/components/AuthModal';
 
 interface MutualClassmates {
 	[classmateId: string]: {
@@ -18,6 +19,8 @@ interface MutualClassmates {
 }
 
 const MutualClassmatesPage: PageType = () => {
+	const { status } = useSession();
+	const [authModal, setAuthModal] = useState(false);
 	const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 	let {
 		data: mutualClassmates,
@@ -44,9 +47,22 @@ const MutualClassmatesPage: PageType = () => {
 	}
 	mutualClassmates = sortByNumOfMutualClass(mutualClassmates ?? {});
 
-	const { data: session, status } = useSession();
-	if (!session && status === 'unauthenticated') {
-		return <div>Login First</div>;
+	if (status === 'loading') {
+		return <></>;
+	}
+
+	if (status === 'unauthenticated') {
+		return (
+			<Container maxWidth="xl" sx={{ mt: 2 }}>
+				<Typography variant="h4">Mutual Classmates</Typography>
+				<Stack sx={{ alignItems: 'center', mt: 8 }}>
+					<Button variant="contained" onClick={() => setAuthModal(true)}>
+						Please login to use this feature
+					</Button>
+					<AuthModal open={authModal} setAuthModal={setAuthModal} />
+				</Stack>
+			</Container>
+		);
 	}
 
 	return (
