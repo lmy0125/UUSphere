@@ -388,7 +388,7 @@ export const getServerSideProps: GetServerSideProps<ProfileProps> = async (conte
 	});
 
 	return {
-		props: { initUser: JSON.parse(JSON.stringify(user)) },
+		props: { key: String(user?.id), initUser: JSON.parse(JSON.stringify(user)) },
 	};
 };
 

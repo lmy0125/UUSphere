@@ -1,6 +1,6 @@
 import type { FC } from 'react';
+import Link from 'next/link';
 import PropTypes from 'prop-types';
-import toast from 'react-hot-toast';
 import User03Icon from '@untitled-ui/icons-react/build/esm/User03';
 import {
 	Box,
@@ -14,8 +14,6 @@ import {
 	Typography,
 } from '@mui/material';
 import { RouterLink } from '@/components/router-link';
-import { useRouter } from 'next/navigation';
-import { paths } from '@/paths';
 import { signOut } from 'next-auth/react';
 import { useChatContext } from '@/contexts/ChatContext';
 
@@ -34,49 +32,6 @@ interface AccountPopoverProps {
 export const AccountPopover: FC<AccountPopoverProps> = (props) => {
 	const { anchorEl, onClose, open, user, ...other } = props;
 	const { chatClient: client } = useChatContext();
-	const router = useRouter();
-	// const auth = useAuth();
-	// const user = useMockedUser();
-
-	// const handleLogout = useCallback(
-	//   async (): Promise<void> => {
-	//     try {
-	//       onClose?.();
-
-	//       switch (auth.issuer) {
-	//         case Issuer.Amplify: {
-	//           await auth.signOut();
-	//           break;
-	//         }
-
-	//         case Issuer.Auth0: {
-	//           await auth.logout();
-	//           break;
-	//         }
-
-	//         case Issuer.Firebase: {
-	//           await auth.signOut();
-	//           break;
-	//         }
-
-	//         case Issuer.JWT: {
-	//           await auth.signOut();
-	//           break;
-	//         }
-
-	//         default: {
-	//           console.warn('Using an unknown Auth Issuer, did not log out');
-	//         }
-	//       }
-
-	//       router.push(paths.index);
-	//     } catch (err) {
-	//       console.error(err);
-	//       toast.error('Something went wrong!');
-	//     }
-	//   },
-	//   [auth, router, onClose]
-	// );
 
 	const handleLogOut = async () => {
 		signOut();
@@ -96,29 +51,45 @@ export const AccountPopover: FC<AccountPopoverProps> = (props) => {
 			PaperProps={{ sx: { width: 200 } }}
 			{...other}>
 			<Box sx={{ p: 2 }}>
-				<Typography variant="body1">{user.name}</Typography>
-				<Typography color="text.secondary" variant="body2">
+				<Typography
+					variant="body1"
+					sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+					{user.name}
+				</Typography>
+				<Typography
+					color="text.secondary"
+					variant="body2"
+					sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
 					{user.email}
 				</Typography>
 			</Box>
 			<Divider />
-			<Box sx={{ p: 1 }}>
-				<ListItemButton
-					component={RouterLink}
-					href={`/profile/${user.id}`}
-					onClick={onClose}
-					sx={{
-						borderRadius: 1,
-						px: 1,
-						py: 0.5,
-					}}>
-					<ListItemIcon>
-						<SvgIcon fontSize="small">
-							<User03Icon />
-						</SvgIcon>
-					</ListItemIcon>
-					<ListItemText primary={<Typography variant="body1">Profile</Typography>} />
-				</ListItemButton>
+			<Box
+				sx={{
+					p: 1,
+					a: {
+						color: 'inherit',
+						textDecoration: 'none',
+					},
+				}}>
+				<Link href={`/profile/${user.id}`} passHref legacyBehavior>
+					<ListItemButton
+						component={RouterLink}
+						href={`/profile/${user.id}`}
+						onClick={onClose}
+						sx={{
+							borderRadius: 1,
+							px: 1,
+							py: 0.5,
+						}}>
+						<ListItemIcon>
+							<SvgIcon fontSize="small">
+								<User03Icon />
+							</SvgIcon>
+						</ListItemIcon>
+						<ListItemText primary={<Typography variant="body1">Profile</Typography>} />
+					</ListItemButton>
+				</Link>
 			</Box>
 			<Divider sx={{ my: '0 !important' }} />
 			<Box

@@ -1,25 +1,14 @@
 import type { FC } from 'react';
-import { useCallback, useState, useEffect } from 'react';
+import { useCallback, useState } from 'react';
+import Link from 'next/link';
 import toast from 'react-hot-toast';
 import PropTypes from 'prop-types';
 import DotsHorizontalIcon from '@untitled-ui/icons-react/build/esm/DotsHorizontal';
-import {
-	Avatar,
-	Box,
-	Button,
-	Card,
-	IconButton,
-	Link,
-	Stack,
-	SvgIcon,
-	Typography,
-} from '@mui/material';
+import { Avatar, Box, Button, Card, Stack, Typography } from '@mui/material';
 import type { Connection } from '@/types/social';
-import { useSession } from 'next-auth/react';
 import axios from 'axios';
 import useSWR from 'swr';
 import { Class, User } from '@prisma/client';
-import { useTheme } from '@mui/material/styles';
 import { useChatContext } from 'stream-chat-react';
 import { useRouter } from 'next/router';
 
@@ -35,11 +24,9 @@ interface ProfileCardInfo extends User {
 }
 
 const ProfileCard: FC<ProfileCardProps> = (props) => {
-	const theme = useTheme();
 	const { connection } = props;
 	const [status, setStatus] = useState(connection.status);
 	// Todo: check connection status here for add friend functionality
-	const { data: session } = useSession();
 	const router = useRouter();
 	const { client } = useChatContext();
 
@@ -115,22 +102,32 @@ const ProfileCard: FC<ProfileCardProps> = (props) => {
 					spacing={2}
 					sx={{ p: 2 }}>
 					<Stack alignItems="flex-start" direction="row" spacing={2}>
-						<Avatar
-							component="a"
-							href="#"
-							src={profileCardInfo.image}
-							sx={{
-								height: 56,
-								width: 56,
-							}}
-						/>
+						<Link href={`/profile/${profileCardInfo.id}`}>
+							<Avatar
+								src={profileCardInfo.image}
+								sx={{
+									height: 56,
+									width: 56,
+								}}
+							/>
+						</Link>
+
 						<Box sx={{ flexGrow: 1 }}>
-							<Link
-								color="text.primary"
-								href={`/profile/${profileCardInfo.id}`}
-								variant="subtitle1">
-								{profileCardInfo.name}
-							</Link>
+							<Box
+								sx={{
+									a: {
+										color: 'inherit',
+										textDecoration: 'none',
+										'&:hover': {
+											textDecoration: 'underline',
+										},
+									},
+								}}>
+								<Link color="text.primary" href={`/profile/${profileCardInfo.id}`}>
+									{profileCardInfo.name}
+								</Link>
+							</Box>
+
 							<Typography color="text.secondary" variant="body2">
 								Freshman, Sixth, Biology
 							</Typography>
