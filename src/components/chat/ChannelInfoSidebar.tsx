@@ -12,7 +12,6 @@ import {
 	Card,
 	CardMedia,
 	CardContent,
-	Link as MUILink,
 	Grid,
 	Button,
 } from '@mui/material';
@@ -22,6 +21,7 @@ import PopUpProfileCard from './PopUpProfileCard';
 import { ChannelMemberResponse } from 'stream-chat';
 import { DefaultStreamChatGenerics } from 'stream-chat-react/dist/types/types';
 import { CustomStreamChatGenerics } from '@/types/customStreamChat';
+import { useSession } from 'next-auth/react';
 
 interface ChannelInfoSidebarProps {
 	isOpen: boolean;
@@ -29,6 +29,7 @@ interface ChannelInfoSidebarProps {
 }
 
 const ChannelInfoSidebar: React.FC<ChannelInfoSidebarProps> = ({ isOpen, onClose }) => {
+	const { data: session } = useSession();
 	const { channel, members } = useChannelStateContext<CustomStreamChatGenerics>();
 	const { displayImage, displayTitle } = useChannelPreviewInfo({ channel });
 
@@ -52,6 +53,16 @@ const ChannelInfoSidebar: React.FC<ChannelInfoSidebarProps> = ({ isOpen, onClose
 				</Box>
 			);
 		} else {
+			// For personal channel type
+			const getRecipientId = (obj: Record<string, any>, givenKey: string): string | null => {
+				for (const key in obj) {
+					if (key !== givenKey) {
+						return key;
+					}
+				}
+				return null; // Return null if the given key is not found in the object
+			};
+			const recipientId = getRecipientId(members!, session?.user.id ?? '');
 			return (
 				<Box
 					sx={{
@@ -82,16 +93,20 @@ const ChannelInfoSidebar: React.FC<ChannelInfoSidebarProps> = ({ isOpen, onClose
 									}}
 								/>
 							</Box>
-							<MUILink
-								align="center"
-								color="text.primary"
-								sx={{ display: 'block' }}
-								underline="none"
-								variant="h6"
-								// href={`/profile/${user?.id}`}
-							>
-								{displayTitle}
-							</MUILink>
+							<Box
+								sx={{
+									a: {
+										color: 'inherit',
+										textDecoration: 'none',
+										'&:hover': {
+											textDecoration: 'underline',
+										},
+									},
+									textAlign: 'center',
+									fontWeight: 450
+								}}>
+								<Link href={`/profile/${recipientId}`}>{displayTitle}</Link>
+							</Box>
 
 							<Divider sx={{ my: 2 }} />
 
@@ -130,16 +145,14 @@ const ChannelInfoSidebar: React.FC<ChannelInfoSidebarProps> = ({ isOpen, onClose
 };
 
 const PopUpProfileMenuItem = ({
-	key,
 	value,
 }: {
-	key: string;
 	value: ChannelMemberResponse<CustomStreamChatGenerics>;
 }) => {
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
 	return (
-		<div key={key}>
+		<>
 			<MenuItem onClick={(e) => setAnchorEl(e.currentTarget)}>
 				<ListItemIcon>
 					<Avatar src={value.user?.image} sx={{ width: 32, height: 32 }} />
@@ -147,7 +160,7 @@ const PopUpProfileMenuItem = ({
 				<ListItemText sx={{ color: 'black' }}>{value.user?.name}</ListItemText>
 			</MenuItem>
 			<PopUpProfileCard anchorEl={anchorEl} setAnchorEl={setAnchorEl} user={value.user} />
-		</div>
+		</>
 	);
 };
 

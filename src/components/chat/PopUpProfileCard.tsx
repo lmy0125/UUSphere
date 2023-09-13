@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import {
 	Avatar,
 	Box,
@@ -7,7 +8,6 @@ import {
 	Typography,
 	Card,
 	CardContent,
-	Link,
 	ClickAwayListener,
 	Divider,
 } from '@mui/material';
@@ -76,15 +76,20 @@ const PopupProfileCard: React.FC<ProfileCardProps> = ({ anchorEl, setAnchorEl, u
 							/>
 						</Box>
 
-						<Link
-							align="center"
-							color="text.primary"
-							sx={{ display: 'block' }}
-							underline="none"
-							variant="h6"
-							href={`/profile/${user?.id}`}>
-							{user?.name}
-						</Link>
+						<Box
+							sx={{
+								a: {
+									color: 'inherit',
+									textDecoration: 'none',
+									'&:hover': {
+										textDecoration: 'underline',
+									},
+								},
+								textAlign: 'center',
+								fontWeight: 450
+							}}>
+							<Link href={`/profile/${user?.id}`}>{user?.name}</Link>
+						</Box>
 
 						<Divider sx={{ my: 2 }} />
 
