@@ -4,6 +4,7 @@ import { useSession } from 'next-auth/react';
 import { Class } from '@prisma/client';
 import axios from 'axios';
 import { CustomStreamChatGenerics } from '@/types/customStreamChat';
+import { Chat } from 'stream-chat-react';
 
 interface ChatContextType {
 	chatClient: StreamChat<CustomStreamChatGenerics> | undefined;
@@ -24,8 +25,8 @@ export default function ChatContextProvider({ children }: { children: React.Reac
 
 	useEffect(() => {
 		const initStreamChat = async () => {
-			if (status !== "authenticated") {
-				console.log('return in initStreamChat')
+			if (status !== 'authenticated') {
+				console.log('return in initStreamChat');
 				return;
 			}
 			console.log('session', session);
@@ -48,7 +49,7 @@ export default function ChatContextProvider({ children }: { children: React.Reac
 	useEffect(() => {
 		return () => {
 			if (chatClient) {
-				console.log("Chat disconnected");
+				console.log('Chat disconnected');
 				chatClient.disconnectUser();
 			}
 		};
@@ -57,7 +58,13 @@ export default function ChatContextProvider({ children }: { children: React.Reac
 
 	return (
 		<ChatContext.Provider value={{ chatClient: chatClient, userChannels: userChannels }}>
-			{children}
+			{chatClient ? (
+				<Chat client={chatClient} theme="str-chat__theme-light">
+					{children}
+				</Chat>
+			) : (
+				<>{children}</>
+			)}
 		</ChatContext.Provider>
 	);
 }

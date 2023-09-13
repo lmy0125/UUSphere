@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import type { Page as PageType } from '@/types/page';
 import { Layout as DashboardLayout } from '@/layouts/dashboard';
 import { Container, Tab, Tabs, Box, Button, Stack, Typography } from '@mui/material';
 import axios from 'axios';
 import useSWR from 'swr';
+import { paths } from '@/paths';
 import ProfileCard from '@/components/ProfileCard';
 import { ConnectionStatus } from '@/types/social';
 import { User } from '@prisma/client';
@@ -21,12 +23,12 @@ interface MutualClassmates {
 const MutualClassmatesPage: PageType = () => {
 	const { status } = useSession();
 	const [authModal, setAuthModal] = useState(false);
+	const router = useRouter();
 	const fetcher = (url: string) => axios.get(url).then((res) => res.data);
-	let {
-		data: mutualClassmates,
-		error,
-		isLoading,
-	} = useSWR<MutualClassmates>('/api/getMutualClassmates', fetcher);
+	let { data: mutualClassmates, isLoading } = useSWR<MutualClassmates>(
+		status === 'authenticated' ? '/api/getMutualClassmates' : null,
+		fetcher
+	);
 
 	function sortByNumOfMutualClass(nestedDict: MutualClassmates) {
 		// Filter out entries with at least two common classes
@@ -53,7 +55,7 @@ const MutualClassmatesPage: PageType = () => {
 
 	if (status === 'unauthenticated') {
 		return (
-			<Container maxWidth="xl" sx={{ mt: 2 }}>
+			<Container maxWidth="xl" sx={{ mt: 1 }}>
 				<Typography variant="h4">Mutual Classmates</Typography>
 				<Stack sx={{ alignItems: 'center', mt: 8 }}>
 					<Button variant="contained" onClick={() => setAuthModal(true)}>
@@ -66,9 +68,24 @@ const MutualClassmatesPage: PageType = () => {
 	}
 
 	return (
-		<Container maxWidth="xl">
+		<Container maxWidth="xl" sx={{ mt: 1 }}>
 			<Stack spacing={2}>
-				<Typography variant="h4">Students who take the same class as you</Typography>
+				<div>
+					<Typography variant="h4">Mutual Classmates</Typography>
+					<Typography variant="subtitle2">
+						Students who take more than one same classes as you
+					</Typography>
+				</div>
+				{Object.entries(mutualClassmates).length === 0 && !isLoading && (
+					<Stack sx={{ alignItems: 'center' }}>
+						<Typography variant="h5" sx={{ fontWeight: 500, mb: 1 }}>
+							You don't have mutual classmates yet.
+						</Typography>
+						<Button variant="contained" onClick={() => router.push(paths.index)}>
+							Join Classes
+						</Button>
+					</Stack>
+				)}
 				{Object.entries(mutualClassmates ?? {}).map(([key, value]) => {
 					let status = 'not_connected';
 					const connection = {

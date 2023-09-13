@@ -20,6 +20,8 @@ import axios from 'axios';
 import useSWR from 'swr';
 import { Class, User } from '@prisma/client';
 import { useTheme } from '@mui/material/styles';
+import { useChatContext } from 'stream-chat-react';
+import { useRouter } from 'next/router';
 
 interface ProfileCardProps {
 	userId: string;
@@ -38,6 +40,8 @@ const ProfileCard: FC<ProfileCardProps> = (props) => {
 	const [status, setStatus] = useState(connection.status);
 	// Todo: check connection status here for add friend functionality
 	const { data: session } = useSession();
+	const router = useRouter();
+	const { client } = useChatContext();
 
 	const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 	const {
@@ -86,6 +90,16 @@ const ProfileCard: FC<ProfileCardProps> = (props) => {
 	const showConnect = status === 'not_connected';
 	const showPending = status === 'pending';
 	const isSelf = status === 'self';
+
+	const handleMessageUser = async () => {
+		if (client.user) {
+			const channel = client.channel('messaging', {
+				members: [client.user.id, props.userId],
+			});
+			await channel.watch();
+			router.push(`/chat?channelId=${channel.id}`);
+		}
+	};
 
 	if (!profileCardInfo) {
 		return <></>;
@@ -142,7 +156,17 @@ const ProfileCard: FC<ProfileCardProps> = (props) => {
 							</Typography>
 						</Box>
 					</Stack>
-					{isSelf && (
+
+					{client?.user?.id !== props.userId && (
+						<Button
+							variant="contained"
+							color="primary"
+							onClick={handleMessageUser}
+							sx={{ float: 'right' }}>
+							Message
+						</Button>
+					)}
+					{/* {isSelf && (
 						<Button onClick={handleConnectionAdd} size="small" variant="outlined">
 							View Profile
 						</Button>
@@ -156,7 +180,7 @@ const ProfileCard: FC<ProfileCardProps> = (props) => {
 						<Button onClick={handleConnectionRemove} size="small" color="inherit">
 							Pending
 						</Button>
-					)}
+					)} */}
 				</Stack>
 			</Card>
 		</Box>

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/router';
 import { useChatContext } from '@/contexts/ChatContext';
 import { ChannelSort } from 'stream-chat';
 import {
@@ -19,6 +20,7 @@ import {
 	ChannelPreviewUIComponentProps,
 	useChatContext as useStreamChatContext,
 } from 'stream-chat-react';
+import { CustomStreamChatGenerics } from '@/types/customStreamChat';
 import 'stream-chat-react/dist/css/v2/index.css';
 import Menu01Icon from '@untitled-ui/icons-react/build/esm/Menu01';
 import type { Theme } from '@mui/material';
@@ -120,16 +122,34 @@ const ChatPage: PageType = () => {
 	const [isChannelInfoOpen, setIsChannelInfoOpen] = useState(false);
 	const [authModal, setAuthModal] = useState(false);
 	const { chatClient: client } = useChatContext();
-	const { data: session, status } = useSession();
+	const { setActiveChannel } = useStreamChatContext<CustomStreamChatGenerics>();
+	const { status } = useSession();
 	const rootRef = useRef<HTMLDivElement | null>(null);
 	const searchParams = useSearchParams();
 	//   const compose = searchParams.get('compose') === 'true';
 	const channelId = searchParams.get('channelId') || undefined;
 	const sidebar = useSidebar();
 
+	useEffect(() => {
+		const displayChannel = async () => {
+			if (!channelId) {
+				return;
+			}
+			const filter = {
+				id: { $eq: channelId ?? '' },
+				members: { $in: [client?.user?.id ?? ''] },
+			};
+			const channels = await client?.queryChannels(filter);
+			if (setActiveChannel) {
+				setActiveChannel(channels?.[0]!);
+			}
+		};
+		displayChannel();
+	}, [setActiveChannel]);
+
 	if (status === 'loading') {
 		return <></>;
-	} else if (status !== 'unauthenticated' || !client) {
+	} else if (status !== 'authenticated' || !client) {
 		return (
 			<Container maxWidth="xl" sx={{ mt: 2 }}>
 				<Typography variant="h4">Chat</Typography>
@@ -152,7 +172,7 @@ const ChatPage: PageType = () => {
 	//     : compose
 	//       ? 'compose'
 	//       : 'blank';
-	// else if (!client) {
+	// if (!client) {
 	// 	return <LoadingIndicator />;
 	// }
 
@@ -178,47 +198,45 @@ const ChatPage: PageType = () => {
 						right: 0,
 						top: 0,
 					}}>
-					<Chat client={client} theme="str-chat__theme-light">
-						<ChatSidebar
-							container={rootRef.current}
-							onClose={sidebar.handleClose}
-							open={sidebar.open}
-							client={client}
-						/>
-						<ChatContainer open={sidebar.open}>
-							{/* <Box sx={{ p: 2 }}>
+					<ChatSidebar
+						container={rootRef.current}
+						onClose={sidebar.handleClose}
+						open={sidebar.open}
+						client={client}
+					/>
+					<ChatContainer open={sidebar.open}>
+						{/* <Box sx={{ p: 2 }}>
 								<IconButton onClick={sidebar.handleToggle}>
 									<SvgIcon>
 										<Menu01Icon />
 									</SvgIcon>
 								</IconButton>
 							</Box> */}
-							{/* <Divider /> */}
-							{/* <Stack
+						{/* <Divider /> */}
+						{/* <Stack
 								sx={{
 									flexGrow: 1,
 									overflow: 'hidden',
 								}}> */}
-							<Channel>
-								<Window hideOnThread>
-									{/* <ChannelHeader /> */}
-									<CustomChannelHeader setIsChannelInfoOpen={setIsChannelInfoOpen} />
-									<MessageList Message={CustomMessage} />
-									<Divider />
-									<MessageInput
-										grow
-										// Input={CustomMessageInput}
-									/>
-								</Window>
-								<Thread />
-								<ChannelInfoSidebar
-									isOpen={isChannelInfoOpen}
-									onClose={() => setIsChannelInfoOpen((prev) => !prev)}
+						<Channel>
+							<Window hideOnThread>
+								{/* <ChannelHeader /> */}
+								<CustomChannelHeader setIsChannelInfoOpen={setIsChannelInfoOpen} />
+								<MessageList Message={CustomMessage} />
+								<Divider />
+								<MessageInput
+									grow
+									// Input={CustomMessageInput}
 								/>
-							</Channel>
-							{/* </Stack> */}
-						</ChatContainer>
-					</Chat>
+							</Window>
+							<Thread />
+							<ChannelInfoSidebar
+								isOpen={isChannelInfoOpen}
+								onClose={() => setIsChannelInfoOpen((prev) => !prev)}
+							/>
+						</Channel>
+						{/* </Stack> */}
+					</ChatContainer>
 				</Box>
 			</Box>
 		</>
