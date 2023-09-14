@@ -18,7 +18,7 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 import { useChannelPreviewInfo, useChannelStateContext } from 'stream-chat-react';
 import PopUpProfileCard from './PopUpProfileCard';
-import { ChannelMemberResponse } from 'stream-chat';
+import { ChannelMemberResponse, UserResponse } from 'stream-chat';
 import { DefaultStreamChatGenerics } from 'stream-chat-react/dist/types/types';
 import { CustomStreamChatGenerics } from '@/types/customStreamChat';
 import { useSession } from 'next-auth/react';
@@ -54,15 +54,19 @@ const ChannelInfoSidebar: React.FC<ChannelInfoSidebarProps> = ({ isOpen, onClose
 			);
 		} else {
 			// For personal channel type
-			const getRecipientId = (obj: Record<string, any>, givenKey: string): string | null => {
+			const getRecipient = (
+				obj: Record<string, ChannelMemberResponse<CustomStreamChatGenerics>>,
+				givenKey: string
+			): UserResponse<CustomStreamChatGenerics> | undefined => {
 				for (const key in obj) {
 					if (key !== givenKey) {
-						return key;
+						return obj[key].user;
 					}
 				}
-				return null; // Return null if the given key is not found in the object
+				return undefined;
 			};
-			const recipientId = getRecipientId(members!, session?.user.id ?? '');
+
+			const recipient = getRecipient(members!, session?.user.id ?? '');
 			return (
 				<Box
 					sx={{
@@ -74,7 +78,7 @@ const ChannelInfoSidebar: React.FC<ChannelInfoSidebarProps> = ({ isOpen, onClose
 						<CloseIcon onClick={onClose} sx={{ cursor: 'pointer' }} />
 					</Box>
 					<Box>
-						<CardMedia sx={{ height: 120, backgroundColor: 'gray' }} src="" />
+						<Box sx={{ height: 120, backgroundColor: 'gray' }} />
 						<CardContent sx={{ pt: 0 }}>
 							<Box
 								sx={{
@@ -103,38 +107,53 @@ const ChannelInfoSidebar: React.FC<ChannelInfoSidebarProps> = ({ isOpen, onClose
 										},
 									},
 									textAlign: 'center',
-									fontWeight: 450
+									fontWeight: 450,
 								}}>
-								<Link href={`/profile/${recipientId}`}>{displayTitle}</Link>
+								<Link href={`/profile/${recipient?.id}`}>{displayTitle}</Link>
 							</Box>
 
 							<Divider sx={{ my: 2 }} />
 
 							<Grid container spacing={2} rowSpacing={1} pb={3}>
-								<Grid xs={3}>
-									<Typography variant="subtitle2">Major</Typography>
-								</Grid>
-								<Grid xs={9}>
-									<Typography color="text.secondary" variant="body2">
-										CS
-									</Typography>
-								</Grid>
-								<Grid xs={3}>
-									<Typography variant="subtitle2">College</Typography>
-								</Grid>
-								<Grid xs={9}>
-									<Typography color="text.secondary" variant="body2">
-										Budget
-									</Typography>
-								</Grid>
-								<Grid xs={3}>
-									<Typography variant="subtitle2">Grade</Typography>
-								</Grid>
-								<Grid xs={9}>
-									<Typography color="text.secondary" variant="body2">
-										Budget
-									</Typography>
-								</Grid>
+								{recipient?.major && (
+									<>
+										<Grid xs={3}>
+											<Typography variant="subtitle2">Major</Typography>
+										</Grid>
+										<Grid xs={9}>
+											<Typography color="text.secondary" variant="body2">
+												{recipient.major}
+											</Typography>
+										</Grid>
+									</>
+								)}
+
+								{recipient?.college && (
+									<>
+										<Grid xs={3}>
+											<Typography variant="subtitle2">College</Typography>
+										</Grid>
+										<Grid xs={9}>
+											<Typography color="text.secondary" variant="body2">
+												{recipient.college}
+											</Typography>
+										</Grid>
+									</>
+								)}
+
+								{recipient?.grade && (
+									<>
+										<Grid xs={3}>
+											<Typography variant="subtitle2">Grade</Typography>
+										</Grid>
+
+										<Grid xs={9}>
+											<Typography color="text.secondary" variant="body2">
+												{recipient.grade}
+											</Typography>
+										</Grid>
+									</>
+								)}
 							</Grid>
 						</CardContent>
 					</Box>
