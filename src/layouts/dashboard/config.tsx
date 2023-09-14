@@ -84,15 +84,24 @@ export const useSections = () => {
 							</SvgIcon>
 						),
 					},
-					{
-						title: t(tokens.nav.playground),
-						path: paths.playground,
-						icon: (
-							<SvgIcon fontSize="small">
-								<EmojiPeopleIcon />
-							</SvgIcon>
-						),
-					},
+					// {
+					// 	title: t(tokens.nav.playground),
+					// 	path: paths.playground,
+					// 	icon: (
+					// 		<SvgIcon fontSize="small">
+					// 			<EmojiPeopleIcon />
+					// 		</SvgIcon>
+					// 	),
+					// },
+					// {
+					// 	title: t(tokens.nav.test),
+					// 	path: paths.test,
+					// 	icon: (
+					// 		<SvgIcon fontSize="small">
+					// 			<EmojiPeopleIcon />
+					// 		</SvgIcon>
+					// 	),
+					// },
 				],
 			},
 		];
