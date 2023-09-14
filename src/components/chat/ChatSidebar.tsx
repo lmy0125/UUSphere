@@ -42,13 +42,8 @@ export const ChatSidebar: FC<ChatSidebarProps> = (props) => {
 	const { client, container, onClose, open, ...other } = props;
 	const { data: session } = useSession();
 	const router = useRouter();
-	const { userChannels } = useChatContext();
-	// const [currentChannel, setCurrentChannel] = useState();
-	const currentChannelId = router.query.id;
-
 	const [searchFocused, setSearchFocused] = useState(false);
 	const [searchQuery, setSearchQuery] = useState<string>('');
-	//   const [searchResults, setSearchResults] = useState<Contact[]>([]);
 	const mdUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('md'));
 
 	const handleCompose = useCallback((): void => {
@@ -101,8 +96,15 @@ export const ChatSidebar: FC<ChatSidebarProps> = (props) => {
 	//     [router]
 	//   );
 
-	const classroomFilter = { type: 'classroom', members: { $in: [session?.user.id ?? ''] } };
-	const messageFilter = { type: 'messaging', members: { $in: [session?.user.id ?? ''] } };
+	const classroomFilter = {
+		type: { $eq: 'classroom' },
+		members: { $in: [session?.user.id ?? ''] },
+	};
+	const messageFilter = {
+		type: 'messaging',
+		members: { $in: [session?.user.id ?? ''] },
+		last_message_at: { $gt: '2021-01-15T09:30:20.45Z' },
+	};
 	const sort: ChannelSort = { last_message_at: -1 };
 
 	// TODO: Search functionality
@@ -130,7 +132,10 @@ export const ChatSidebar: FC<ChatSidebarProps> = (props) => {
 	const EmptyPersonalMessageList = () => {
 		return (
 			<Stack sx={{ alignItems: 'center', py: 5 }}>
-				<Typography sx={{ textAlign: 'center', mb: 2, fontWeight: 500 }} color="text.secondary" variant="h5">
+				<Typography
+					sx={{ textAlign: 'center', mb: 2, fontWeight: 500 }}
+					color="text.secondary"
+					variant="h5">
 					You have no conversations yet
 				</Typography>
 			</Stack>
@@ -173,25 +178,6 @@ export const ChatSidebar: FC<ChatSidebarProps> = (props) => {
         results={searchResults}
       /> */}
 			<Box sx={{ display: searchFocused ? 'none' : 'block' }}>
-				{/* <Scrollbar>
-					<Stack
-						component="ul"
-						spacing={0.5}
-						sx={{
-							listStyle: 'none',
-							m: 0,
-							p: 2,
-						}}>
-						{userChannels?.map((channel) => (
-							<ChatThreadItem
-								key={channel.id}
-								active={currentChannelId === channel.id}
-								channel={channel}
-								thread={thread}
-							/>
-						))}
-					</Stack>
-				</Scrollbar> */}
 				<Typography variant="subtitle1" sx={{ px: 2, py: 1 }}>
 					Classrooms
 				</Typography>
