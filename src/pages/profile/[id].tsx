@@ -1,6 +1,8 @@
 import type { ChangeEvent } from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import type { GetServerSideProps } from 'next';
+import { useChatContext } from 'stream-chat-react';
+import { useRouter } from 'next/router';
 import { MessageChatSquare, UserPlus02, Edit01 } from '@untitled-ui/icons-react/build/esm';
 import {
 	Avatar,
@@ -17,8 +19,6 @@ import {
 	Dialog,
 	DialogContent,
 } from '@mui/material';
-// import { socialApi } from 'src/api/social';
-import { RouterLink } from '@/components/router-link';
 // import { Seo } from 'src/components/seo';
 import { useMounted } from '@/hooks/use-mounted';
 // import { usePageView } from 'src/hooks/use-page-view';
@@ -110,6 +110,8 @@ interface ProfileProps {
 }
 
 export const ProfilePage: PageType<ProfileProps> = ({ initUser }) => {
+	const { client } = useChatContext();
+	const router = useRouter();
 	const [user, setUser] = useState<User>(initUser);
 	const [currentTab, setCurrentTab] = useState<string>('about');
 	const [status, setStatus] = useState<string>('not_connected');
@@ -146,6 +148,16 @@ export const ProfilePage: PageType<ProfileProps> = ({ initUser }) => {
 		},
 		[]
 	);
+
+	const handleMessageUser = async () => {
+		if (client.user) {
+			const channel = client.channel('messaging', {
+				members: [client.user.id, initUser.id],
+			});
+			await channel.watch();
+			router.push(`/chat?channelId=${channel.id}`);
+		}
+	};
 
 	const showConnect = status === 'not_connected';
 	const showPending = status === 'pending';
@@ -307,7 +319,7 @@ export const ProfilePage: PageType<ProfileProps> = ({ initUser }) => {
 											xs: 'none',
 										},
 									}}>
-									{showConnect && (
+									{/* {showConnect && (
 										<Button
 											onClick={handleConnectionAdd}
 											size="small"
@@ -328,10 +340,9 @@ export const ProfilePage: PageType<ProfileProps> = ({ initUser }) => {
 											variant="outlined">
 											Pending
 										</Button>
-									)}
+									)} */}
 									<Button
-										component={RouterLink}
-										href={paths.dashboard.chat}
+										onClick={handleMessageUser}
 										size="small"
 										startIcon={
 											<SvgIcon>
@@ -339,7 +350,7 @@ export const ProfilePage: PageType<ProfileProps> = ({ initUser }) => {
 											</SvgIcon>
 										}
 										variant="contained">
-										Send Message
+										Message
 									</Button>
 								</Stack>
 							)}
