@@ -79,7 +79,7 @@ const MutualClassmatesPage: PageType = () => {
 				{Object.entries(mutualClassmates).length === 0 && !isLoading && (
 					<Stack sx={{ alignItems: 'center' }}>
 						<Typography variant="h5" sx={{ fontWeight: 500, mb: 1 }}>
-							You don't have mutual classmates yet.
+							You have no mutual classmates yet.
 						</Typography>
 						<Button variant="contained" onClick={() => router.push(paths.index)}>
 							Join Classes

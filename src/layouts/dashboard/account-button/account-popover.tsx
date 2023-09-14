@@ -35,7 +35,7 @@ export const AccountPopover: FC<AccountPopoverProps> = (props) => {
 
 	const handleLogOut = async () => {
 		signOut();
-		await client?.disconnectUser();
+		client?.disconnectUser();
 	};
 
 	return (
