@@ -36,7 +36,7 @@ export default function AuthModal({
 					}}>
 					<Typography variant="h5">Sign up/Sign in</Typography>
 					<Typography align="center" color="text.primary" sx={{ mt: 2 }} variant="body2">
-						Use your school email to obtain full access of the application.
+						This product is in active development and ongoing improvement.
 					</Typography>
 				</Box>
 				<Stack alignItems="center" direction="row" spacing={3} sx={{ mt: 4 }}>
