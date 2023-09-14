@@ -4,13 +4,14 @@ import Link from 'next/link';
 import toast from 'react-hot-toast';
 import PropTypes from 'prop-types';
 import DotsHorizontalIcon from '@untitled-ui/icons-react/build/esm/DotsHorizontal';
-import { Avatar, Box, Button, Card, Stack, Typography } from '@mui/material';
+import { Avatar, Box, Button, Card, Stack, SvgIcon, Typography } from '@mui/material';
 import type { Connection } from '@/types/social';
 import axios from 'axios';
 import useSWR from 'swr';
 import { Class, User } from '@prisma/client';
 import { useRouter } from 'next/router';
 import { useChatContext } from '@/contexts/ChatContext';
+import { MessageChatSquare } from '@untitled-ui/icons-react/build/esm';
 
 interface ProfileCardProps {
 	userId: string;
@@ -160,7 +161,12 @@ const ProfileCard: FC<ProfileCardProps> = (props) => {
 							variant="contained"
 							color="primary"
 							onClick={handleMessageUser}
-							sx={{ float: 'right' }}>
+							sx={{ float: 'right' }}
+							startIcon={
+								<SvgIcon>
+									<MessageChatSquare />
+								</SvgIcon>
+							}>
 							Message
 						</Button>
 					)}
