@@ -20,6 +20,7 @@ import {
 	ChannelPreviewUIComponentProps,
 	useChatContext as useStreamChatContext,
 } from 'stream-chat-react';
+import { Channel as ChannelType } from 'stream-chat';
 import { CustomStreamChatGenerics } from '@/types/customStreamChat';
 import 'stream-chat-react/dist/css/v2/index.css';
 import Menu01Icon from '@untitled-ui/icons-react/build/esm/Menu01';
@@ -122,22 +123,7 @@ const ChatPage: PageType = () => {
 	const [authModal, setAuthModal] = useState(false);
 	const { chatClient } = useChatContext();
 	const { status } = useSession();
-	if (status === 'loading') {
-		return <></>;
-	} else if (status !== 'authenticated' || !chatClient) {
-		return (
-			<Container maxWidth="xl" sx={{ mt: 2 }}>
-				<Typography variant="h4">Chat</Typography>
-				<Stack sx={{ alignItems: 'center', mt: 8 }}>
-					<Button variant="contained" onClick={() => setAuthModal(true)}>
-						Please login to use this feature
-					</Button>
-					<AuthModal open={authModal} setAuthModal={setAuthModal} />
-				</Stack>
-			</Container>
-		);
-	}
-
+	const [currentChannel, setCurrentChannel] = useState<ChannelType<CustomStreamChatGenerics>>();
 	const [isChannelInfoOpen, setIsChannelInfoOpen] = useState(false);
 	const { client, setActiveChannel } = useStreamChatContext<CustomStreamChatGenerics>();
 	const rootRef = useRef<HTMLDivElement | null>(null);
@@ -155,13 +141,30 @@ const ChatPage: PageType = () => {
 				members: { $in: [client?.user?.id ?? ''] },
 			};
 			const channels = await client?.queryChannels(filter);
-			if (setActiveChannel) {
-				setActiveChannel(channels?.[0]!);
+			setCurrentChannel(channels?.[0]);
+
+			if (setActiveChannel && currentChannel) {
+				setActiveChannel(currentChannel);
 			}
 		};
 		displayChannel();
-	}, [setActiveChannel, client]);
+	}, [channelId, setActiveChannel, client, currentChannel]);
 
+	if (status === 'loading') {
+		return <></>;
+	} else if (status !== 'authenticated' || !chatClient) {
+		return (
+			<Container maxWidth="xl" sx={{ mt: 1 }}>
+				<Typography variant="h4">Chat</Typography>
+				<Stack sx={{ alignItems: 'center', mt: 8 }}>
+					<Button variant="contained" onClick={() => setAuthModal(true)}>
+						Please login to use this feature
+					</Button>
+					<AuthModal open={authModal} setAuthModal={setAuthModal} />
+				</Stack>
+			</Container>
+		);
+	}
 	//   usePageView();
 
 	//   useThreads();
