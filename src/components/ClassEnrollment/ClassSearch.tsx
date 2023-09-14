@@ -43,7 +43,7 @@ export const ClassSearch: FC<ProductListSearchProps> = (props) => {
 					disableUnderline
 					fullWidth
 					inputProps={{ ref: queryRef }}
-					placeholder="Search by product name"
+					placeholder="Search by class name"
 					sx={{ flexGrow: 1 }}
 					value={query}
 					onChange={(e) => {

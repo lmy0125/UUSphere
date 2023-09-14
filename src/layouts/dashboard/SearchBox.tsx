@@ -156,7 +156,7 @@ const SearchBox: FC = () => {
 					</>
 				),
 			}}
-			placeholder="Search..."
+			placeholder="Search users by name or email"
 			variant="outlined"
 			onKeyDown={(event) => {
 				if (event.key === 'Enter') {
