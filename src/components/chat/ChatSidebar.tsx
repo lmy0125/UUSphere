@@ -2,21 +2,8 @@ import { ChangeEvent, FC, useEffect } from 'react';
 import { useCallback, useState } from 'react';
 import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
-import PlusIcon from '@untitled-ui/icons-react/build/esm/Plus';
-import XIcon from '@untitled-ui/icons-react/build/esm/X';
 import type { Theme } from '@mui/material';
-import {
-	Box,
-	Button,
-	Divider,
-	Drawer,
-	IconButton,
-	Stack,
-	SvgIcon,
-	Typography,
-	useMediaQuery,
-} from '@mui/material';
-// import { chatApi } from 'src/api/chat';
+import { Box, Button, Divider, Drawer, Stack, Typography, useMediaQuery } from '@mui/material';
 import { Scrollbar } from '@/components/scrollbar';
 import { paths } from '@/paths';
 // import { useSelector } from 'src/store';
@@ -24,7 +11,7 @@ import type { Contact, Thread } from '@/types/chat';
 // import { ChatSidebarSearch } from './chat-sidebar-search';
 import { ChatThreadItem } from './ChatThreadItem';
 import { useChatContext } from '@/contexts/ChatContext';
-import { ChannelSort, StreamChat } from 'stream-chat';
+import { Channel, ChannelSort, StreamChat } from 'stream-chat';
 import { ChannelList, SearchResultItemProps, SearchResultsListProps } from 'stream-chat-react';
 import { useSession } from 'next-auth/react';
 import { CustomChannelPreview, CustomChannelList } from './CustomChannelEntry';
@@ -100,10 +87,20 @@ export const ChatSidebar: FC<ChatSidebarProps> = (props) => {
 		type: { $eq: 'classroom' },
 		members: { $in: [session?.user.id ?? ''] },
 	};
+	const customClassroomChannelFilterFunction = (channels: Channel[]) => {
+		return channels.filter((channel) => {
+			return channel.type === 'classroom';
+		});
+	};
 	const messageFilter = {
 		type: 'messaging',
 		members: { $in: [session?.user.id ?? ''] },
 		last_message_at: { $gt: '2021-01-15T09:30:20.45Z' },
+	};
+	const customMessageChannelFilterFunction = (channels: Channel[]) => {
+		return channels.filter((channel) => {
+			return channel.type === 'messaging';
+		});
 	};
 	const sort: ChannelSort = { last_message_at: -1 };
 
@@ -183,6 +180,7 @@ export const ChatSidebar: FC<ChatSidebarProps> = (props) => {
 				</Typography>
 
 				<ChannelList
+					channelRenderFilterFn={customClassroomChannelFilterFunction}
 					filters={classroomFilter}
 					sort={sort}
 					// showChannelSearch
@@ -198,10 +196,12 @@ export const ChatSidebar: FC<ChatSidebarProps> = (props) => {
 					Personal
 				</Typography>
 				<ChannelList
+					channelRenderFilterFn={customMessageChannelFilterFunction}
 					filters={messageFilter}
 					sort={sort}
 					// additionalChannelSearchProps={additionalProps}
 					Preview={CustomChannelPreview}
+					List={CustomChannelList}
 					EmptyStateIndicator={EmptyPersonalMessageList}
 				/>
 			</Box>

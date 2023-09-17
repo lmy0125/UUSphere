@@ -9,8 +9,9 @@ import {
 } from 'stream-chat-react';
 import { Stack, Avatar, Box, Typography } from '@mui/material';
 import { formatDistanceStrict } from 'date-fns';
+import { DefaultGenerics } from 'stream-chat';
 
-export const CustomChannelPreview = (props: ChannelPreviewUIComponentProps) => {
+export const CustomChannelPreview = (props: ChannelPreviewUIComponentProps<DefaultGenerics>) => {
 	const { channel, setActiveChannel, displayImage, displayTitle } = props;
 
 	const { channel: activeChannel } = useChatContext();
