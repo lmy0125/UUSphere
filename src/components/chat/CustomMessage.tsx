@@ -1,4 +1,5 @@
 import React, { useRef } from 'react';
+import Link from 'next/link';
 import {
 	Attachment,
 	// Avatar,
@@ -15,12 +16,13 @@ import {
 	useMessageContext,
 } from 'stream-chat-react';
 
-import { Avatar, Stack, Box, Card, CardMedia, Typography, Link } from '@mui/material';
+import { Avatar, Stack, Box, Card, CardMedia, CardContent, Typography, Paper } from '@mui/material';
 
 const CustomMessage = () => {
 	const { isReactionEnabled, message, reactionSelectorRef, showDetailedReactions, isMyMessage } =
 		useMessageContext();
 	const messageWrapperRef = useRef(null);
+	console.log(message);
 
 	const hasReactions = messageHasReactions(message);
 	const hasAttachments = message.attachments && message.attachments.length > 0;
@@ -54,25 +56,42 @@ const CustomMessage = () => {
 				/>
 				<Box sx={{ flexShrink: 0, maxWidth: '95%' }}>
 					<Stack
-						sx={{ alignItems: 'center', mb: 1, textAlign: isMyMessage() ? 'right' : '' }}
+						sx={{ alignItems: 'center', mb: 1,}}
 						direction={isMyMessage() ? 'row-reverse' : 'row'}
 						spacing={2}>
-						<Link color="inherit" sx={{ cursor: 'pointer'}} variant="subtitle2">
+						<Box
+							sx={{
+								a: {
+									color: 'inherit',
+									textDecoration: 'none',
+									'&:hover': {
+										textDecoration: 'underline',
+									},
+								},
+							}}>
+							<Link href={`/profile/${message.user?.id}`}>{message.user?.name}</Link>
+						</Box>
+
+						{/* <Link color="inherit"  variant="subtitle2">
 							{message.user?.name}
-						</Link>
+						</Link> */}
 						<Typography color="text.secondary" noWrap variant="caption">
 							<MessageTimestamp />
 						</Typography>
 					</Stack>
-					<Card
+					<Paper
 						elevation={10}
 						sx={{
+							display: 'inline-block',
 							backgroundColor: isMyMessage() ? 'text.secondary' : 'background.paper',
 							color: isMyMessage() ? 'primary.contrastText' : 'text.primary',
-							px: 2,
-							py: 0,
+							float: isMyMessage() ? 'right' : 'left',
+							px: 3,
+							py: 0.1,
+							borderRadius: 3,
 						}}>
 						{/* <MessageText /> */}
+
 						<p>{message.text}</p>
 						{hasAttachments && message.attachments && (
 							<Box sx={{ pb: 2 }}>
@@ -85,8 +104,8 @@ const CustomMessage = () => {
 						)}
 
 						{/* {hasReactions && !showDetailedReactions && isReactionEnabled && <ReactionsList />} */}
-						{/* <MessageRepliesCountButton reply_count={message.reply_count} /> */}
-					</Card>
+						<MessageRepliesCountButton reply_count={message.reply_count} />
+					</Paper>
 				</Box>
 
 				{/* <MessageOptions
