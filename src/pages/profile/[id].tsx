@@ -1,9 +1,8 @@
 import type { ChangeEvent } from 'react';
 import { useCallback, useEffect, useState } from 'react';
-import type { GetServerSideProps } from 'next';
 import { useChatContext } from 'stream-chat-react';
 import { useRouter } from 'next/router';
-import { MessageChatSquare, UserPlus02, Edit01 } from '@untitled-ui/icons-react/build/esm';
+import { MessageChatSquare, Edit01 } from '@untitled-ui/icons-react/build/esm';
 import {
 	Avatar,
 	Box,
@@ -23,12 +22,10 @@ import {
 import { useMounted } from '@/hooks/use-mounted';
 // import { usePageView } from 'src/hooks/use-page-view';
 import { Layout as DashboardLayout } from '@/layouts/dashboard';
-import { paths } from '@/paths';
 // import { SocialConnections } from 'src/sections/dashboard/social/social-connections';
 // import { SocialTimeline } from 'src/sections/dashboard/social/social-timeline';
 import type { Page as PageType } from '@/types/page';
 import type { Connection, Post, Profile } from '@/types/social';
-import prisma from '@/lib/prisma';
 import { User } from '@prisma/client';
 import Calendar from '@/components/Calendar';
 import { useSession } from 'next-auth/react';
@@ -39,11 +36,12 @@ import FemaleIcon from '@mui/icons-material/Female';
 import HorizontalRuleIcon from '@mui/icons-material/HorizontalRule';
 import axios from 'axios';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
+import useSWR from 'swr';
 
 const tabs = [
 	{ label: 'About', value: 'about' },
-	{ label: 'Friends', value: 'friends' },
 	{ label: 'Schedule', value: 'schedule' },
+	// { label: 'Friends', value: 'friends' },
 	{ label: 'Clubs', value: 'clubs' },
 ];
 
@@ -105,27 +103,26 @@ const tabs = [
 //   });
 // };
 
-interface ProfileProps {
-	initUser: User;
-}
-
-export const ProfilePage: PageType<ProfileProps> = ({ initUser }) => {
+export const ProfilePage: PageType = () => {
 	const { client } = useChatContext();
 	const router = useRouter();
-	const [user, setUser] = useState<User>(initUser);
+	// const [user, setUser] = useState<User>(initUser);
 	const [currentTab, setCurrentTab] = useState<string>('about');
 	const [status, setStatus] = useState<string>('not_connected');
 	const [profileFormToggle, setProfileFormToggle] = useState(false);
-	//   const posts = usePosts();
 	const [connectionsQuery, setConnectionsQuery] = useState<string>('');
 	//   const connections = useConnections(connectionsQuery);
 	const [isAuthenticatedUser, setIsAuthenticatedUser] = useState(false);
 	const { data: session } = useSession();
-	// const fetcher = (url: string) => axios.get(url).then((res) => res.data);
-	// const { data, error } = useSWR('api/user', fetcher);
+	const fetcher = (url: string) => axios.get(url).then((res) => res.data);
+	const {
+		data: user,
+		isLoading,
+		mutate,
+	} = useSWR<User>(`/api/user/?id=${router.query.id}`, fetcher);
 
 	useEffect(() => {
-		setIsAuthenticatedUser(session?.user.id == user.id);
+		setIsAuthenticatedUser(session?.user.id == user?.id);
 	}, [session, user]);
 
 	//   usePageView();
@@ -150,9 +147,9 @@ export const ProfilePage: PageType<ProfileProps> = ({ initUser }) => {
 	);
 
 	const handleMessageUser = async () => {
-		if (client.user) {
+		if (client.user && user) {
 			const channel = client.channel('messaging', {
-				members: [client.user.id, initUser.id],
+				members: [client.user.id, user.id],
 			});
 			await channel.watch();
 			router.push(`/chat?channelId=${channel.id}`);
@@ -162,8 +159,12 @@ export const ProfilePage: PageType<ProfileProps> = ({ initUser }) => {
 	const showConnect = status === 'not_connected';
 	const showPending = status === 'pending';
 
+	if (isLoading) {
+		return <h1>Loading...</h1>;
+	}
+
 	// User Id doesn't exist
-	if (!initUser) {
+	if (!user) {
 		return (
 			<Box
 				component="main"
@@ -303,7 +304,7 @@ export const ProfilePage: PageType<ProfileProps> = ({ initUser }) => {
 											<ProfileEditForm
 												user={user}
 												setProfileFormToggle={setProfileFormToggle}
-												setUser={setUser}
+												mutate={mutate}
 											/>
 										</DialogContent>
 									</Dialog>
@@ -382,25 +383,12 @@ export const ProfilePage: PageType<ProfileProps> = ({ initUser }) => {
 							<About user={user} setProfileFormToggle={setProfileFormToggle} />
 						)}
 						{currentTab === 'schedule' && <Calendar />}
+						{currentTab === 'clubs' && <Calendar />}
 					</Box>
 				</Container>
 			</Box>
 		</>
 	);
-};
-
-export const getServerSideProps: GetServerSideProps<ProfileProps> = async (context) => {
-	const id = context.query.id as string;
-
-	const user = await prisma.user.findUnique({
-		where: {
-			id: id,
-		},
-	});
-
-	return {
-		props: { key: String(user?.id), initUser: JSON.parse(JSON.stringify(user)) },
-	};
 };
 
 ProfilePage.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;

@@ -15,6 +15,7 @@ import {
 import { genders, majors, homelands, grades, colleges } from '@/constants/personalInfoOptions';
 import { User } from '@prisma/client';
 import axios from 'axios';
+import { KeyedMutator } from 'swr';
 
 interface PersonalInfo {
 	name: string;
@@ -29,11 +30,11 @@ interface PersonalInfo {
 
 interface ProfileEditFormProps {
 	user: User;
-	setUser: Dispatch<SetStateAction<User>>;
+	mutate: KeyedMutator<User>;
 	setProfileFormToggle: Dispatch<SetStateAction<boolean>>;
 }
 
-const ProfileEditForm: FC<ProfileEditFormProps> = ({ user, setUser, setProfileFormToggle }) => {
+const ProfileEditForm: FC<ProfileEditFormProps> = ({ user, mutate, setProfileFormToggle }) => {
 	const [personalInfo, setPersonalInfo] = useState<PersonalInfo>({
 		name: user.name,
 		email: user.email,
@@ -45,19 +46,10 @@ const ProfileEditForm: FC<ProfileEditFormProps> = ({ user, setUser, setProfileFo
 		bio: user.bio ?? '',
 	});
 
-	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+	const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-		axios.post('/api/updateUser', personalInfo);
-		setUser({
-			...user,
-			name: personalInfo.name,
-			gender: personalInfo.gender,
-			grade: personalInfo.grade,
-			college: personalInfo.college,
-			major: personalInfo.major,
-			homeland: personalInfo.homeland,
-			bio: personalInfo.bio,
-		});
+		await axios.put('/api/user', personalInfo);
+		mutate();
 		setProfileFormToggle(false);
 	};
 
