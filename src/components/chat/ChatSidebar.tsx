@@ -1,41 +1,39 @@
-import { ChangeEvent, FC, useEffect } from 'react';
+import { ChangeEvent, Dispatch, FC, SetStateAction, useEffect } from 'react';
 import { useCallback, useState } from 'react';
 import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
-import type { Theme } from '@mui/material';
+import { SvgIcon, Theme } from '@mui/material';
 import { Box, Button, Divider, Drawer, Stack, Typography, useMediaQuery } from '@mui/material';
+import EditNoteIcon from '@mui/icons-material/EditNote';
 import { Scrollbar } from '@/components/scrollbar';
 import { paths } from '@/paths';
 // import { useSelector } from 'src/store';
 import type { Contact, Thread } from '@/types/chat';
 // import { ChatSidebarSearch } from './chat-sidebar-search';
-import { ChatThreadItem } from './ChatThreadItem';
-import { useChatContext } from '@/contexts/ChatContext';
 import { Channel, ChannelSort, StreamChat } from 'stream-chat';
 import { ChannelList, SearchResultItemProps, SearchResultsListProps } from 'stream-chat-react';
 import { useSession } from 'next-auth/react';
 import { CustomChannelPreview, CustomChannelList } from './CustomChannelEntry';
 import { CustomDropdown, CustomResultItem } from './CustomSearch';
 import { CustomStreamChatGenerics } from '@/types/customStreamChat';
+import { useComposeModeContext } from '@/contexts/ComposeModeContext';
 
 interface ChatSidebarProps {
 	container?: HTMLDivElement | null;
 	onClose?: () => void;
 	open?: boolean;
 	client: StreamChat<CustomStreamChatGenerics>;
+	// setComposeMode: Dispatch<SetStateAction<boolean>>;
 }
 
 export const ChatSidebar: FC<ChatSidebarProps> = (props) => {
 	const { client, container, onClose, open, ...other } = props;
 	const { data: session } = useSession();
 	const router = useRouter();
+	const { setComposeMode } = useComposeModeContext();
 	const [searchFocused, setSearchFocused] = useState(false);
 	const [searchQuery, setSearchQuery] = useState<string>('');
 	const mdUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('md'));
-
-	const handleCompose = useCallback((): void => {
-		router.push(paths.dashboard.chat + '?compose=true');
-	}, [router]);
 
 	//   const handleSearchChange = useCallback(
 	//     async (event: ChangeEvent<HTMLInputElement>): Promise<void> => {
@@ -146,17 +144,17 @@ export const ChatSidebar: FC<ChatSidebarProps> = (props) => {
 					Chats
 				</Typography>
 
-				{/* <Button
-					onClick={handleCompose}
+				<Button
+					onClick={() => setComposeMode(true)}
 					startIcon={
 						<SvgIcon>
-							<PlusIcon />
+							<EditNoteIcon />
 						</SvgIcon>
 					}
 					variant="contained">
-					Group
+					New
 				</Button>
-				{!mdUp && (
+				{/* {!mdUp && (
 					<IconButton onClick={onClose}>
 						<SvgIcon>
 							<XIcon />

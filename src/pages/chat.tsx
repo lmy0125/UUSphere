@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { useRouter } from 'next/router';
 import { useChatContext } from '@/contexts/ChatContext';
-import { ChannelSort } from 'stream-chat';
+import ComposeModeContextProvider, {
+	ComposeModeContextConsumer,
+} from '@/contexts/ComposeModeContext';
 import {
 	Chat,
 	Channel,
@@ -23,7 +24,6 @@ import {
 import { Channel as ChannelType } from 'stream-chat';
 import { CustomStreamChatGenerics } from '@/types/customStreamChat';
 import 'stream-chat-react/dist/css/v2/index.css';
-import Menu01Icon from '@untitled-ui/icons-react/build/esm/Menu01';
 import type { Theme } from '@mui/material';
 import { Stack, Box, Divider, Button, Container, Typography, useMediaQuery } from '@mui/material';
 // import { Seo } from 'src/components/seo';
@@ -42,6 +42,7 @@ import CustomMessageInput from '@/components/chat/CustomMessageInput';
 import ChannelInfoSidebar from '@/components/chat/ChannelInfoSidebar';
 import CustomMessage from '@/components/chat/CustomMessage';
 import AuthModal from '@/components/AuthModal';
+import Composer from '@/components/chat/Composer';
 
 /**
  * NOTE:
@@ -179,7 +180,7 @@ const ChatPage: PageType = () => {
 	// }
 
 	return (
-		<>
+		<ComposeModeContextProvider>
 			{/* <Seo title="Dashboard: Chat" /> */}
 			<Divider />
 			<Box
@@ -206,6 +207,7 @@ const ChatPage: PageType = () => {
 						open={sidebar.open}
 						client={client}
 					/>
+
 					<ChatContainer open={sidebar.open}>
 						{/* <Box sx={{ p: 2 }}>
 								<IconButton onClick={sidebar.handleToggle}>
@@ -215,33 +217,39 @@ const ChatPage: PageType = () => {
 								</IconButton>
 							</Box> */}
 						{/* <Divider /> */}
-						{/* <Stack
-								sx={{
-									flexGrow: 1,
-									overflow: 'hidden',
-								}}> */}
 						<Channel>
-							<Window hideOnThread>
-								{/* <ChannelHeader /> */}
-								<CustomChannelHeader setIsChannelInfoOpen={setIsChannelInfoOpen} />
-								<MessageList Message={CustomMessage} />
-								<Divider />
-								<MessageInput
-									grow
-									// Input={CustomMessageInput}
-								/>
-							</Window>
-							<Thread />
-							<ChannelInfoSidebar
-								isOpen={isChannelInfoOpen}
-								onClose={() => setIsChannelInfoOpen((prev) => !prev)}
-							/>
+							<ComposeModeContextConsumer>
+								{(value) => {
+									if (value.composeMode) {
+										return <Composer />;
+									}
+									return (
+										<>
+											<Window hideOnThread>
+												<CustomChannelHeader
+													setIsChannelInfoOpen={setIsChannelInfoOpen}
+												/>
+												<MessageList Message={CustomMessage} />
+												<Divider />
+												<MessageInput
+													grow
+													// Input={CustomMessageInput}
+												/>
+											</Window>
+											<Thread />
+											<ChannelInfoSidebar
+												isOpen={isChannelInfoOpen}
+												onClose={() => setIsChannelInfoOpen((prev) => !prev)}
+											/>
+										</>
+									);
+								}}
+							</ComposeModeContextConsumer>
 						</Channel>
-						{/* </Stack> */}
 					</ChatContainer>
 				</Box>
 			</Box>
-		</>
+		</ComposeModeContextProvider>
 	);
 };
 

@@ -10,9 +10,11 @@ import {
 import { Stack, Avatar, Box, Typography } from '@mui/material';
 import { formatDistanceStrict } from 'date-fns';
 import { DefaultGenerics } from 'stream-chat';
+import { useComposeModeContext } from '@/contexts/ComposeModeContext';
 
 export const CustomChannelPreview = (props: ChannelPreviewUIComponentProps<DefaultGenerics>) => {
 	const { channel, setActiveChannel, displayImage, displayTitle } = props;
+	const { setComposeMode } = useComposeModeContext();
 
 	const { channel: activeChannel } = useChatContext();
 
@@ -44,12 +46,19 @@ export const CustomChannelPreview = (props: ChannelPreviewUIComponentProps<Defau
 		});
 	};
 
+	const handleSelectChannel = () => {
+		if (setActiveChannel) {
+			setComposeMode(false);
+			setActiveChannel(channel);
+		}
+	};
+
 	if (channel.type === 'classroom') {
 		return (
 			<Stack
 				component="li"
 				direction="row"
-				onClick={() => setActiveChannel!(channel)}
+				onClick={handleSelectChannel}
 				spacing={2}
 				sx={{
 					borderRadius: 2.5,
@@ -93,7 +102,7 @@ export const CustomChannelPreview = (props: ChannelPreviewUIComponentProps<Defau
 			<Stack
 				component="li"
 				direction="row"
-				onClick={() => setActiveChannel!(channel)}
+				onClick={handleSelectChannel}
 				spacing={2}
 				sx={{
 					borderRadius: 2.5,
