@@ -16,13 +16,12 @@ import {
 	useMessageContext,
 } from 'stream-chat-react';
 
-import { Avatar, Stack, Box, Card, CardMedia, CardContent, Typography, Paper } from '@mui/material';
+import { Avatar, Stack, Box, Typography, Paper } from '@mui/material';
 
 const CustomMessage = () => {
 	const { isReactionEnabled, message, reactionSelectorRef, showDetailedReactions, isMyMessage } =
 		useMessageContext();
 	const messageWrapperRef = useRef(null);
-	console.log(message);
 
 	const hasReactions = messageHasReactions(message);
 	const hasAttachments = message.attachments && message.attachments.length > 0;
@@ -71,10 +70,6 @@ const CustomMessage = () => {
 							}}>
 							<Link href={`/profile/${message.user?.id}`}>{message.user?.name}</Link>
 						</Box>
-
-						{/* <Link color="inherit"  variant="subtitle2">
-							{message.user?.name}
-						</Link> */}
 						<Typography color="text.secondary" noWrap variant="caption">
 							<MessageTimestamp />
 						</Typography>
