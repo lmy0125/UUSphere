@@ -34,8 +34,8 @@ export default function AuthModal({
 						flexDirection: 'column',
 						alignItems: 'center',
 					}}>
-					<Typography variant="h5">Sign up/Sign in</Typography>
-					<Typography align="center" color="text.primary" sx={{ mt: 2 }} variant="body2">
+					<Typography variant="h5">Sign up/Log in</Typography>
+					<Typography align="center" color="text.primary" sx={{ mt: 2 }} variant="body1">
 						This product is in active development and ongoing improvement.
 					</Typography>
 				</Box>
@@ -55,7 +55,7 @@ const modalStyle = {
 	top: '50%',
 	left: '50%',
 	transform: 'translate(-50%, -50%)',
-	width: 500,
+	width: 550,
 	bgcolor: 'background.paper',
 	border: '2px',
 	borderRadius: '8px',
