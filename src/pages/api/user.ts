@@ -17,7 +17,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 			res.status(500).json({ message: 'Failed to get user.' });
 		}
 	}
-	if (req.method === 'PUT') {
+	else if (req.method === 'PUT') {
 		// Check if user is authenticated
 		const session = await getServerSession(req, res, authOptions);
 		if (!session) {
