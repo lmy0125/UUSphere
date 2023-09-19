@@ -34,7 +34,10 @@ const ChannelInfoSidebar: React.FC<ChannelInfoSidebarProps> = ({ isOpen, onClose
 	const { displayImage, displayTitle } = useChannelPreviewInfo({ channel });
 
 	if (isOpen) {
-		if (channel.type === 'classroom') {
+		if (
+			channel.type === 'classroom' ||
+			(channel.data?.member_count && channel.data?.member_count > 2)
+		) {
 			return (
 				<Box
 					sx={{
@@ -46,7 +49,7 @@ const ChannelInfoSidebar: React.FC<ChannelInfoSidebarProps> = ({ isOpen, onClose
 						<CloseIcon onClick={onClose} sx={{ cursor: 'pointer' }} />
 					</Box>
 					<MenuList>
-						{Object.entries(members!).map(([key, value]) => {
+						{Object.entries(members ?? []).map(([key, value]) => {
 							return <PopUpProfileMenuItem key={key} value={value} />;
 						})}
 					</MenuList>

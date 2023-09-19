@@ -7,13 +7,16 @@ import {
 	ChannelListMessengerProps,
 	ChatDownProps,
 } from 'stream-chat-react';
-import { Stack, Avatar, Box, Typography } from '@mui/material';
+import { Stack, Avatar, AvatarGroup, Box, Typography } from '@mui/material';
 import { formatDistanceStrict } from 'date-fns';
 import { DefaultGenerics } from 'stream-chat';
 import { useComposeModeContext } from '@/contexts/ComposeModeContext';
+import { useSession } from 'next-auth/react';
 
 export const CustomChannelPreview = (props: ChannelPreviewUIComponentProps<DefaultGenerics>) => {
 	const { channel, setActiveChannel, displayImage, displayTitle } = props;
+	const { data: session } = useSession();
+	const members = channel.state.members;
 	const { setComposeMode } = useComposeModeContext();
 
 	const { channel: activeChannel } = useChatContext();
@@ -98,46 +101,128 @@ export const CustomChannelPreview = (props: ChannelPreviewUIComponentProps<Defau
 			</Stack>
 		);
 	} else {
-		return (
-			<Stack
-				component="li"
-				direction="row"
-				onClick={handleSelectChannel}
-				spacing={2}
-				sx={{
-					borderRadius: 2.5,
-					cursor: 'pointer',
-					px: 2,
-					py: 1.5,
-					mx: 1.5,
-					my: 1,
-					'&:hover': {
-						backgroundColor: 'action.hover',
-					},
-					...(selected && {
-						backgroundColor: 'action.hover',
-					}),
-				}}>
-				<Avatar src={displayImage} sx={{ textAlign: 'center' }} />
-				<Box
+		// One-to-one chat
+		if ((channel.data?.member_count as number) === 2) {
+			return (
+				<Stack
+					component="li"
+					direction="row"
+					onClick={handleSelectChannel}
+					spacing={2}
 					sx={{
-						flexGrow: 1,
-						overflow: 'hidden',
+						borderRadius: 2.5,
+						cursor: 'pointer',
+						px: 2,
+						py: 1.5,
+						mx: 1.5,
+						my: 1,
+						'&:hover': {
+							backgroundColor: 'action.hover',
+						},
+						...(selected && {
+							backgroundColor: 'action.hover',
+						}),
 					}}>
-					<Typography noWrap variant="subtitle2">
-						{displayTitle || 'Channel'}
-					</Typography>
-					<Typography color="text.secondary" noWrap sx={{ flexGrow: 1 }} variant="subtitle2">
-						{renderMessageText()}
-					</Typography>
-				</Box>
-				{getLastActivity() && (
-					<Typography color="text.secondary" sx={{ whiteSpace: 'nowrap' }} variant="caption">
-						{getLastActivity()}
-					</Typography>
-				)}
-			</Stack>
-		);
+					<Avatar src={displayImage} sx={{ textAlign: 'center' }} />
+					<Box
+						sx={{
+							flexGrow: 1,
+							overflow: 'hidden',
+						}}>
+						<Typography noWrap variant="subtitle2">
+							{displayTitle || 'Channel'}
+						</Typography>
+						<Typography
+							color="text.secondary"
+							noWrap
+							sx={{ flexGrow: 1 }}
+							variant="subtitle2">
+							{renderMessageText()}
+						</Typography>
+					</Box>
+					{getLastActivity() && (
+						<Typography
+							color="text.secondary"
+							sx={{ whiteSpace: 'nowrap' }}
+							variant="caption">
+							{getLastActivity()}
+						</Typography>
+					)}
+				</Stack>
+			);
+		}
+		// Group chat
+		else {
+			const channelTitle = Object.entries(members ?? [])
+				.filter(([key, value]) => value.user?.id != session?.user.id) // filter out user themselves
+				.map(([key, value]) => value.user?.name)
+				.join(', ');
+			return (
+				<Stack
+					component="li"
+					direction="row"
+					onClick={handleSelectChannel}
+					spacing={2}
+					sx={{
+						borderRadius: 2.5,
+						cursor: 'pointer',
+						px: 2,
+						py: 1.5,
+						mx: 1.5,
+						my: 1,
+						'&:hover': {
+							backgroundColor: 'action.hover',
+						},
+						...(selected && {
+							backgroundColor: 'action.hover',
+						}),
+					}}>
+					<AvatarGroup
+						max={2}
+						sx={{
+							...(Object.entries(members ?? []).length > 1 && {
+								'& .MuiAvatar-root': {
+									height: 30,
+									width: 30,
+									'&:nth-of-type(2)': {
+										mt: '10px',
+									},
+								},
+							}),
+						}}>
+						{Object.entries(members ?? [])
+							.filter(([key, value]) => value.user?.id != session?.user.id) // filter out user themselves
+							.map(([key, value]) => (
+								<Avatar key={key} src={value.user?.image as string} />
+							))}
+					</AvatarGroup>
+					<Box
+						sx={{
+							flexGrow: 1,
+							overflow: 'hidden',
+						}}>
+						<Typography noWrap variant="subtitle2">
+							{channelTitle || 'GroupChat'}
+						</Typography>
+						<Typography
+							color="text.secondary"
+							noWrap
+							sx={{ flexGrow: 1 }}
+							variant="subtitle2">
+							{renderMessageText()}
+						</Typography>
+					</Box>
+					{getLastActivity() && (
+						<Typography
+							color="text.secondary"
+							sx={{ whiteSpace: 'nowrap' }}
+							variant="caption">
+							{getLastActivity()}
+						</Typography>
+					)}
+				</Stack>
+			);
+		}
 	}
 };
 
