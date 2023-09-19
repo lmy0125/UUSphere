@@ -62,13 +62,17 @@ export default function Composer() {
 	};
 
 	const renderTags = (value: User[], getTagProps: AutocompleteRenderGetTagProps) => {
-		return value.map((option, index) => (
-			<Chip
-				avatar={<Avatar src={option.image} />}
-				label={option.name}
-				{...getTagProps({ index })}
-			/>
-		));
+		return value.map((option, index) => {
+			const { key, ...obj } = { ...getTagProps({ index }) };
+			return (
+				<Chip
+					key={option.id}
+					avatar={<Avatar src={option.image} />}
+					label={option.name}
+					{...obj}
+				/>
+			);
+		});
 	};
 
 	const filterOptions = (options: User[], { inputValue }: { inputValue: string }) => {
