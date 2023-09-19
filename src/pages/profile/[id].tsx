@@ -17,6 +17,7 @@ import {
 	Typography,
 	Dialog,
 	DialogContent,
+	Skeleton,
 } from '@mui/material';
 // import { Seo } from 'src/components/seo';
 import { useMounted } from '@/hooks/use-mounted';
@@ -160,7 +161,31 @@ export const ProfilePage: PageType = () => {
 	const showPending = status === 'pending';
 
 	if (isLoading) {
-		return <h1>Loading...</h1>;
+		return (
+			<Box
+				component="main"
+				sx={{
+					flexGrow: 1,
+					pb: 8,
+				}}>
+				<Container maxWidth="lg">
+					<div>
+						<Stack alignItems="center" direction="row" spacing={2} sx={{ mt: 5 }}>
+							<Stack alignItems="center" direction="row" spacing={2}>
+								<Skeleton variant="circular" width={64} height={64} />
+								<div>
+									<Skeleton variant="text" sx={{ fontSize: '1.4rem' }} width={100} />
+									<Skeleton variant="text" sx={{ fontSize: '1.4rem' }} width={100} />
+								</div>
+							</Stack>
+							<Box sx={{ flexGrow: 1 }} />
+							<Skeleton variant="rounded" width={140} height={40} />
+						</Stack>
+					</div>
+					<Skeleton variant="rounded" sx={{ mt: 5 }} width="100%" height={40} />
+				</Container>
+			</Box>
+		);
 	}
 
 	// User Id doesn't exist
