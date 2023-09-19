@@ -1,19 +1,23 @@
 import React, { HTMLAttributes, useState } from 'react';
-import { MessageInput } from 'stream-chat-react';
+import {
+	MessageInput,
+	MessageToSend,
+	useChannelActionContext,
+	useChatContext,
+} from 'stream-chat-react';
 import {
 	Avatar,
 	Box,
-	Button,
 	Autocomplete,
 	Chip,
 	TextField,
 	Typography,
 	ListItem,
-	ListItemButton,
 	ListItemAvatar,
 	ListItemText,
 	AutocompleteRenderGetTagProps,
 } from '@mui/material';
+import { useComposeModeContext } from '@/contexts/ComposeModeContext';
 import axios from 'axios';
 import useSWR from 'swr';
 import { User } from '@prisma/client';
@@ -21,8 +25,13 @@ import { User } from '@prisma/client';
 export default function Composer() {
 	const [input, setInput] = useState('');
 	const [recipients, setRecipients] = useState<User[]>([]);
+	const { sendMessage } = useChannelActionContext();
+	const { client, setActiveChannel } = useChatContext();
+	const { setComposeMode } = useComposeModeContext();
 	const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 	const { data: allUsers, isLoading } = useSWR<User[]>(`/api/users`, fetcher);
+	// filter out the user themselves so they can't send message to themselves
+	const options = allUsers?.filter((user) => user.id != client.user?.id);
 
 	// Function to handle input value change
 	const handleInputChange = (
@@ -35,21 +44,23 @@ export default function Composer() {
 	// Determine if the Autocomplete should be open
 	const shouldOpen = input.trim() !== '' && allUsers !== undefined;
 
-	const renderOption = (props: HTMLAttributes<HTMLLIElement>, option: User) => (
-		<ListItem key={option.id} {...props}>
-			<ListItemAvatar>
-				<Avatar src={option.image} />
-			</ListItemAvatar>
-			<ListItemText
-				primary={option.name}
-				primaryTypographyProps={{
-					noWrap: true,
-					variant: 'subtitle2',
-				}}
-			/>
-		</ListItem>
-	);
-	// getTagProps: AutocompleteRenderGetTagProps, ownerState: AutocompleteOwnerState<...>
+	const renderOption = (props: HTMLAttributes<HTMLLIElement>, option: User) => {
+		return (
+			<ListItem key={option.id} {...props}>
+				<ListItemAvatar>
+					<Avatar src={option.image} />
+				</ListItemAvatar>
+				<ListItemText
+					primary={option.name}
+					primaryTypographyProps={{
+						noWrap: true,
+						variant: 'subtitle2',
+					}}
+				/>
+			</ListItem>
+		);
+	};
+
 	const renderTags = (value: User[], getTagProps: AutocompleteRenderGetTagProps) => {
 		return value.map((option, index) => (
 			<Chip
@@ -58,6 +69,29 @@ export default function Composer() {
 				{...getTagProps({ index })}
 			/>
 		));
+	};
+
+	const filterOptions = (options: User[], { inputValue }: { inputValue: string }) => {
+		return options.filter(
+			(option) =>
+				option.name.toLowerCase().includes(inputValue.toLowerCase()) ||
+				option.email.toLowerCase().includes(inputValue.toLowerCase())
+		);
+	};
+
+	const overrideSubmitHandler = async (message: MessageToSend, cid: string) => {
+		const recipientsId: string[] = recipients.map((obj) => obj.id);
+		if (client.user) {
+			const channel = client.channel('messaging', {
+				members: [client.user.id, ...recipientsId],
+			});
+			await channel.watch();
+			if (setActiveChannel) {
+				setActiveChannel(channel);
+				sendMessage(message);
+				setComposeMode(false);
+			}
+		}
 	};
 
 	return (
@@ -80,8 +114,10 @@ export default function Composer() {
 					multiple
 					filterSelectedOptions
 					value={recipients}
-					onChange={(_, newValue) => setRecipients(newValue)}
-					options={allUsers ?? []}
+					onChange={(_, newValue) => {
+						setRecipients(newValue);
+					}}
+					options={options ?? []}
 					getOptionLabel={(option) => option.name}
 					open={shouldOpen}
 					onInputChange={handleInputChange}
@@ -90,6 +126,7 @@ export default function Composer() {
 						'.MuiInputBase-input': { height: '38px' },
 						'.MuiInputBase-root': { py: 0.8 },
 					}}
+					filterOptions={filterOptions}
 					renderOption={renderOption}
 					renderTags={renderTags}
 					renderInput={(params) => (
@@ -103,9 +140,8 @@ export default function Composer() {
 				/>
 			</Box>
 
-			<Button onClick={() => console.log(recipients)}>Print</Button>
 			<Box sx={{ flexGrow: 1 }} />
-			<MessageInput grow />
+			<MessageInput grow overrideSubmitHandler={overrideSubmitHandler} />
 		</Box>
 	);
 }
