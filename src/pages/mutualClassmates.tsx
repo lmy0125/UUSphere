@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import type { Page as PageType } from '@/types/page';
 import { Layout as DashboardLayout } from '@/layouts/dashboard';
-import { Container, Tab, Tabs, Box, Button, Stack, Typography } from '@mui/material';
+import { Container, CircularProgress, Button, Stack, Typography } from '@mui/material';
 import axios from 'axios';
 import useSWR from 'swr';
 import { paths } from '@/paths';
@@ -49,8 +49,15 @@ const MutualClassmatesPage: PageType = () => {
 	}
 	mutualClassmates = sortByNumOfMutualClass(mutualClassmates ?? {});
 
-	if (status === 'loading') {
-		return <></>;
+	if (status === 'loading' || isLoading) {
+		return (
+			<Container maxWidth="xl" sx={{ mt: 1 }}>
+				<Typography variant="h4">Mutual Classmates</Typography>
+				<Stack sx={{ alignItems: 'center', mt: 8 }}>
+					<CircularProgress />
+				</Stack>
+			</Container>
+		);
 	}
 
 	if (status === 'unauthenticated') {
