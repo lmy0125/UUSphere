@@ -136,7 +136,7 @@ export const CalendarToolbar: FC<CalendarToolbarProps> = (props) => {
 						</option>
 					))}
 				</TextField>
-				<Button
+				{/* <Button
 					onClick={onAddClick}
 					startIcon={
 						<SvgIcon>
@@ -151,7 +151,7 @@ export const CalendarToolbar: FC<CalendarToolbarProps> = (props) => {
 					}}
 					variant="contained">
 					New Event
-				</Button>
+				</Button> */}
 			</Stack>
 		</Stack>
 	);
