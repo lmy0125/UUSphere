@@ -1,18 +1,18 @@
 generator client {
-  provider        = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-  provider   = "postgresql"
-  url        = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
-  id              String    @id @default(cuid())
+  id              String         @id @default(cuid())
   name            String
-  email           String    @unique
+  email           String         @unique
   image           String
-  created_at      DateTime  @default(now())
+  created_at      DateTime       @default(now())
   emailVerified   DateTime?
   college         String?
   gender          String?
@@ -23,8 +23,11 @@ model User {
   bio             String?
   accounts        Account[]
   sessions        Session[]
-  classes         Class[]   @relation("ClassToUser")
-  sections        Section[] @relation("SectionToUser")
+  classes         Class[]        @relation("ClassToUser")
+  sections        Section[]      @relation("SectionToUser")
+  bigHeadAvatar   BigHeadAvatar?
+  // posts           Post[]
+  // comments        Comment[]
 }
 
 model Account {
@@ -113,3 +116,53 @@ model Professor {
   school  String?
   classes Class[]
 }
+
+model BigHeadAvatar {
+  id              String  @id @default(cuid())
+  selected        Boolean @default(false)
+  backgroundColor String?
+  accessory       String?
+  body            String?
+  circleColor     String?
+  clothing        String?
+  clothingColor   String?
+  eyebrows        String?
+  eyes            String?
+  facialHair      String?
+  graphic         String?
+  hair            String?
+  hairColor       String?
+  hat             String?
+  hatColor        String?
+  lashes          String?
+  lipColor        String?
+  mouth           String?
+  skinTone        String?
+  mask            Boolean
+  owner           User    @relation(fields: [userId], references: [id])
+  userId          String  @unique
+}
+
+// model Post {
+//   id         String    @id @default(cuid())
+//   author     User      @relation(fields: [userId], references: [id])
+//   userId     String
+//   likes      Int       @default(0)
+//   content    String
+//   image      String?
+//   region     String
+//   created_at DateTime  @default(now())
+//   updated_at DateTime  @updatedAt
+//   comments   Comment[]
+// }
+
+// model Comment {
+//   id         String   @id @default(cuid())
+//   author     User     @relation(fields: [userId], references: [id])
+//   userId     String
+//   post       Post     @relation(fields: [postId], references: [id])
+//   postId     String
+//   content    String
+//   created_at DateTime @default(now())
+//   updated_at DateTime @updatedAt
+// }
