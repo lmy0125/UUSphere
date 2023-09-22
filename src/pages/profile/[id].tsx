@@ -27,7 +27,7 @@ import { Layout as DashboardLayout } from '@/layouts/dashboard';
 // import { SocialTimeline } from 'src/sections/dashboard/social/social-timeline';
 import type { Page as PageType } from '@/types/page';
 import type { Connection, Post, Profile } from '@/types/social';
-import { User } from '@prisma/client';
+import { User } from '@/types/User';
 import Calendar from '@/components/Calendar';
 import { useSession } from 'next-auth/react';
 import About from '@/components/Profile/About';
@@ -38,6 +38,7 @@ import HorizontalRuleIcon from '@mui/icons-material/HorizontalRule';
 import axios from 'axios';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
 import useSWR from 'swr';
+import { BigHead } from '@bigheads/core';
 
 const tabs = [
 	{ label: 'About', value: 'about' },
@@ -260,13 +261,36 @@ export const ProfilePage: PageType = () => {
 						</Box> */}
 						<Stack alignItems="center" direction="row" spacing={2} sx={{ mt: 5 }}>
 							<Stack alignItems="center" direction="row" spacing={2}>
-								<Avatar
-									src={user.image}
-									sx={{
-										height: 64,
-										width: 64,
-									}}
-								/>
+								{user.bigHeadAvatar?.selected ? (
+									(() => {
+										const { selected, backgroundColor, ...bigHeadStyle } =
+											user.bigHeadAvatar;
+										const cleanedBigHeadStyle = Object.fromEntries(
+											Object.entries(bigHeadStyle).filter(
+												([key, value]) => value !== null
+											)
+										);
+										return (
+											<Avatar
+												sx={{
+													height: 64,
+													width: 64,
+													backgroundColor: backgroundColor,
+												}}>
+												<BigHead {...cleanedBigHeadStyle} />
+											</Avatar>
+										);
+									})()
+								) : (
+									<Avatar
+										src={user.image}
+										sx={{
+											height: 64,
+											width: 64,
+										}}
+									/>
+								)}
+
 								<div>
 									<Typography color="text.secondary" variant="overline">
 										Rookie
