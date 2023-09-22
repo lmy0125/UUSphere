@@ -53,6 +53,9 @@ const MutualClassmatesPage: PageType = () => {
 		return (
 			<Container maxWidth="xl" sx={{ mt: 1 }}>
 				<Typography variant="h4">Mutual Classmates</Typography>
+				<Typography variant="subtitle2">
+					Students who take more than one same classes as you
+				</Typography>
 				<Stack sx={{ alignItems: 'center', mt: 8 }}>
 					<CircularProgress />
 				</Stack>
@@ -64,6 +67,9 @@ const MutualClassmatesPage: PageType = () => {
 		return (
 			<Container maxWidth="xl" sx={{ mt: 1 }}>
 				<Typography variant="h4">Mutual Classmates</Typography>
+				<Typography variant="subtitle2">
+					Students who take more than one same classes as you
+				</Typography>
 				<Stack sx={{ alignItems: 'center', mt: 8 }}>
 					<Button variant="contained" onClick={() => setAuthModal(true)}>
 						Please login to use this feature
