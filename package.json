@@ -12,6 +12,7 @@
 		"postinstall": "prisma generate"
 	},
 	"dependencies": {
+		"@bigheads/core": "^0.3.3",
 		"@emotion/react": "^11.10.6",
 		"@emotion/styled": "^11.10.6",
 		"@fullcalendar/core": "^6.1.8",
@@ -41,6 +42,7 @@
 		"nprogress": "^0.2.0",
 		"postcss": "8.4.21",
 		"react": "18.2.0",
+		"react-color": "^2.19.3",
 		"react-dom": "18.2.0",
 		"react-hot-toast": "^2.4.0",
 		"react-i18next": "^12.2.0",
@@ -56,6 +58,7 @@
 	"devDependencies": {
 		"@types/mui-datatables": "^4.3.4",
 		"@types/nprogress": "^0.2.0",
+		"@types/react-color": "^3.0.6",
 		"prisma": "^5.2.0"
 	}
 }
