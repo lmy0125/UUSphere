@@ -128,7 +128,7 @@ export default function Composer() {
 					onInputChange={handleInputChange}
 					sx={{
 						width: '100%',
-						'.MuiInputBase-input': { height: '38px' },
+						'.MuiInputBase-input': { height: '24px' },
 					}}
 					filterOptions={filterOptions}
 					renderOption={renderOption}
