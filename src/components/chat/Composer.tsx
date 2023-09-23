@@ -21,6 +21,7 @@ import { useComposeModeContext } from '@/contexts/ComposeModeContext';
 import axios from 'axios';
 import useSWR from 'swr';
 import { User } from '@prisma/client';
+import UserAvatar from '@/components/UserAvatar';
 
 export default function Composer() {
 	const [input, setInput] = useState('');
@@ -48,7 +49,7 @@ export default function Composer() {
 		return (
 			<ListItem key={option.id} {...props}>
 				<ListItemAvatar>
-					<Avatar src={option.image} />
+					<UserAvatar userId={option.id} />
 				</ListItemAvatar>
 				<ListItemText
 					primary={option.name}
@@ -67,7 +68,7 @@ export default function Composer() {
 			return (
 				<Chip
 					key={option.id}
-					avatar={<Avatar src={option.image} />}
+					avatar={<UserAvatar userId={option.id} />}
 					label={option.name}
 					{...obj}
 				/>
@@ -128,7 +129,6 @@ export default function Composer() {
 					sx={{
 						width: '100%',
 						'.MuiInputBase-input': { height: '38px' },
-						'.MuiInputBase-root': { py: 0.8 },
 					}}
 					filterOptions={filterOptions}
 					renderOption={renderOption}
