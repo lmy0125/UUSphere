@@ -60,9 +60,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 					homeland: data.homeland,
 					bio: data.bio,
 					bigHeadAvatar: {
-						update: {
-							mask: false,
-							...data.bigHeadAvatar,
+						upsert: {
+							create: {
+								mask: false,
+								...data.bigHeadAvatar,
+							},
+							update: {
+								mask: false,
+								...data.bigHeadAvatar,
+							},
 						},
 					},
 				},
