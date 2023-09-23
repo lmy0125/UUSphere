@@ -38,7 +38,7 @@ import HorizontalRuleIcon from '@mui/icons-material/HorizontalRule';
 import axios from 'axios';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
 import useSWR from 'swr';
-import { BigHead } from '@bigheads/core';
+import UserAvatar from '@/components/UserAvatar';
 
 const tabs = [
 	{ label: 'About', value: 'about' },
@@ -261,36 +261,7 @@ export const ProfilePage: PageType = () => {
 						</Box> */}
 						<Stack alignItems="center" direction="row" spacing={2} sx={{ mt: 5 }}>
 							<Stack alignItems="center" direction="row" spacing={2}>
-								{user.bigHeadAvatar?.selected ? (
-									(() => {
-										const { selected, backgroundColor, ...bigHeadStyle } =
-											user.bigHeadAvatar;
-										const cleanedBigHeadStyle = Object.fromEntries(
-											Object.entries(bigHeadStyle).filter(
-												([key, value]) => value !== null
-											)
-										);
-										return (
-											<Avatar
-												sx={{
-													height: 64,
-													width: 64,
-													backgroundColor: backgroundColor,
-												}}>
-												<BigHead {...cleanedBigHeadStyle} />
-											</Avatar>
-										);
-									})()
-								) : (
-									<Avatar
-										src={user.image}
-										sx={{
-											height: 64,
-											width: 64,
-										}}
-									/>
-								)}
-
+								<UserAvatar userId={router.query.id as string} size={64} />
 								<div>
 									<Typography color="text.secondary" variant="overline">
 										Rookie

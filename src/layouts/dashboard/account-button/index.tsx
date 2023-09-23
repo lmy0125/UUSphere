@@ -7,6 +7,7 @@ import { usePopover } from '@/hooks/use-popover';
 import { AccountPopover } from './account-popover';
 import AuthModal from '@/components/AuthModal';
 import { useSession } from 'next-auth/react';
+import UserAvatar from '@/components/UserAvatar';
 
 export const AccountButton: FC = () => {
 	const { data: session, status } = useSession();
@@ -40,20 +41,11 @@ export const AccountButton: FC = () => {
 					borderWidth: 2,
 					borderStyle: 'solid',
 					borderColor: 'divider',
-					height: 40,
-					width: 40,
+					height: 48,
+					width: 48,
 					borderRadius: '50%',
 				}}>
-				<Avatar
-					sx={{
-						height: 32,
-						width: 32,
-					}}
-					src={session.user?.image as string | undefined}>
-					<SvgIcon>
-						<User01Icon />
-					</SvgIcon>
-				</Avatar>
+				<UserAvatar userId={session.user.id} size={40} />
 			</Box>
 			<AccountPopover
 				anchorEl={popover.anchorRef.current}

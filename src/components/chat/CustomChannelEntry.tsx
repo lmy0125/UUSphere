@@ -12,9 +12,10 @@ import { formatDistanceStrict } from 'date-fns';
 import { DefaultGenerics } from 'stream-chat';
 import { useComposeModeContext } from '@/contexts/ComposeModeContext';
 import { useSession } from 'next-auth/react';
+import UserAvatar from '@/components/UserAvatar';
 
 export const CustomChannelPreview = (props: ChannelPreviewUIComponentProps<DefaultGenerics>) => {
-	const { channel, setActiveChannel, displayImage, displayTitle } = props;
+	const { channel, setActiveChannel, displayTitle } = props;
 	const { data: session } = useSession();
 	const members = channel.state.members;
 	const { setComposeMode } = useComposeModeContext();
@@ -103,6 +104,11 @@ export const CustomChannelPreview = (props: ChannelPreviewUIComponentProps<Defau
 	} else {
 		// One-to-one chat
 		if ((channel.data?.member_count as number) === 2) {
+			// filter out user themselves
+			const recipient = Object.entries(members ?? []).filter(
+				([key, value]) => value.user?.id !== session?.user.id
+			)[0]?.[1]?.user;
+
 			return (
 				<Stack
 					component="li"
@@ -123,7 +129,7 @@ export const CustomChannelPreview = (props: ChannelPreviewUIComponentProps<Defau
 							backgroundColor: 'action.hover',
 						}),
 					}}>
-					<Avatar src={displayImage} sx={{ textAlign: 'center' }} />
+					<UserAvatar userId={recipient?.id} />
 					<Box
 						sx={{
 							flexGrow: 1,
@@ -193,7 +199,7 @@ export const CustomChannelPreview = (props: ChannelPreviewUIComponentProps<Defau
 						{Object.entries(members ?? [])
 							.filter(([key, value]) => value.user?.id != session?.user.id) // filter out user themselves
 							.map(([key, value]) => (
-								<Avatar key={key} src={value.user?.image as string} />
+								<UserAvatar key={value.user?.id} userId={value.user?.id} size={30} />
 							))}
 					</AvatarGroup>
 					<Box

@@ -8,6 +8,7 @@ import {
 } from 'stream-chat-react';
 import InfoIcon from '@mui/icons-material/Info';
 import { useSession } from 'next-auth/react';
+import UserAvatar from '@/components/UserAvatar';
 
 interface CustomChannelHeaderProps extends ChannelHeaderProps {
 	setIsChannelInfoOpen: React.Dispatch<SetStateAction<boolean>>;
@@ -17,7 +18,7 @@ const CustomChannelHeader = (props: CustomChannelHeaderProps) => {
 	const { title, setIsChannelInfoOpen } = props;
 	const { data: session } = useSession();
 	const { channel, members, watcher_count } = useChannelStateContext();
-	const { displayImage, displayTitle } = useChannelPreviewInfo({ channel });
+	const { displayTitle } = useChannelPreviewInfo({ channel });
 	const { name } = channel.data || {};
 
 	if (channel.type === 'classroom') {
@@ -58,6 +59,11 @@ const CustomChannelHeader = (props: CustomChannelHeaderProps) => {
 	} else {
 		// One-to-one channel
 		if (channel.data?.member_count && channel.data?.member_count === 2) {
+			// filter out user themselves
+			const recipient = Object.entries(members ?? []).filter(
+				([key, value]) => value.user?.id !== session?.user.id
+			)[0]?.[1]?.user;
+
 			return (
 				<Stack
 					direction="row"
@@ -67,7 +73,7 @@ const CustomChannelHeader = (props: CustomChannelHeaderProps) => {
 						px: 2,
 						py: 1.5,
 					}}>
-					<Avatar src={displayImage} />
+					<UserAvatar userId={recipient?.id} />
 
 					<div style={{ overflow: 'hidden' }}>
 						<Typography
@@ -128,7 +134,7 @@ const CustomChannelHeader = (props: CustomChannelHeaderProps) => {
 							{Object.entries(members ?? [])
 								.filter(([key, value]) => value.user?.id != session?.user.id) // filter out user themselves
 								.map(([key, value]) => (
-									<Avatar key={key} src={value.user?.image} />
+									<UserAvatar key={value.user?.id} userId={value.user?.id} />
 								))}
 						</AvatarGroup>
 

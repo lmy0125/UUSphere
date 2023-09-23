@@ -19,9 +19,9 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useChannelPreviewInfo, useChannelStateContext } from 'stream-chat-react';
 import PopUpProfileCard from './PopUpProfileCard';
 import { ChannelMemberResponse, UserResponse } from 'stream-chat';
-import { DefaultStreamChatGenerics } from 'stream-chat-react/dist/types/types';
 import { CustomStreamChatGenerics } from '@/types/customStreamChat';
 import { useSession } from 'next-auth/react';
+import UserAvatar from '@/components/UserAvatar';
 
 interface ChannelInfoSidebarProps {
 	isOpen: boolean;
@@ -31,7 +31,7 @@ interface ChannelInfoSidebarProps {
 const ChannelInfoSidebar: React.FC<ChannelInfoSidebarProps> = ({ isOpen, onClose }) => {
 	const { data: session } = useSession();
 	const { channel, members } = useChannelStateContext<CustomStreamChatGenerics>();
-	const { displayImage, displayTitle } = useChannelPreviewInfo({ channel });
+	const { displayTitle } = useChannelPreviewInfo({ channel });
 
 	if (isOpen) {
 		if (
@@ -90,14 +90,10 @@ const ChannelInfoSidebar: React.FC<ChannelInfoSidebarProps> = ({ isOpen, onClose
 									mb: 2,
 									mt: '-50px',
 								}}>
-								<Avatar
-									alt="user avatar"
-									src={displayImage}
-									sx={{
-										border: '3px solid #FFFFFF',
-										height: 100,
-										width: 100,
-									}}
+								<UserAvatar
+									userId={recipient?.id ?? ''}
+									size={100}
+									border="3px solid #FFFFFF"
 								/>
 							</Box>
 							<Box
@@ -120,10 +116,10 @@ const ChannelInfoSidebar: React.FC<ChannelInfoSidebarProps> = ({ isOpen, onClose
 							<Grid container spacing={2} rowSpacing={1} pb={3}>
 								{recipient?.major && (
 									<>
-										<Grid xs={3}>
+										<Grid xs={3} item>
 											<Typography variant="subtitle2">Major</Typography>
 										</Grid>
-										<Grid xs={9}>
+										<Grid xs={9} item>
 											<Typography color="text.secondary" variant="body2">
 												{recipient.major}
 											</Typography>
@@ -133,10 +129,10 @@ const ChannelInfoSidebar: React.FC<ChannelInfoSidebarProps> = ({ isOpen, onClose
 
 								{recipient?.college && (
 									<>
-										<Grid xs={3}>
+										<Grid xs={3} item>
 											<Typography variant="subtitle2">College</Typography>
 										</Grid>
-										<Grid xs={9}>
+										<Grid xs={9} item>
 											<Typography color="text.secondary" variant="body2">
 												{recipient.college}
 											</Typography>
@@ -146,11 +142,11 @@ const ChannelInfoSidebar: React.FC<ChannelInfoSidebarProps> = ({ isOpen, onClose
 
 								{recipient?.grade && (
 									<>
-										<Grid xs={3}>
+										<Grid xs={3} item>
 											<Typography variant="subtitle2">Grade</Typography>
 										</Grid>
 
-										<Grid xs={9}>
+										<Grid xs={9} item>
 											<Typography color="text.secondary" variant="body2">
 												{recipient.grade}
 											</Typography>
@@ -177,7 +173,7 @@ const PopUpProfileMenuItem = ({
 		<>
 			<MenuItem onClick={(e) => setAnchorEl(e.currentTarget)}>
 				<ListItemIcon>
-					<Avatar src={value.user?.image} sx={{ width: 32, height: 32 }} />
+					<UserAvatar userId={value.user?.id} size={32} />
 				</ListItemIcon>
 				<ListItemText sx={{ color: 'black' }}>{value.user?.name}</ListItemText>
 			</MenuItem>

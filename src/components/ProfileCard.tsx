@@ -12,6 +12,7 @@ import { Class, User } from '@prisma/client';
 import { useRouter } from 'next/router';
 import { useChatContext } from '@/contexts/ChatContext';
 import { MessageChatSquare } from '@untitled-ui/icons-react/build/esm';
+import UserAvatar from '@/components/UserAvatar';
 
 interface ProfileCardProps {
 	userId: string;
@@ -32,11 +33,10 @@ const ProfileCard: FC<ProfileCardProps> = (props) => {
 	const { chatClient: client } = useChatContext();
 
 	const fetcher = (url: string) => axios.get(url).then((res) => res.data);
-	const {
-		data: profileCardInfo,
-		error,
-		isLoading,
-	} = useSWR<ProfileCardInfo>(`/api/getProfileCardInfo?userId=${props.userId}`, fetcher);
+	const { data: profileCardInfo } = useSWR<ProfileCardInfo>(
+		`/api/getProfileCardInfo?userId=${props.userId}`,
+		fetcher
+	);
 
 	// put mutual classes at the front of the array
 	function sortWithMutualClasses(longerArray: Class[], subsetArray: string[]) {
@@ -104,13 +104,7 @@ const ProfileCard: FC<ProfileCardProps> = (props) => {
 					sx={{ p: 2 }}>
 					<Stack alignItems="flex-start" direction="row" spacing={2}>
 						<Link href={`/profile/${profileCardInfo.id}`}>
-							<Avatar
-								src={profileCardInfo.image}
-								sx={{
-									height: 56,
-									width: 56,
-								}}
-							/>
+							<UserAvatar userId={profileCardInfo.id} size={56} />
 						</Link>
 
 						<Box sx={{ flexGrow: 1 }}>

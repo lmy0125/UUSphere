@@ -2,7 +2,6 @@ import React, { useRef } from 'react';
 import Link from 'next/link';
 import {
 	Attachment,
-	// Avatar,
 	messageHasReactions,
 	MessageOptions,
 	MessageRepliesCountButton,
@@ -15,8 +14,8 @@ import {
 	ReactionSelector,
 	useMessageContext,
 } from 'stream-chat-react';
-
-import { Avatar, Stack, Box, Typography, Paper } from '@mui/material';
+import { Stack, Box, Typography, Paper } from '@mui/material';
+import UserAvatar from '@/components/UserAvatar';
 
 const CustomMessage = () => {
 	const { isReactionEnabled, message, reactionSelectorRef, showDetailedReactions, isMyMessage } =
@@ -45,17 +44,10 @@ const CustomMessage = () => {
 					ml: isMyMessage() ? 'auto' : 0,
 					mr: !isMyMessage() ? 'auto' : 0,
 				}}>
-				<Avatar
-					src={message.user?.image}
-					sx={{
-						mt: 1,
-						height: 32,
-						width: 32,
-					}}
-				/>
+				<UserAvatar userId={message.user?.id} size={32} />
 				<Box sx={{ flexShrink: 0, maxWidth: '95%' }}>
 					<Stack
-						sx={{ alignItems: 'center', mb: 1,}}
+						sx={{ alignItems: 'center', mb: 1 }}
 						direction={isMyMessage() ? 'row-reverse' : 'row'}
 						spacing={2}>
 						<Box

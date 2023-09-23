@@ -15,6 +15,7 @@ import Grid from '@mui/material/Unstable_Grid2';
 import { UserResponse } from 'stream-chat';
 import { CustomStreamChatGenerics } from '@/types/customStreamChat';
 import { useChatContext } from 'stream-chat-react';
+import UserAvatar from '@/components/UserAvatar';
 
 interface ProfileCardProps {
 	anchorEl: HTMLElement | null;
@@ -65,15 +66,7 @@ const PopupProfileCard: React.FC<ProfileCardProps> = ({ anchorEl, setAnchorEl, u
 								mb: 2,
 								mt: '-50px',
 							}}>
-							<Avatar
-								alt="user avatar"
-								src={user?.image}
-								sx={{
-									border: '3px solid #FFFFFF',
-									height: 100,
-									width: 100,
-								}}
-							/>
+							<UserAvatar userId={user?.id} size={100} border="3px solid #FFFFFF" />
 						</Box>
 
 						<Box
@@ -86,7 +79,7 @@ const PopupProfileCard: React.FC<ProfileCardProps> = ({ anchorEl, setAnchorEl, u
 									},
 								},
 								textAlign: 'center',
-								fontWeight: 450
+								fontWeight: 450,
 							}}>
 							<Link href={`/profile/${user?.id}`}>{user?.name}</Link>
 						</Box>
