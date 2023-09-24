@@ -93,6 +93,15 @@ const ProfileCard: FC<ProfileCardProps> = (props) => {
 		return <></>;
 	}
 
+	const userInfoString = [
+		profileCardInfo.grade,
+		profileCardInfo.college,
+		profileCardInfo.major,
+		profileCardInfo.homeland,
+	]
+		.filter((s) => s !== null)
+		.join(' • ');
+
 	return (
 		<Box>
 			<Card variant="outlined" sx={{ height: '100%' }}>
@@ -124,7 +133,7 @@ const ProfileCard: FC<ProfileCardProps> = (props) => {
 							</Box>
 
 							<Typography color="text.secondary" variant="body2">
-								Freshman, Sixth, Biology
+								{userInfoString}
 							</Typography>
 							<Typography
 								color="text.primary"
