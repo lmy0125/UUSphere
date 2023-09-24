@@ -1,4 +1,4 @@
-import { PropsWithChildren } from 'react';
+import { useState, useEffect, PropsWithChildren } from 'react';
 import {
 	ChannelPreviewUIComponentProps,
 	useChatContext,
@@ -7,7 +7,7 @@ import {
 	ChannelListMessengerProps,
 	ChatDownProps,
 } from 'stream-chat-react';
-import { Stack, Avatar, AvatarGroup, Box, Typography } from '@mui/material';
+import { Stack, Avatar, AvatarGroup, Box, Badge, Typography } from '@mui/material';
 import { formatDistanceStrict } from 'date-fns';
 import { DefaultGenerics } from 'stream-chat';
 import { useComposeModeContext } from '@/contexts/ComposeModeContext';
@@ -16,6 +16,7 @@ import UserAvatar from '@/components/UserAvatar';
 
 export const CustomChannelPreview = (props: ChannelPreviewUIComponentProps<DefaultGenerics>) => {
 	const { channel, setActiveChannel, displayTitle } = props;
+	const [unreadMessageCount, setUnreadMessageCount] = useState(0);
 	const { data: session } = useSession();
 	const members = channel.state.members;
 	const { setComposeMode } = useComposeModeContext();
@@ -24,10 +25,21 @@ export const CustomChannelPreview = (props: ChannelPreviewUIComponentProps<Defau
 
 	const selected = channel?.id === activeChannel?.id;
 
+	useEffect(() => {
+		setUnreadMessageCount(channel.countUnread());
+	}, [channel.countUnread()]);
+
 	const renderMessageText = () => {
 		if (!channel.state.messages.length) {
 			if (channel.type === 'classroom') {
-				return 'Welcome to ' + channel.data?.code;
+				return (
+					<Typography
+						color="text.secondary"
+						noWrap
+						sx={{ flexGrow: 1, fontSize: '0.875rem', fontWeight: 400 }}>
+						{'Welcome to ' + channel.data?.code}
+					</Typography>
+				);
 			} else {
 				return '';
 			}
@@ -35,26 +47,52 @@ export const CustomChannelPreview = (props: ChannelPreviewUIComponentProps<Defau
 
 		const lastMessageText = channel.state.messages[channel.state.messages.length - 1].text;
 
-		const text = lastMessageText || 'message text';
+		const text = lastMessageText || '';
 
-		return text.length < 60 ? lastMessageText : `${text.slice(0, 70)}...`;
+		return (
+			<Stack direction="row">
+				<Typography
+					color={unreadMessageCount > 0 ? 'text.primary' : 'text.secondary'}
+					noWrap
+					sx={{
+						flexGrow: 1,
+						fontSize: '0.875rem',
+						fontWeight: unreadMessageCount > 0 ? 600 : 400,
+					}}>
+					{text.length < 60 ? lastMessageText : `${text.slice(0, 70)}...`}
+				</Typography>
+				{unreadMessageCount > 0 && (
+					<Badge
+						badgeContent={unreadMessageCount}
+						color="primary"
+						invisible={false}
+						sx={{
+							'.MuiBadge-root': { position: 'static' },
+							'.MuiBadge-badge': { position: 'static', transform: 'none' },
+							ml: 1,
+						}}
+					/>
+				)}
+			</Stack>
+		);
 	};
 
 	const getLastActivity = () => {
-		if (!channel.data?.last_message_at) {
+		if (!channel.state?.last_message_at) {
 			return null;
 		}
-
-		return formatDistanceStrict(new Date(channel.data?.last_message_at as string), new Date(), {
+		return formatDistanceStrict(channel.state?.last_message_at, new Date(), {
 			addSuffix: false,
 		});
 	};
 
-	const handleSelectChannel = () => {
+	const handleSelectChannel = async () => {
 		if (setActiveChannel) {
 			setComposeMode(false);
 			setActiveChannel(channel);
 		}
+		await channel.markRead();
+		setUnreadMessageCount(0);
 	};
 
 	if (channel.type === 'classroom') {
@@ -82,23 +120,28 @@ export const CustomChannelPreview = (props: ChannelPreviewUIComponentProps<Defau
 					{/* @ts-ignore */}
 					{channel.data?.code}
 				</Avatar>
-				<Box
+
+				<Stack
 					sx={{
 						flexGrow: 1,
 						overflow: 'hidden',
 					}}>
-					<Typography noWrap variant="subtitle2">
-						{channel.data?.name || 'Channel'}
-					</Typography>
-					<Typography color="text.secondary" noWrap sx={{ flexGrow: 1 }} variant="subtitle2">
-						{renderMessageText()}
-					</Typography>
-				</Box>
-				{getLastActivity() && (
-					<Typography color="text.secondary" sx={{ whiteSpace: 'nowrap' }} variant="caption">
-						{getLastActivity()}
-					</Typography>
-				)}
+					<Stack direction="row" justifyContent="space-between">
+						<Typography noWrap variant="subtitle2">
+							{channel.data?.name || 'Channel'}
+						</Typography>
+						{getLastActivity() && (
+							<Typography
+								color="text.secondary"
+								sx={{ whiteSpace: 'nowrap' }}
+								variant="caption">
+								{getLastActivity()}
+							</Typography>
+						)}
+					</Stack>
+
+					{renderMessageText()}
+				</Stack>
 			</Stack>
 		);
 	} else {
@@ -129,31 +172,29 @@ export const CustomChannelPreview = (props: ChannelPreviewUIComponentProps<Defau
 							backgroundColor: 'action.hover',
 						}),
 					}}>
-					<UserAvatar userId={recipient?.id} />
-					<Box
+					<UserAvatar userId={recipient?.id} size={42} />
+
+					<Stack
 						sx={{
 							flexGrow: 1,
 							overflow: 'hidden',
 						}}>
-						<Typography noWrap variant="subtitle2">
-							{displayTitle || 'Channel'}
-						</Typography>
-						<Typography
-							color="text.secondary"
-							noWrap
-							sx={{ flexGrow: 1 }}
-							variant="subtitle2">
-							{renderMessageText()}
-						</Typography>
-					</Box>
-					{getLastActivity() && (
-						<Typography
-							color="text.secondary"
-							sx={{ whiteSpace: 'nowrap' }}
-							variant="caption">
-							{getLastActivity()}
-						</Typography>
-					)}
+						<Stack direction="row" justifyContent="space-between">
+							<Typography noWrap variant="subtitle2">
+								{displayTitle || 'Channel'}
+							</Typography>
+							{getLastActivity() && (
+								<Typography
+									color="text.secondary"
+									sx={{ whiteSpace: 'nowrap' }}
+									variant="caption">
+									{getLastActivity()}
+								</Typography>
+							)}
+						</Stack>
+
+						{renderMessageText()}
+					</Stack>
 				</Stack>
 			);
 		}
@@ -199,33 +240,30 @@ export const CustomChannelPreview = (props: ChannelPreviewUIComponentProps<Defau
 						{Object.entries(members ?? [])
 							.filter(([key, value]) => value.user?.id != session?.user.id) // filter out user themselves
 							.map(([key, value]) => (
-								<UserAvatar key={value.user?.id} userId={value.user?.id} size={30} />
+								<UserAvatar key={value.user?.id} userId={value.user?.id} />
 							))}
 					</AvatarGroup>
-					<Box
+					<Stack
 						sx={{
 							flexGrow: 1,
 							overflow: 'hidden',
 						}}>
-						<Typography noWrap variant="subtitle2">
-							{channelTitle || 'GroupChat'}
-						</Typography>
-						<Typography
-							color="text.secondary"
-							noWrap
-							sx={{ flexGrow: 1 }}
-							variant="subtitle2">
-							{renderMessageText()}
-						</Typography>
-					</Box>
-					{getLastActivity() && (
-						<Typography
-							color="text.secondary"
-							sx={{ whiteSpace: 'nowrap' }}
-							variant="caption">
-							{getLastActivity()}
-						</Typography>
-					)}
+						<Stack direction="row" justifyContent="space-between">
+							<Typography noWrap variant="subtitle2">
+								{channelTitle || 'Channel'}
+							</Typography>
+							{getLastActivity() && (
+								<Typography
+									color="text.secondary"
+									sx={{ whiteSpace: 'nowrap' }}
+									variant="caption">
+									{getLastActivity()}
+								</Typography>
+							)}
+						</Stack>
+
+						{renderMessageText()}
+					</Stack>
 				</Stack>
 			);
 		}
