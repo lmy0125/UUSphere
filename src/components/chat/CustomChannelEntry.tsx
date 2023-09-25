@@ -26,8 +26,8 @@ export const CustomChannelPreview = (props: ChannelPreviewUIComponentProps<Defau
 	const selected = channel?.id === activeChannel?.id;
 
 	useEffect(() => {
-		setUnreadMessageCount(channel.countUnread());
-	}, [channel.countUnread()]);
+		setUnreadMessageCount(channel.state.unreadCount);
+	}, [channel.state.unreadCount, channel]);
 
 	const renderMessageText = () => {
 		if (!channel.state.messages.length) {

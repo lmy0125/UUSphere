@@ -72,9 +72,9 @@ const Contact: PageType = () => {
 		return (
 			<Container maxWidth="md" sx={{ mt: 1, pb: 8 }}>
 				<Typography variant="h6" sx={{ textAlign: 'center' }}>
-					Thank you for your message! We'll review it carefully to make improvements.
+					Thank you for your message! We&apos;ll review it carefully to make improvements.
 					<br />
-					We're here to improve your experience in university.
+					We&apos;re here to improve your experience in university.
 				</Typography>
 				<Button
 					variant="contained"
