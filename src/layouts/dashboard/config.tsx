@@ -31,6 +31,8 @@ import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import SchoolIcon from '@mui/icons-material/School';
 import ChatBubbleOutlineOutlinedIcon from '@mui/icons-material/ChatBubbleOutlineOutlined';
 import Diversity3Icon from '@mui/icons-material/Diversity3';
+import HubIcon from '@mui/icons-material/Hub';
+import EmojiPeopleIcon from '@mui/icons-material/Diversity3';
 import ContactMailIcon from '@mui/icons-material/ContactMail';
 import { tokens } from '@/locales/tokens';
 import { paths } from '@/paths';
@@ -71,7 +73,7 @@ export const useSections = () => {
 						path: paths.mutualClassmates,
 						icon: (
 							<SvgIcon fontSize="small">
-								<Diversity3Icon />
+								<HubIcon />
 							</SvgIcon>
 						),
 					},
@@ -85,6 +87,15 @@ export const useSections = () => {
 						),
 					},
 					{
+						title: t(tokens.nav.playground),
+						path: paths.playground,
+						icon: (
+							<SvgIcon fontSize="small">
+								<EmojiPeopleIcon />
+							</SvgIcon>
+						),
+					},
+					{
 						title: t(tokens.nav.contact),
 						path: paths.contact,
 						icon: (
@@ -93,15 +104,7 @@ export const useSections = () => {
 							</SvgIcon>
 						),
 					},
-					// {
-					// 	title: t(tokens.nav.playground),
-					// 	path: paths.playground,
-					// 	icon: (
-					// 		<SvgIcon fontSize="small">
-					// 			<EmojiPeopleIcon />
-					// 		</SvgIcon>
-					// 	),
-					// },
+
 					// {
 					// 	title: t(tokens.nav.test),
 					// 	path: paths.test,
