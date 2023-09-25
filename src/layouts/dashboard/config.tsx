@@ -31,7 +31,7 @@ import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import SchoolIcon from '@mui/icons-material/School';
 import ChatBubbleOutlineOutlinedIcon from '@mui/icons-material/ChatBubbleOutlineOutlined';
 import Diversity3Icon from '@mui/icons-material/Diversity3';
-import EmojiPeopleIcon from '@mui/icons-material/EmojiPeople';
+import ContactMailIcon from '@mui/icons-material/ContactMail';
 import { tokens } from '@/locales/tokens';
 import { paths } from '@/paths';
 
@@ -81,6 +81,15 @@ export const useSections = () => {
 						icon: (
 							<SvgIcon fontSize="small">
 								<ChatBubbleOutlineOutlinedIcon />
+							</SvgIcon>
+						),
+					},
+					{
+						title: t(tokens.nav.contact),
+						path: paths.contact,
+						icon: (
+							<SvgIcon fontSize="small">
+								<ContactMailIcon />
 							</SvgIcon>
 						),
 					},
