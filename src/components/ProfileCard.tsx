@@ -99,7 +99,7 @@ const ProfileCard: FC<ProfileCardProps> = (props) => {
 		profileCardInfo.major,
 		profileCardInfo.homeland,
 	]
-		.filter((s) => s !== null)
+		.filter((s) => s !== null && s !== '')
 		.join(' • ');
 
 	return (
