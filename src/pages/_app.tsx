@@ -15,6 +15,7 @@ import ChatContextProvider from '@/contexts/ChatContext';
 // Remove if simplebar is not used
 import 'simplebar-react/dist/simplebar.min.css';
 import nProgress from 'nprogress';
+import Toaster from '@/components/Toaster';
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
 	getLayout?: (page: ReactElement) => ReactNode;
@@ -34,13 +35,13 @@ export default function App({
 		Router.events.on('routeChangeStart', nProgress.start);
 		Router.events.on('routeChangeError', nProgress.done);
 		Router.events.on('routeChangeComplete', nProgress.done);
-	
+
 		return () => {
-		  Router.events.off('routeChangeStart', nProgress.start);
-		  Router.events.off('routeChangeError', nProgress.done);
-		  Router.events.off('routeChangeComplete', nProgress.done);
+			Router.events.off('routeChangeStart', nProgress.start);
+			Router.events.off('routeChangeError', nProgress.done);
+			Router.events.off('routeChangeComplete', nProgress.done);
 		};
-	  }, []);
+	}, []);
 
 	return (
 		<AuthProvider session={session}>
@@ -96,9 +97,9 @@ export default function App({
 												navColor: settings.navColor,
 											}}
 										/> */}
+										<Toaster />
 									</>
 									{/* )}
-								<Toaster />
 							</RTL> */}
 								</ThemeProvider>
 							);
