@@ -20,12 +20,12 @@ import {
 } from '@mui/material';
 import { useSession } from 'next-auth/react';
 import { homelands } from '@/constants/personalInfoOptions';
-
-// import { useMockedUser } from 'src/hooks/use-mocked-user';
-// import { getInitials } from 'src/utils/get-initials';
+import UserAvatar from '@/components/UserAvatar';
+import axios from 'axios';
 
 const PostAddForm: FC = (props) => {
 	const { data: session } = useSession();
+	const [content, setContent] = useState('');
 	const [region, setRegion] = useState({
 		code: 'GLB',
 		label: 'Global',
@@ -33,26 +33,37 @@ const PostAddForm: FC = (props) => {
 	});
 	const smUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 
+	const handlePost = async () => {
+		if (session) {
+			await axios.post('/api/post', {
+				anonymous: false,
+				content: content,
+				userId: session?.user.id,
+			});
+			setContent('');
+		}
+	};
+
 	return (
 		<Card {...props}>
 			<CardContent>
 				<Stack alignItems="flex-start" direction="row" spacing={2}>
-					<Avatar
-						src={session?.user.image}
-						sx={{
-							height: 40,
-							width: 40,
-						}}>
-						{session?.user.name}
-					</Avatar>
+					<UserAvatar userId={session?.user.id} size={40} />
 					<Stack spacing={3} sx={{ flexGrow: 1 }}>
-						<OutlinedInput fullWidth multiline placeholder="Share your thoughts" rows={2} />
+						<OutlinedInput
+							fullWidth
+							multiline
+							placeholder="Share your thoughts"
+							rows={2}
+							value={content}
+							onChange={(e) => setContent(e.target.value)}
+						/>
 						<Stack
 							alignItems="center"
 							direction="row"
 							justifyContent="space-between"
 							spacing={3}>
-							{smUp && (
+							{/* {smUp && (
 								<Stack alignItems="center" direction="row" spacing={1}>
 									<IconButton>
 										<SvgIcon>
@@ -75,10 +86,10 @@ const PostAddForm: FC = (props) => {
 										</SvgIcon>
 									</IconButton>
 								</Stack>
-							)}
+							)} */}
 
 							<Stack alignItems="center" direction="row" spacing={1}>
-								<Autocomplete
+								{/* <Autocomplete
 									value={region}
 									options={homelands}
 									isOptionEqualToValue={(option, value) => option.label === value.label}
@@ -103,8 +114,13 @@ const PostAddForm: FC = (props) => {
 									// onChange={(e, values) => {
 									// 	setPersonalInfo({ ...personalInfo, homeland: values?.label ?? '' });
 									// }}
-								/>
-								<Button variant="contained">Post</Button>
+								/> */}
+								<Button
+									variant="contained"
+									sx={{ marginLeft: 'auto' }}
+									onClick={handlePost}>
+									Post
+								</Button>
 							</Stack>
 						</Stack>
 					</Stack>

@@ -4,8 +4,22 @@ import { Layout as DashboardLayout } from '@/layouts/dashboard';
 import { Box, Container, Stack, Typography } from '@mui/material';
 import PostAddForm from '@/components/Feed/PostAddForm';
 import PostDisplay from '@/components/Feed/PostDisplay';
+import { useSession } from 'next-auth/react';
+import axios from 'axios';
+import useSWR from 'swr';
+import { Post, User, Like, Comment } from '@prisma/client';
+
+interface PostDetails extends Post {
+	author: User;
+	likes: Like[];
+	comments: Comment[];
+}
 
 const PlaygroundPage: PageType = () => {
+	const { data: session } = useSession();
+	const fetcher = (url: string) => axios.get(url).then((res) => res.data);
+	const { data: posts, isLoading } = useSWR<PostDetails[]>(`/api/post`, fetcher);
+
 	return (
 		<>
 			{/* <Seo title="Dashboard: Social Feed" /> */}
@@ -20,21 +34,18 @@ const PlaygroundPage: PageType = () => {
 						<Typography variant="h4">Here&apos;s what your connections posted</Typography>
 					</Stack>
 					<Stack spacing={3} sx={{ mt: 3 }}>
-						<PostAddForm />
-						<PostDisplay isLiked={true} likes={20} />
-						{/* {posts.map((post) => (
-							<SocialPostCard
+						{session && <PostAddForm />}
+						{/* <PostDisplay post={}isLiked={true} likes={20} /> */}
+						{posts?.map((post) => (
+							<PostDisplay
 								key={post.id}
-								authorAvatar={post.author.avatar}
-								authorName={post.author.name}
-								comments={post.comments}
-								createdAt={post.createdAt}
-								isLiked={post.isLiked}
+								post={post}
+								author={post.author}
 								likes={post.likes}
-								media={post.media}
-								message={post.message}
+								comments={post.comments}
+								isLiked={post.likes.some((obj) => obj.userId === session?.user.id)}
 							/>
-						))} */}
+						))}
 					</Stack>
 				</Container>
 			</Box>
