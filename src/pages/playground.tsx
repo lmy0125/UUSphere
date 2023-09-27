@@ -7,18 +7,12 @@ import PostDisplay from '@/components/Feed/PostDisplay';
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
 import useSWR from 'swr';
-import { Post, User, Like, Comment } from '@prisma/client';
-
-interface PostDetails extends Post {
-	author: User;
-	likes: Like[];
-	comments: Comment[];
-}
+import { PostDetails } from '@/types/post';
 
 const PlaygroundPage: PageType = () => {
 	const { data: session } = useSession();
 	const fetcher = (url: string) => axios.get(url).then((res) => res.data);
-	const { data: posts, isLoading } = useSWR<PostDetails[]>(`/api/post`, fetcher);
+	const { data: posts, isLoading, mutate } = useSWR<PostDetails[]>(`/api/post`, fetcher);
 
 	return (
 		<>
@@ -28,14 +22,14 @@ const PlaygroundPage: PageType = () => {
 				sx={{
 					flexGrow: 1,
 					pb: 8,
+					mt: 1,
 				}}>
 				<Container maxWidth="lg">
 					<Stack spacing={1}>
-						<Typography variant="h4">Here&apos;s what your connections posted</Typography>
+						<Typography variant="h4">Playground</Typography>
 					</Stack>
 					<Stack spacing={3} sx={{ mt: 3 }}>
-						{session && <PostAddForm />}
-						{/* <PostDisplay post={}isLiked={true} likes={20} /> */}
+						{session && <PostAddForm mutate={mutate} />}
 						{posts?.map((post) => (
 							<PostDisplay
 								key={post.id}
