@@ -1,5 +1,6 @@
-import type { FC } from 'react';
+import { FC, useMemo } from 'react';
 import { useCallback, useState } from 'react';
+import Link from 'next/link';
 import PropTypes from 'prop-types';
 import { formatDistanceToNowStrict } from 'date-fns';
 import ClockIcon from '@untitled-ui/icons-react/build/esm/Clock';
@@ -14,21 +15,24 @@ import {
 	CardMedia,
 	Divider,
 	IconButton,
-	Link,
 	Stack,
 	SvgIcon,
 	Tooltip,
 	Typography,
+	Menu,
+	MenuItem,
 } from '@mui/material';
 // import type { Comment } from 'src/types/social';
 // import { SocialComment } from './social-comment';
 // import { SocialCommentAdd } from './social-comment-add';
 import { Post, User, Like, Comment } from '@prisma/client';
 import UserAvatar from '@/components/UserAvatar';
+import { BigHead } from '@bigheads/core';
 import MoreHorizOutlinedIcon from '@mui/icons-material/MoreHorizOutlined';
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { allAthletes } from '@/constants/randomNames';
 
 interface PostDisplayProps {
 	isLiked: boolean;
@@ -44,6 +48,26 @@ const PostDisplay: FC<PostDisplayProps> = (props) => {
 	const { post, author, isLiked: isLikedProp, likes, media, ...other } = props;
 	const [isLiked, setIsLiked] = useState<boolean>(props.isLiked);
 	const [numOfLikes, setNumOfLikes] = useState<number>(likes.length);
+	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+	const randomName = useMemo(() => {
+		const randomIndex = Math.floor(Math.random() * allAthletes.length);
+		return allAthletes[randomIndex];
+	}, []);
+	const randomAvatar = useMemo(() => {
+		return (
+			<Avatar>
+				<BigHead mask={false} />
+			</Avatar>
+		);
+	}, []);
+
+	const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+		setAnchorEl(event.currentTarget);
+	};
+	const handleDelete = async () => {};
+	const handleClose = () => {
+		setAnchorEl(null);
+	};
 
 	const handleLike = useCallback(async () => {
 		if (session) {
@@ -82,8 +106,33 @@ const PostDisplay: FC<PostDisplayProps> = (props) => {
 	return (
 		<Card {...other}>
 			<CardHeader
-				avatar={<UserAvatar userId={author.id} />}
+				avatar={post.anonymous ? randomAvatar : <UserAvatar userId={author.id} />}
 				disableTypography
+				title={
+					post.anonymous ? (
+						<Stack direction="row">
+							<Typography variant="subtitle2">{randomName}</Typography>
+						</Stack>
+					) : (
+						<Box
+							sx={{
+								a: {
+									fontSize: '0.875rem',
+									fontWeight: 500,
+									lineHeight: 1.57,
+									color: '#111927',
+									textDecoration: 'none',
+									'&:hover': {
+										textDecoration: 'underline',
+									},
+								},
+							}}>
+							<Link color="text.primary" href={`/profile/${author.id}`}>
+								{author.name}
+							</Link>
+						</Box>
+					)
+				}
 				subheader={
 					<Stack alignItems="center" direction="row" spacing={1}>
 						{/* <SvgIcon color="action">
@@ -94,17 +143,32 @@ const PostDisplay: FC<PostDisplayProps> = (props) => {
 						</Typography>
 					</Stack>
 				}
-				title={
-					<Stack alignItems="center" direction="row">
-						<Link color="text.primary" href="#" variant="subtitle2">
-							{author.name}
-						</Link>
-					</Stack>
-				}
 				action={
-					<IconButton aria-label="settings">
-						<MoreHorizOutlinedIcon />
-					</IconButton>
+					session?.user.id === author.id && (
+						<>
+							<IconButton aria-label="settings" onClick={handleClick}>
+								<MoreHorizOutlinedIcon />
+							</IconButton>
+							<Menu
+								id="basic-menu"
+								anchorEl={anchorEl}
+								open={Boolean(anchorEl)}
+								onClose={handleClose}
+								anchorOrigin={{
+									vertical: 'bottom',
+									horizontal: 'right',
+								}}
+								transformOrigin={{
+									vertical: 'top',
+									horizontal: 'right',
+								}}>
+								<MenuItem onClick={handleClose}>Edit</MenuItem>
+								<MenuItem onClick={handleClose} sx={{ color: '#D32F2F' }}>
+									Delete
+								</MenuItem>
+							</Menu>
+						</>
+					)
 				}
 			/>
 			<Box
