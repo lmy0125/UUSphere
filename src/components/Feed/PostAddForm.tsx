@@ -11,21 +11,37 @@ import {
 	Box,
 	Card,
 	CardContent,
+	Checkbox,
 	IconButton,
 	OutlinedInput,
 	Stack,
 	SvgIcon,
 	useMediaQuery,
 	TextField,
+	FormGroup,
+	FormControlLabel,
+	Popper,
+	ClickAwayListener,
 } from '@mui/material';
 import { useSession } from 'next-auth/react';
 import { homelands } from '@/constants/personalInfoOptions';
 import UserAvatar from '@/components/UserAvatar';
 import axios from 'axios';
+import toast from 'react-hot-toast';
+import EmojiPicker, { EmojiClickData } from 'emoji-picker-react';
+import { KeyedMutator } from 'swr';
+import { PostDetails } from '@/types/post';
 
-const PostAddForm: FC = (props) => {
+interface PostAddFormProps {
+	mutate: KeyedMutator<PostDetails[]>;
+}
+
+const PostAddForm: FC<PostAddFormProps> = ({ mutate }) => {
 	const { data: session } = useSession();
 	const [content, setContent] = useState('');
+	const [anonymous, setAnonymous] = useState(false);
+	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+	const [openEmojiPicker, setOpenEmojiPicker] = useState(false);
 	const [region, setRegion] = useState({
 		code: 'GLB',
 		label: 'Global',
@@ -35,21 +51,31 @@ const PostAddForm: FC = (props) => {
 
 	const handlePost = async () => {
 		if (session) {
-			await axios.post('/api/post', {
-				anonymous: false,
+			const res = await axios.post('/api/post', {
+				anonymous,
 				content: content,
 				userId: session?.user.id,
 			});
-			setContent('');
+			mutate();
+			if (res.status === 200) {
+				setContent('');
+				toast.success('Post created');
+			}
 		}
 	};
 
+	const handleEnterEmoji = (emojiData: EmojiClickData, event: MouseEvent) => {
+		setContent(
+			(inputValue) => inputValue + (emojiData.isCustom ? emojiData.unified : emojiData.emoji)
+		);
+	};
+
 	return (
-		<Card {...props}>
+		<Card>
 			<CardContent>
 				<Stack alignItems="flex-start" direction="row" spacing={2}>
 					<UserAvatar userId={session?.user.id} size={40} />
-					<Stack spacing={3} sx={{ flexGrow: 1 }}>
+					<Stack spacing={1} sx={{ flexGrow: 1 }}>
 						<OutlinedInput
 							fullWidth
 							multiline
@@ -58,11 +84,7 @@ const PostAddForm: FC = (props) => {
 							value={content}
 							onChange={(e) => setContent(e.target.value)}
 						/>
-						<Stack
-							alignItems="center"
-							direction="row"
-							justifyContent="space-between"
-							spacing={3}>
+						<Stack alignItems="center" direction="row" justifyContent="space-between">
 							{/* {smUp && (
 								<Stack alignItems="center" direction="row" spacing={1}>
 									<IconButton>
@@ -87,6 +109,18 @@ const PostAddForm: FC = (props) => {
 									</IconButton>
 								</Stack>
 							)} */}
+							<IconButton onClick={(e) => setAnchorEl(anchorEl ? null : e.currentTarget)}>
+								<SvgIcon>
+									<FaceSmileIcon />
+								</SvgIcon>
+							</IconButton>
+							<Popper anchorEl={anchorEl} open={Boolean(anchorEl)} placement="right-start">
+								<ClickAwayListener onClickAway={() => setAnchorEl(null)}>
+									<div>
+										<EmojiPicker onEmojiClick={handleEnterEmoji} lazyLoadEmojis={true} />
+									</div>
+								</ClickAwayListener>
+							</Popper>
 
 							<Stack alignItems="center" direction="row" spacing={1}>
 								{/* <Autocomplete
@@ -115,6 +149,17 @@ const PostAddForm: FC = (props) => {
 									// 	setPersonalInfo({ ...personalInfo, homeland: values?.label ?? '' });
 									// }}
 								/> */}
+								<FormGroup>
+									<FormControlLabel
+										control={
+											<Checkbox
+												checked={anonymous}
+												onChange={() => setAnonymous(!anonymous)}
+											/>
+										}
+										label="Anonymous"
+									/>
+								</FormGroup>
 								<Button
 									variant="contained"
 									sx={{ marginLeft: 'auto' }}
