@@ -30,7 +30,7 @@ import { Chip, SvgIcon } from '@mui/material';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import SchoolIcon from '@mui/icons-material/School';
 import ChatBubbleOutlineOutlinedIcon from '@mui/icons-material/ChatBubbleOutlineOutlined';
-import Diversity3Icon from '@mui/icons-material/Diversity3';
+import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
 import HubIcon from '@mui/icons-material/Hub';
 import EmojiPeopleIcon from '@mui/icons-material/Diversity3';
 import ContactMailIcon from '@mui/icons-material/ContactMail';
@@ -82,7 +82,7 @@ export const useSections = () => {
 						path: paths.chat,
 						icon: (
 							<SvgIcon fontSize="small">
-								<ChatBubbleOutlineOutlinedIcon />
+								<QuestionAnswerIcon />
 							</SvgIcon>
 						),
 					},
