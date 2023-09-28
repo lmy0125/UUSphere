@@ -38,23 +38,9 @@ const PopupProfileCard: React.FC<ProfileCardProps> = ({ anchorEl, setAnchorEl, u
 	};
 
 	const open = Boolean(anchorEl);
-	const id = open ? 'profile-card-popover' : undefined;
 
 	return (
-		<Popper
-			id={id}
-			open={open}
-			anchorEl={anchorEl}
-			placement="left-start"
-			// anchorOrigin={{
-			// 	vertical: 'top',
-			// 	horizontal: 'left',
-			// }}
-			// transformOrigin={{
-			// 	vertical: 'top',
-			// 	horizontal: 'right',
-			// }}
-		>
+		<Popper open={open} anchorEl={anchorEl} placement="left-start">
 			<ClickAwayListener onClickAway={() => setAnchorEl(null)}>
 				<Card sx={{ width: 320, pb: 5 }}>
 					<Box sx={{ height: 120, backgroundColor: 'gray' }} />
