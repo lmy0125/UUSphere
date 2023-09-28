@@ -159,19 +159,21 @@ const ProfileCard: FC<ProfileCardProps> = (props) => {
 					</Stack>
 
 					{client?.user?.id !== props.userId && (
-						<Button
-							size="small"
-							variant="contained"
-							color="primary"
-							onClick={handleMessageUser}
-							sx={{ float: 'right' }}
-							startIcon={
-								<SvgIcon>
-									<MessageChatSquare />
-								</SvgIcon>
-							}>
-							Message
-						</Button>
+						<Box sx={{ width: '112px' }}>
+							<Button
+								size="small"
+								variant="contained"
+								color="primary"
+								onClick={handleMessageUser}
+								sx={{ float: 'right' }}
+								startIcon={
+									<SvgIcon>
+										<MessageChatSquare />
+									</SvgIcon>
+								}>
+								Message
+							</Button>
+						</Box>
 					)}
 					{/* {isSelf && (
 						<Button onClick={handleConnectionAdd} size="small" variant="outlined">

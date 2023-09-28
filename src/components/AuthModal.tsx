@@ -22,11 +22,7 @@ export default function AuthModal({
 	};
 
 	return (
-		<Modal
-			open={open}
-			onClose={() => setAuthModal(false)}
-			aria-labelledby="modal-modal-title"
-			aria-describedby="modal-modal-description">
+		<Modal open={open} onClose={() => setAuthModal(false)}>
 			<Box sx={modalStyle}>
 				<Box
 					sx={{
@@ -55,7 +51,8 @@ const modalStyle = {
 	top: '50%',
 	left: '50%',
 	transform: 'translate(-50%, -50%)',
-	width: 550,
+	width: '80%',
+	maxWidth: 550,
 	bgcolor: 'background.paper',
 	border: '2px',
 	borderRadius: '8px',

@@ -11,10 +11,13 @@ import {
 	TableRow,
 	TableCell,
 } from '@mui/material';
+import type { Theme } from '@mui/material';
+import { useMediaQuery } from '@mui/material';
 import { ClassInfo } from '@/types/class';
 import { joinSection, dropSection } from '@/utils/ClassEnrollmentActions';
 import { useClassEnrollmentContext } from '@/contexts/ClassEnrollmentContext';
 import { useChatContext } from '@/contexts/ChatContext';
+import { Scrollbar } from '@/components/scrollbar';
 
 const style = {
 	position: 'absolute' as 'absolute',
@@ -24,6 +27,8 @@ const style = {
 	bgcolor: 'background.paper',
 	boxShadow: 24,
 	p: 4,
+	width: '80%',
+	maxWidth: 800,
 };
 
 export const JoinSectionModal = ({
@@ -48,6 +53,7 @@ export const JoinSectionModal = ({
 		}
 		setJoinSectionModal(false);
 	};
+	const smUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 
 	return (
 		<Modal
@@ -59,25 +65,26 @@ export const JoinSectionModal = ({
 				<Typography variant="h6" component="h2">
 					Join Class
 				</Typography>
-
-				<Table sx={{ minWidth: 700, mt: 2 }}>
-					<TableHead>
-						<TableRow>
-							<TableCell>Name</TableCell>
-							<TableCell>Section</TableCell>
-							<TableCell width="45%">Title</TableCell>
-							<TableCell width="25%">Instructor</TableCell>
-						</TableRow>
-					</TableHead>
-					<TableBody>
-						<TableRow>
-							<TableCell>{classInfo.code}</TableCell>
-							<TableCell>{classInfo.sections[0].code}</TableCell>
-							<TableCell>{classInfo.name}</TableCell>
-							<TableCell>{classInfo.instructor}</TableCell>
-						</TableRow>
-					</TableBody>
-				</Table>
+				<Scrollbar>
+					<Table sx={{ mt: 2 }}>
+						<TableHead>
+							<TableRow>
+								<TableCell>Name</TableCell>
+								<TableCell>Section</TableCell>
+								{smUp && <TableCell width="45%">Title</TableCell>}
+								<TableCell width="25%">Instructor</TableCell>
+							</TableRow>
+						</TableHead>
+						<TableBody>
+							<TableRow>
+								<TableCell>{classInfo.code}</TableCell>
+								<TableCell>{classInfo.sections[0].code}</TableCell>
+								{smUp && <TableCell>{classInfo.name}</TableCell>}
+								<TableCell>{classInfo.instructor}</TableCell>
+							</TableRow>
+						</TableBody>
+					</Table>
+				</Scrollbar>
 				<Box
 					sx={{
 						display: 'flex',
@@ -118,6 +125,7 @@ export const DropSectionModal = ({
 		}
 		setDropSectionModal(false);
 	};
+	const smUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 
 	return (
 		<Modal
@@ -129,25 +137,26 @@ export const DropSectionModal = ({
 				<Typography variant="h6" component="h2">
 					Drop Class
 				</Typography>
-
-				<Table sx={{ minWidth: 700, mt: 2 }}>
-					<TableHead>
-						<TableRow>
-							<TableCell>Name</TableCell>
-							<TableCell>Section</TableCell>
-							<TableCell width="45%">Title</TableCell>
-							<TableCell width="25%">Instructor</TableCell>
-						</TableRow>
-					</TableHead>
-					<TableBody>
-						<TableRow>
-							<TableCell>{classInfo.code}</TableCell>
-							<TableCell>{classInfo.sections[0].code}</TableCell>
-							<TableCell>{classInfo.name}</TableCell>
-							<TableCell>{classInfo.instructor}</TableCell>
-						</TableRow>
-					</TableBody>
-				</Table>
+				<Scrollbar>
+					<Table sx={{ mt: 2 }}>
+						<TableHead>
+							<TableRow>
+								<TableCell>Name</TableCell>
+								<TableCell>Section</TableCell>
+								{smUp && <TableCell width="45%">Title</TableCell>}
+								<TableCell width="25%">Instructor</TableCell>
+							</TableRow>
+						</TableHead>
+						<TableBody>
+							<TableRow>
+								<TableCell>{classInfo.code}</TableCell>
+								<TableCell>{classInfo.sections[0].code}</TableCell>
+								{smUp && <TableCell>{classInfo.name}</TableCell>}
+								<TableCell>{classInfo.instructor}</TableCell>
+							</TableRow>
+						</TableBody>
+					</Table>
+				</Scrollbar>
 				<Box
 					sx={{
 						display: 'flex',

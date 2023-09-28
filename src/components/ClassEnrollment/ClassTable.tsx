@@ -19,6 +19,8 @@ import {
 	TableRow,
 	Typography,
 } from '@mui/material';
+import type { Theme } from '@mui/material';
+import { useMediaQuery } from '@mui/material';
 import { Scrollbar } from '@/components/scrollbar';
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
@@ -45,17 +47,18 @@ export const ClassTable: FC<ClassTableProps> = (props) => {
 		page = 0,
 		rowsPerPage = 0,
 	} = props;
+	const smUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 
 	return (
 		<>
 			<Scrollbar>
-				<Table sx={{ minWidth: 800 }}>
+				<Table>
 					<TableHead>
 						<TableRow>
 							<TableCell />
 							<TableCell>Name</TableCell>
-							<TableCell width="40%">Title</TableCell>
-							<TableCell width="25%">Instructor</TableCell>
+							{smUp && <TableCell width="40%">Title</TableCell>}
+							<TableCell width={smUp ? "25%" : "35%"}>Instructor</TableCell>
 							<TableCell>Total Seats</TableCell>
 						</TableRow>
 					</TableHead>
@@ -68,6 +71,7 @@ export const ClassTable: FC<ClassTableProps> = (props) => {
 					</TableBody>
 				</Table>
 			</Scrollbar>
+
 			<TablePagination
 				component="div"
 				count={count}
@@ -100,6 +104,7 @@ const ClassRow: FC<{
 	const [numOfEnrolledStudentForClass, setNumOfEnrolledStudentForClass] = useState(0);
 	const [totalSeats, setTotalSeats] = useState(0);
 	const [enrollmentRatio, setEnrollmentRatio] = useState(0);
+	const smUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 
 	const handleClassToggle = () => {
 		setExpandSection(!expandSection);
@@ -156,8 +161,7 @@ const ClassRow: FC<{
 								height: 'calc(100% + 1px)',
 							},
 						}),
-					}}
-					width="25%">
+					}}>
 					<IconButton onClick={() => handleClassToggle()}>
 						<SvgIcon>{expandSection ? <ChevronDownIcon /> : <ChevronRightIcon />}</SvgIcon>
 					</IconButton>
@@ -167,14 +171,17 @@ const ClassRow: FC<{
 						<Typography variant="subtitle2">{classInfo.code}</Typography>
 					</Box>
 				</TableCell>
-				<TableCell>
-					<Typography variant="subtitle2">{classInfo.name}</Typography>
-				</TableCell>
+				{smUp && (
+					<TableCell>
+						<Typography variant="subtitle2">{classInfo.name}</Typography>
+					</TableCell>
+				)}
 				<TableCell>
 					<Box sx={{ cursor: 'pointer' }}>
 						<Typography variant="subtitle2">{classInfo.instructor}</Typography>
 					</Box>
 				</TableCell>
+
 				<TableCell>
 					<LinearProgress
 						value={enrollmentRatio * 100}
@@ -188,7 +195,7 @@ const ClassRow: FC<{
 						}
 						sx={{
 							height: 8,
-							width: 80,
+							maxWidth: 100,
 						}}
 					/>
 					<Typography color="text.secondary" variant="body2">
@@ -204,9 +211,9 @@ const ClassRow: FC<{
 							<Table size="small" aria-label="purchases">
 								<TableHead>
 									<TableRow>
-										<TableCell>Section ID</TableCell>
+										{smUp && <TableCell>Section ID</TableCell>}
 										<TableCell>Section</TableCell>
-										<TableCell>Total Seats</TableCell>
+										{smUp && <TableCell>Total Seats</TableCell>}
 										<TableCell>Lecture</TableCell>
 										<TableCell>Action</TableCell>
 									</TableRow>
@@ -274,6 +281,7 @@ const SectionRow: FC<{
 	const [authModal, setAuthModal] = useState(false);
 	const [joinSectionModal, setJoinSectionModal] = useState(false);
 	const [dropSectionModal, setDropSectionModal] = useState(false);
+	const smUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 
 	const lecture = section.meetings.filter((meeting) => meeting.type == 'LE');
 
@@ -342,26 +350,34 @@ const SectionRow: FC<{
 
 	return (
 		<TableRow key={section.id} style={hasSection ? { backgroundColor: '#d5f7ea' } : {}}>
-			<TableCell component="th" scope="row">
-				{section.school_id}
-			</TableCell>
+			{smUp && (
+				<TableCell component="th" scope="row">
+					{section.school_id}
+				</TableCell>
+			)}
 			<TableCell>{section.code}</TableCell>
-			<TableCell>
-				<LinearProgress
-					value={enrollmentRatio * 100}
-					variant="determinate"
-					color={
-						enrollmentRatio <= 0.5 ? 'success' : enrollmentRatio <= 0.75 ? 'warning' : 'error'
-					}
-					sx={{
-						height: 8,
-						width: 80,
-					}}
-				/>
-				<Typography color="text.secondary" variant="body2">
-					{numOfEnrolledStudentForSection} / {section.total_seats}
-				</Typography>
-			</TableCell>
+			{smUp && (
+				<TableCell>
+					<LinearProgress
+						value={enrollmentRatio * 100}
+						variant="determinate"
+						color={
+							enrollmentRatio <= 0.5
+								? 'success'
+								: enrollmentRatio <= 0.75
+								? 'warning'
+								: 'error'
+						}
+						sx={{
+							height: 8,
+							width: 80,
+						}}
+					/>
+					<Typography color="text.secondary" variant="body2">
+						{numOfEnrolledStudentForSection} / {section.total_seats}
+					</Typography>
+				</TableCell>
+			)}
 			<TableCell>
 				{daysOfWeek}
 				<Typography color="text.secondary" variant="body2">

@@ -11,7 +11,9 @@ import {
 	TableHead,
 	TableRow,
 	Typography,
+	useMediaQuery,
 } from '@mui/material';
+import type { Theme } from '@mui/material';
 import { ClassInfo } from '@/types/class';
 import { DropSectionModal } from '@/components/ClassEnrollment/ConfirmModals';
 import { useClassEnrollmentContext } from '@/contexts/ClassEnrollmentContext';
@@ -23,6 +25,7 @@ const ClassSchedule = () => {
 		useClassEnrollmentContext();
 	const { data: session } = useSession();
 	const [enrolledClasses, setEnrolledClasses] = useState<ClassInfo[]>([]);
+	const smUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 
 	useEffect(() => {
 		const getEnrolledClasses = async () => {
@@ -67,13 +70,14 @@ const ClassSchedule = () => {
 				<CardHeader title="My Schedule" />
 				<Divider />
 				<Scrollbar>
-					<Table sx={{ minWidth: 700 }}>
+					<Table>
 						<TableHead>
 							<TableRow>
 								<TableCell />
 								<TableCell>Name</TableCell>
-								<TableCell width="45%">Title</TableCell>
-								<TableCell width="25%">Instructor</TableCell>
+								{smUp && <TableCell width="25%">Title</TableCell>}
+								{smUp && <TableCell width="25%">Instructor</TableCell>}
+								<TableCell>Lecture</TableCell>
 								<TableCell>Action</TableCell>
 							</TableRow>
 						</TableHead>
@@ -91,6 +95,14 @@ const ClassSchedule = () => {
 
 const ClassEntry = ({ classInfo }: { classInfo: ClassInfo }) => {
 	const [dropSectionModal, setDropSectionModal] = useState(false);
+	const smUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
+
+	const lecture = classInfo.sections[0].meetings.filter((meeting) => meeting.type == 'LE');
+	const startTime = lecture[0]?.startTime;
+	const endTime = lecture[0]?.endTime;
+	const days = ['M', 'Tu', 'W', 'Th', 'F', 'Sa', 'Su'];
+	const daysOfWeek = lecture[0]?.daysOfWeek.map((i) => days[i - 1]);
+
 	return (
 		<>
 			<TableRow hover key={classInfo.id}>
@@ -100,9 +112,16 @@ const ClassEntry = ({ classInfo }: { classInfo: ClassInfo }) => {
 					<Typography color="text.secondary" variant="body2">
 						{classInfo.sections[0].code}
 					</Typography>
+					{!smUp && <Typography variant="body2">{classInfo.instructor}</Typography>}
 				</TableCell>
-				<TableCell>{classInfo.name}</TableCell>
-				<TableCell>{classInfo.instructor}</TableCell>
+				{smUp && <TableCell>{classInfo.name}</TableCell>}
+				{smUp && <TableCell>{classInfo.instructor}</TableCell>}
+				<TableCell>
+					{daysOfWeek}
+					<Typography color="text.secondary" variant="body2">
+						{startTime} -- {endTime}
+					</Typography>
+				</TableCell>
 				<TableCell>
 					<Button onClick={() => setDropSectionModal(true)} size="small">
 						Drop
