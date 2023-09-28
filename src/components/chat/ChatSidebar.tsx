@@ -17,23 +17,21 @@ import { CustomChannelPreview, CustomChannelList } from './CustomChannelEntry';
 import { CustomDropdown, CustomResultItem } from './CustomSearch';
 import { CustomStreamChatGenerics } from '@/types/customStreamChat';
 import { useComposeModeContext } from '@/contexts/ComposeModeContext';
+import { useChatMobileContext } from '@/contexts/ChatMobileContext';
 
 interface ChatSidebarProps {
-	container?: HTMLDivElement | null;
-	onClose?: () => void;
-	open?: boolean;
 	client: StreamChat<CustomStreamChatGenerics>;
-	// setComposeMode: Dispatch<SetStateAction<boolean>>;
 }
 
 export const ChatSidebar: FC<ChatSidebarProps> = (props) => {
-	const { client, container, onClose, open, ...other } = props;
+	const { client, ...other } = props;
 	const { data: session } = useSession();
 	const router = useRouter();
 	const { setComposeMode } = useComposeModeContext();
 	const [searchFocused, setSearchFocused] = useState(false);
 	const [searchQuery, setSearchQuery] = useState<string>('');
-	const mdUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('md'));
+	const smUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
+	const { setShowChannel } = useChatMobileContext();
 
 	//   const handleSearchChange = useCallback(
 	//     async (event: ChangeEvent<HTMLInputElement>): Promise<void> => {
@@ -137,6 +135,13 @@ export const ChatSidebar: FC<ChatSidebarProps> = (props) => {
 		);
 	};
 
+	const handleOpenComposer = () => {
+		if (!smUp) {
+			setShowChannel(true);
+		}
+		setComposeMode(true);
+	};
+
 	const content = (
 		<div>
 			<Stack alignItems="center" direction="row" spacing={2} sx={{ p: 2 }}>
@@ -145,7 +150,7 @@ export const ChatSidebar: FC<ChatSidebarProps> = (props) => {
 				</Typography>
 
 				<Button
-					onClick={() => setComposeMode(true)}
+					onClick={handleOpenComposer}
 					startIcon={
 						<SvgIcon>
 							<EditNoteIcon />
@@ -154,13 +159,6 @@ export const ChatSidebar: FC<ChatSidebarProps> = (props) => {
 					variant="contained">
 					New
 				</Button>
-				{/* {!mdUp && (
-					<IconButton onClick={onClose}>
-						<SvgIcon>
-							<XIcon />
-						</SvgIcon>
-					</IconButton>
-				)} */}
 			</Stack>
 			<Divider />
 			{/* <ChatSidebarSearch
@@ -206,57 +204,13 @@ export const ChatSidebar: FC<ChatSidebarProps> = (props) => {
 		</div>
 	);
 
-	if (mdUp) {
-		return (
-			<Drawer
-				anchor="left"
-				open={open}
-				PaperProps={{
-					sx: {
-						position: 'relative',
-						width: 380,
-					},
-				}}
-				SlideProps={{ container }}
-				variant="persistent"
-				{...other}>
-				{content}
-			</Drawer>
-		);
+	if (smUp) {
+		return <Box sx={{ width: 380 }}>{content}</Box>;
 	}
 
-	return (
-		<Drawer
-			anchor="left"
-			hideBackdrop
-			ModalProps={{
-				container,
-				sx: {
-					pointerEvents: 'none',
-					position: 'absolute',
-				},
-			}}
-			onClose={onClose}
-			open={open}
-			PaperProps={{
-				sx: {
-					maxWidth: '100%',
-					width: 380,
-					pointerEvents: 'auto',
-					position: 'absolute',
-				},
-			}}
-			SlideProps={{ container }}
-			variant="temporary"
-			{...other}>
-			{content}
-		</Drawer>
-	);
+	return <Box sx={{ width: '100vw' }}>{content}</Box>;
 };
 
 ChatSidebar.propTypes = {
-	container: PropTypes.any,
-	onClose: PropTypes.func,
-	open: PropTypes.bool,
 	client: PropTypes.any,
 };

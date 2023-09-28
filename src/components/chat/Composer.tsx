@@ -22,6 +22,7 @@ import axios from 'axios';
 import useSWR from 'swr';
 import { User } from '@prisma/client';
 import UserAvatar from '@/components/UserAvatar';
+import BackToChannelListButton from '@/components/chat/BackToChannlListButton';
 
 export default function Composer() {
 	const [input, setInput] = useState('');
@@ -112,6 +113,7 @@ export default function Composer() {
 					alignItems: 'center',
 					p: 1,
 				}}>
+				<BackToChannelListButton />
 				<Typography color="text.secondary" sx={{ mx: 1 }} variant="body2">
 					To:
 				</Typography>

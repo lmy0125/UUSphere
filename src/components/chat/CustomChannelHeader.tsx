@@ -1,5 +1,14 @@
 import React, { Dispatch, SetStateAction, useState } from 'react';
-import { Box, Stack, Avatar, AvatarGroup, IconButton, Typography } from '@mui/material';
+import {
+	Box,
+	Stack,
+	Avatar,
+	AvatarGroup,
+	IconButton,
+	Typography,
+	useMediaQuery,
+	Theme,
+} from '@mui/material';
 import {
 	ChannelHeaderProps,
 	TypingIndicator,
@@ -9,6 +18,9 @@ import {
 import InfoIcon from '@mui/icons-material/Info';
 import { useSession } from 'next-auth/react';
 import UserAvatar from '@/components/UserAvatar';
+import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutlined';
+import { useChatMobileContext } from '@/contexts/ChatMobileContext';
+import BackToChannelListButton from '@/components/chat/BackToChannlListButton';
 
 interface CustomChannelHeaderProps extends ChannelHeaderProps {
 	setIsChannelInfoOpen: React.Dispatch<SetStateAction<boolean>>;
@@ -31,6 +43,7 @@ const CustomChannelHeader = (props: CustomChannelHeaderProps) => {
 					px: 2,
 					py: 1.5,
 				}}>
+				<BackToChannelListButton />
 				<Avatar variant="rounded" sx={{ textAlign: 'center' }}>
 					{/* @ts-ignore */}
 					{channel.data?.code}
@@ -73,6 +86,7 @@ const CustomChannelHeader = (props: CustomChannelHeaderProps) => {
 						px: 2,
 						py: 1.5,
 					}}>
+					<BackToChannelListButton />
 					<UserAvatar userId={recipient?.id} />
 
 					<div style={{ overflow: 'hidden' }}>
@@ -118,6 +132,7 @@ const CustomChannelHeader = (props: CustomChannelHeaderProps) => {
 							px: 2,
 							py: 1.5,
 						}}>
+						<BackToChannelListButton />
 						<AvatarGroup
 							max={2}
 							sx={{

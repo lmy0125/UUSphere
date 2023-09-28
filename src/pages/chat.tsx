@@ -1,9 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useChatContext } from '@/contexts/ChatContext';
-import ComposeModeContextProvider, {
-	ComposeModeContextConsumer,
-} from '@/contexts/ComposeModeContext';
 import {
 	Chat,
 	Channel,
@@ -24,12 +21,14 @@ import {
 import { Channel as ChannelType } from 'stream-chat';
 import { CustomStreamChatGenerics } from '@/types/customStreamChat';
 import 'stream-chat-react/dist/css/v2/index.css';
-import type { Theme } from '@mui/material';
-import { Stack, Box, Divider, Button, Container, Typography, useMediaQuery } from '@mui/material';
+import { Stack, Box, Divider, Button, Container, Typography } from '@mui/material';
 // import { Seo } from 'src/components/seo';
 // import { usePageView } from 'src/hooks/use-page-view';
 import { Layout as DashboardLayout } from '@/layouts/dashboard';
-// import { ChatComposer } from 'src/sections/dashboard/chat/chat-composer';
+import ComposeModeContextProvider, {
+	ComposeModeContextConsumer,
+} from '@/contexts/ComposeModeContext';
+import ChatMobileContextProvider from '@/contexts/ChatMobileContext';
 import { ChatContainer } from '@/components/chat/ChatContainer';
 import { ChatSidebar } from '@/components/chat/ChatSidebar';
 // import { useDispatch } from 'src/store';
@@ -51,75 +50,6 @@ import Composer from '@/components/chat/Composer';
  * if threadKey does not exist, it means that the chat is in compose mode
  */
 
-// const useThreads = (): void => {
-//   const dispatch = useDispatch();
-
-//   const handleThreadsGet = useCallback(
-//     (): void => {
-//       dispatch(thunks.getThreads());
-//     },
-//     [dispatch]
-//   );
-
-//   useEffect(
-//     () => {
-//       handleThreadsGet();
-//     },
-//     // eslint-disable-next-line react-hooks/exhaustive-deps
-//     []
-//   );
-// };
-
-const useSidebar = () => {
-	//   const searchParams = useSearchParams();
-	const mdUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('md'));
-	const [open, setOpen] = useState(mdUp);
-
-	const handleScreenResize = useCallback((): void => {
-		if (!mdUp) {
-			setOpen(false);
-		} else {
-			setOpen(true);
-		}
-	}, [mdUp]);
-
-	useEffect(
-		() => {
-			handleScreenResize();
-		},
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[mdUp]
-	);
-
-	const handeParamsUpdate = useCallback((): void => {
-		if (!mdUp) {
-			setOpen(false);
-		}
-	}, [mdUp]);
-
-	useEffect(
-		() => {
-			handeParamsUpdate();
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-		// [searchParams]
-	);
-
-	const handleToggle = useCallback((): void => {
-		setOpen((prevState) => !prevState);
-	}, []);
-
-	const handleClose = useCallback((): void => {
-		setOpen(false);
-	}, []);
-
-	return {
-		handleToggle,
-		handleClose,
-		open,
-	};
-};
-
 const ChatPage: PageType = () => {
 	const [authModal, setAuthModal] = useState(false);
 	const { chatClient } = useChatContext();
@@ -130,7 +60,6 @@ const ChatPage: PageType = () => {
 	const rootRef = useRef<HTMLDivElement | null>(null);
 	const searchParams = useSearchParams();
 	const channelId = searchParams.get('channelId') || undefined;
-	const sidebar = useSidebar();
 
 	useEffect(() => {
 		const displayChannel = async () => {
@@ -168,8 +97,6 @@ const ChatPage: PageType = () => {
 	}
 	//   usePageView();
 
-	//   useThreads();
-
 	//   const view = threadKey
 	//     ? 'thread'
 	//     : compose
@@ -181,74 +108,63 @@ const ChatPage: PageType = () => {
 
 	return (
 		<ComposeModeContextProvider>
-			{/* <Seo title="Dashboard: Chat" /> */}
-			<Divider />
-			<Box
-				component="main"
-				sx={{
-					backgroundColor: 'background.paper',
-					flex: '1 1 auto',
-					overflow: 'hidden',
-					position: 'relative',
-				}}>
+			<ChatMobileContextProvider>
+				{/* <Seo title="Dashboard: Chat" /> */}
+				<Divider />
 				<Box
-					ref={rootRef}
+					component="main"
 					sx={{
-						bottom: 0,
-						display: 'flex',
-						left: 0,
-						position: 'absolute',
-						right: 0,
-						top: 0,
+						backgroundColor: 'background.paper',
+						flex: '1 1 auto',
+						overflow: 'hidden',
+						position: 'relative',
 					}}>
-					<ChatSidebar
-						container={rootRef.current}
-						onClose={sidebar.handleClose}
-						open={sidebar.open}
-						client={client}
-					/>
+					<Box
+						ref={rootRef}
+						sx={{
+							bottom: 0,
+							display: 'flex',
+							left: 0,
+							position: 'absolute',
+							right: 0,
+							top: 0,
+						}}>
+						<ChatSidebar client={client} />
 
-					<ChatContainer open={sidebar.open}>
-						{/* <Box sx={{ p: 2 }}>
-								<IconButton onClick={sidebar.handleToggle}>
-									<SvgIcon>
-										<Menu01Icon />
-									</SvgIcon>
-								</IconButton>
-							</Box> */}
-						{/* <Divider /> */}
-						<Channel>
-							<ComposeModeContextConsumer>
-								{(value) => {
-									if (value.composeMode) {
-										return <Composer />;
-									}
-									return (
-										<>
-											<Window hideOnThread>
-												<CustomChannelHeader
-													setIsChannelInfoOpen={setIsChannelInfoOpen}
+						<ChatContainer>
+							<Channel>
+								<ComposeModeContextConsumer>
+									{(value) => {
+										if (value.composeMode) {
+											return <Composer />;
+										}
+										return (
+											<>
+												<Window hideOnThread>
+													<CustomChannelHeader
+														setIsChannelInfoOpen={setIsChannelInfoOpen}
+													/>
+													<MessageList Message={CustomMessage} />
+													<Divider />
+													<MessageInput
+														grow
+														// Input={CustomMessageInput}
+													/>
+												</Window>
+												<Thread />
+												<ChannelInfoSidebar
+													isOpen={isChannelInfoOpen}
+													onClose={() => setIsChannelInfoOpen((prev) => !prev)}
 												/>
-												<MessageList Message={CustomMessage} />
-												<Divider />
-												<MessageInput
-													grow
-													// Input={CustomMessageInput}
-												/>
-											</Window>
-											<Thread />
-											<ChannelInfoSidebar
-												isOpen={isChannelInfoOpen}
-												onClose={() => setIsChannelInfoOpen((prev) => !prev)}
-											/>
-										</>
-									);
-								}}
-							</ComposeModeContextConsumer>
-						</Channel>
-					</ChatContainer>
+											</>
+										);
+									}}
+								</ComposeModeContextConsumer>
+							</Channel>
+						</ChatContainer>
+					</Box>
 				</Box>
-			</Box>
+			</ChatMobileContextProvider>
 		</ComposeModeContextProvider>
 	);
 };
