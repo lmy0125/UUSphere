@@ -56,7 +56,7 @@ export const TopNav: FC<TopNavProps> = (props) => {
 							</SvgIcon>
 						</IconButton>
 					)}
-					<SearchBox />
+					{/* <SearchBox /> */}
 				</Stack>
 				<Stack alignItems="center" direction="row" spacing={2}>
 					{/* <LanguageSwitch />
