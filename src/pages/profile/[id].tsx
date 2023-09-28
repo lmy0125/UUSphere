@@ -303,7 +303,6 @@ export const ProfilePage: PageType = () => {
 									sx={{
 										display: {
 											md: 'block',
-											xs: 'none',
 										},
 									}}>
 									<Button
