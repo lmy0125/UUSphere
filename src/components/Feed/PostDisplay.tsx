@@ -171,6 +171,10 @@ const PostDisplay: FC<PostDisplayProps> = (props) => {
 					)
 				}
 			/>
+			<Box sx={{ height: 64, width: 64 }}>
+				<BigHead mask={false} />
+			</Box>
+			<BigHead mask={false} />
 			<Box
 				sx={{
 					pb: 2,
