@@ -11,7 +11,6 @@ import {
 	MenuItem,
 } from '@mui/material';
 // import { RouterLink } from 'src/components/router-link';
-// import { Seo } from 'src/components/seo';
 // import { useMounted } from 'src/hooks/use-mounted';
 // import { usePageView } from 'src/hooks/use-page-view';
 import { Layout as DashboardLayout } from '@/layouts/dashboard';
@@ -114,7 +113,6 @@ const ClassEnrollmentPage: PageType = () => {
 
 	return (
 		<ClassEnrollmentContextProvider>
-			{/* <Seo title="Dashboard: Product List" /> */}
 			<Box
 				component="main"
 				sx={{

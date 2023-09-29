@@ -19,7 +19,6 @@ import {
 	DialogContent,
 	Skeleton,
 } from '@mui/material';
-// import { Seo } from 'src/components/seo';
 import { useMounted } from '@/hooks/use-mounted';
 // import { usePageView } from 'src/hooks/use-page-view';
 import { Layout as DashboardLayout } from '@/layouts/dashboard';
@@ -208,7 +207,6 @@ export const ProfilePage: PageType = () => {
 
 	return (
 		<>
-			{/* <Seo title="Dashboard: Social Profile" /> */}
 			<Box
 				component="main"
 				sx={{

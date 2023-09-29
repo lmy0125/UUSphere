@@ -38,17 +38,10 @@ import { useSession } from 'next-auth/react';
 import CustomChannelHeader from '@/components/chat/CustomChannelHeader';
 import CustomMessageInput from '@/components/chat/CustomMessageInput';
 // import  CustomTriggerProvider  from '@/components/chat/CustomTriggerProvider';
-import ChannelInfoSidebar from '@/components/chat/ChannelInfoSidebar';
+import { ChannelInfoSidebar } from '@/components/chat/ChannelInfoSidebar';
 import CustomMessage from '@/components/chat/CustomMessage';
 import AuthModal from '@/components/AuthModal';
 import Composer from '@/components/chat/Composer';
-
-/**
- * NOTE:
- * In our case there two possible routes
- * one that contains /chat and one with a chat?threadKey={{threadKey}}
- * if threadKey does not exist, it means that the chat is in compose mode
- */
 
 const ChatPage: PageType = () => {
 	const [authModal, setAuthModal] = useState(false);
@@ -155,6 +148,7 @@ const ChatPage: PageType = () => {
 												<ChannelInfoSidebar
 													isOpen={isChannelInfoOpen}
 													onClose={() => setIsChannelInfoOpen((prev) => !prev)}
+													setIsChannelInfoOpen={setIsChannelInfoOpen}
 												/>
 											</>
 										);
