@@ -36,9 +36,11 @@ export default function UserAvatar({ userId, size, border }: UserAvatar) {
 									backgroundColor: backgroundColor,
 									border: border,
 								}}>
-								<BigHead {...cleanedBigHeadStyle} />
+								<Box sx={{ width: '100%', height: '100%' }}>
+									<BigHead {...cleanedBigHeadStyle} />
+								</Box>
 							</Avatar>
-							<Box
+							{/* <Box
 								sx={{
 									height: size,
 									width: size,
@@ -48,7 +50,7 @@ export default function UserAvatar({ userId, size, border }: UserAvatar) {
 									overflow: 'hidden',
 								}}>
 								<BigHead {...cleanedBigHeadStyle} />
-							</Box>
+							</Box> */}
 						</>
 					);
 				})()
