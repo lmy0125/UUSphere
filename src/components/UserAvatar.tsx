@@ -2,7 +2,7 @@ import axios from 'axios';
 import React from 'react';
 import useSWR from 'swr';
 import { User } from '@/types/User';
-import { Avatar, Skeleton } from '@mui/material';
+import { Avatar, Box, Skeleton } from '@mui/material';
 import { BigHead } from '@bigheads/core';
 
 interface UserAvatar {
@@ -28,15 +28,28 @@ export default function UserAvatar({ userId, size, border }: UserAvatar) {
 						Object.entries(bigHeadStyle).filter(([key, value]) => value !== null)
 					);
 					return (
-						<Avatar
-							sx={{
-								height: size,
-								width: size,
-								backgroundColor: backgroundColor,
-								border: border,
-							}}>
-							<BigHead {...cleanedBigHeadStyle} />
-						</Avatar>
+						<>
+							<Avatar
+								sx={{
+									height: size,
+									width: size,
+									backgroundColor: backgroundColor,
+									border: border,
+								}}>
+								<BigHead {...cleanedBigHeadStyle} />
+							</Avatar>
+							<Box
+								sx={{
+									height: size,
+									width: size,
+									backgroundColor: backgroundColor,
+									border: border,
+									borderRadius: '50%',
+									overflow: 'hidden',
+								}}>
+								<BigHead {...cleanedBigHeadStyle} />
+							</Box>
+						</>
 					);
 				})()
 			) : (
