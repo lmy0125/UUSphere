@@ -5,10 +5,8 @@ import PropTypes from 'prop-types';
 import { SvgIcon, Theme } from '@mui/material';
 import { Box, Button, Divider, Drawer, Stack, Typography, useMediaQuery } from '@mui/material';
 import EditNoteIcon from '@mui/icons-material/EditNote';
-import { Scrollbar } from '@/components/scrollbar';
 import { paths } from '@/paths';
 // import { useSelector } from 'src/store';
-import type { Contact, Thread } from '@/types/chat';
 // import { ChatSidebarSearch } from './chat-sidebar-search';
 import { Channel, ChannelSort, StreamChat } from 'stream-chat';
 import { ChannelList, SearchResultItemProps, SearchResultsListProps } from 'stream-chat-react';
@@ -143,7 +141,7 @@ export const ChatSidebar: FC<ChatSidebarProps> = (props) => {
 	};
 
 	const content = (
-		<div>
+		<Stack sx={{ width: smUp ? 380 : '100vw', height: '100%', overflow: 'hidden' }}>
 			<Stack alignItems="center" direction="row" spacing={2} sx={{ p: 2 }}>
 				<Typography variant="h5" sx={{ flexGrow: 1 }}>
 					Chats
@@ -170,45 +168,46 @@ export const ChatSidebar: FC<ChatSidebarProps> = (props) => {
         query={searchQuery}
         results={searchResults}
       /> */}
-			<Box sx={{ display: searchFocused ? 'none' : 'block' }}>
+			<Stack sx={{ flex: 1, overflowY: 'auto' }}>
 				<Typography variant="subtitle1" sx={{ px: 2, py: 1 }}>
 					Classrooms
 				</Typography>
 
-				<ChannelList
-					channelRenderFilterFn={customClassroomChannelFilterFunction}
-					filters={classroomFilter}
-					sort={sort}
-					// showChannelSearch
-					// additionalChannelSearchProps={additionalProps}
-					Preview={CustomChannelPreview}
-					List={CustomChannelList}
-					EmptyStateIndicator={EmptyClassroomList}
-					// LoadingErrorIndicator={CustomErrorIndicator}
-					// LoadingIndicator={CustomLoadingIndicator}
-				/>
+				<Box>
+					<ChannelList
+						channelRenderFilterFn={customClassroomChannelFilterFunction}
+						filters={classroomFilter}
+						sort={sort}
+						// showChannelSearch
+						// additionalChannelSearchProps={additionalProps}
+						Preview={CustomChannelPreview}
+						List={CustomChannelList}
+						EmptyStateIndicator={EmptyClassroomList}
+						// LoadingErrorIndicator={CustomErrorIndicator}
+						// LoadingIndicator={CustomLoadingIndicator}
+					/>
+				</Box>
+
 				<Divider />
 				<Typography variant="subtitle1" sx={{ px: 2, py: 1 }}>
 					Personal
 				</Typography>
-				<ChannelList
-					channelRenderFilterFn={customMessageChannelFilterFunction}
-					filters={messageFilter}
-					sort={sort}
-					// additionalChannelSearchProps={additionalProps}
-					Preview={CustomChannelPreview}
-					List={CustomChannelList}
-					EmptyStateIndicator={EmptyPersonalMessageList}
-				/>
-			</Box>
-		</div>
+				<Box>
+					<ChannelList
+						channelRenderFilterFn={customMessageChannelFilterFunction}
+						filters={messageFilter}
+						sort={sort}
+						// additionalChannelSearchProps={additionalProps}
+						Preview={CustomChannelPreview}
+						List={CustomChannelList}
+						EmptyStateIndicator={EmptyPersonalMessageList}
+					/>
+				</Box>
+			</Stack>
+		</Stack>
 	);
 
-	if (smUp) {
-		return <Box sx={{ width: 380 }}>{content}</Box>;
-	}
-
-	return <Box sx={{ width: '100vw' }}>{content}</Box>;
+	return <>{content}</>;
 };
 
 ChatSidebar.propTypes = {
