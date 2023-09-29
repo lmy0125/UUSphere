@@ -70,6 +70,7 @@ export default function App({
 									<Head>
 										<meta name="color-scheme" content={settings.paletteMode} />
 										<meta name="theme-color" content={theme.palette.neutral[900]} />
+										<title>UUSphere</title>
 									</Head>
 									{/* <RTL direction={settings.direction}> */}
 									<CssBaseline />
