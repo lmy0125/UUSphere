@@ -18,6 +18,8 @@ import {
 	RadioGroup,
 	FormControlLabel,
 	Radio,
+	useMediaQuery,
+	Theme,
 } from '@mui/material';
 import { genders, majors, homelands, grades, colleges } from '@/constants/personalInfoOptions';
 import { User } from '@/types/User';
@@ -80,6 +82,7 @@ const ProfileEditForm: FC<ProfileEditFormProps> = ({ user, mutate, setProfileFor
 		bio: user.bio ?? '',
 		bigHeadAvatar: user.bigHeadAvatar,
 	});
+	const smUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 
 	// pick random value for each attribute in the bigHeadOptions above
 	const getRandomValue = (key: keyof BigHeadStyle) => {
@@ -146,7 +149,7 @@ const ProfileEditForm: FC<ProfileEditFormProps> = ({ user, mutate, setProfileFor
 									);
 									return (
 										<Box sx={{ display: 'flex' }}>
-											<Box sx={{ pl: 22 }}>
+											<Box sx={{ pl: smUp ? 22 : 0 }}>
 												<Avatar
 													sx={{
 														height: 160,
@@ -157,50 +160,99 @@ const ProfileEditForm: FC<ProfileEditFormProps> = ({ user, mutate, setProfileFor
 													}}>
 													<BigHead {...cleanedBigHeadStyle} mask={false} />
 												</Avatar>
-											</Box>
-											<Stack alignItems="center" spacing={2} sx={{ ml: 5 }}>
-												<Box>
-													<Typography variant="subtitle2" color="text.secondary">
-														Background color
-													</Typography>
-													<GithubPicker
-														width="137px"
-														triangle="hide"
-														colors={[
-															'#a9c8e6', // Light Blue
-															'#b4e3c4', // Light Green
-															'#c7b5d4', // Light Purple
-															'#f0cbaa', // Light Orange
-															'#f0a3a0', // Light Red
-															'#ffb1c1', // Light Pink
-															'#abdbd0', // Light Teal
-															'#c8d6d7', // Light Gray
-															'#f9e79f', // Light Yellow
-															'#e6b58d', // Light Brown
-														]}
-														color={
-															personalInfo.bigHeadAvatar.backgroundColor ?? '#a9c8e6'
-														}
-														onChangeComplete={(color) => {
-															setPersonalInfo({
-																...personalInfo,
-																bigHeadAvatar: {
-																	...personalInfo.bigHeadAvatar,
-																	backgroundColor: color.hex,
-																	selected: true,
-																},
-															});
-														}}
-													/>
-												</Box>
+												{!smUp && (
+													<Stack alignItems="center" spacing={2}>
+														<Box>
+															<Typography variant="subtitle2" color="text.secondary">
+																Background color
+															</Typography>
+															<GithubPicker
+																width="137px"
+																triangle="hide"
+																colors={[
+																	'#a9c8e6', // Light Blue
+																	'#b4e3c4', // Light Green
+																	'#c7b5d4', // Light Purple
+																	'#f0cbaa', // Light Orange
+																	'#f0a3a0', // Light Red
+																	'#ffb1c1', // Light Pink
+																	'#abdbd0', // Light Teal
+																	'#c8d6d7', // Light Gray
+																	'#f9e79f', // Light Yellow
+																	'#e6b58d', // Light Brown
+																]}
+																color={
+																	personalInfo.bigHeadAvatar.backgroundColor ??
+																	'#a9c8e6'
+																}
+																onChangeComplete={(color) => {
+																	setPersonalInfo({
+																		...personalInfo,
+																		bigHeadAvatar: {
+																			...personalInfo.bigHeadAvatar,
+																			backgroundColor: color.hex,
+																			selected: true,
+																		},
+																	});
+																}}
+															/>
+														</Box>
 
-												<Button
-													variant="contained"
-													onClick={generateRandomAvatar}
-													startIcon={<AutorenewIcon />}>
-													Reroll
-												</Button>
-											</Stack>
+														<Button
+															variant="contained"
+															onClick={generateRandomAvatar}
+															startIcon={<AutorenewIcon />}>
+															Reroll
+														</Button>
+													</Stack>
+												)}
+											</Box>
+											{smUp && (
+												<Stack alignItems="center" spacing={2} sx={{ ml: 5 }}>
+													<Box>
+														<Typography variant="subtitle2" color="text.secondary">
+															Background color
+														</Typography>
+														<GithubPicker
+															width="137px"
+															triangle="hide"
+															colors={[
+																'#a9c8e6', // Light Blue
+																'#b4e3c4', // Light Green
+																'#c7b5d4', // Light Purple
+																'#f0cbaa', // Light Orange
+																'#f0a3a0', // Light Red
+																'#ffb1c1', // Light Pink
+																'#abdbd0', // Light Teal
+																'#c8d6d7', // Light Gray
+																'#f9e79f', // Light Yellow
+																'#e6b58d', // Light Brown
+															]}
+															color={
+																personalInfo.bigHeadAvatar.backgroundColor ??
+																'#a9c8e6'
+															}
+															onChangeComplete={(color) => {
+																setPersonalInfo({
+																	...personalInfo,
+																	bigHeadAvatar: {
+																		...personalInfo.bigHeadAvatar,
+																		backgroundColor: color.hex,
+																		selected: true,
+																	},
+																});
+															}}
+														/>
+													</Box>
+
+													<Button
+														variant="contained"
+														onClick={generateRandomAvatar}
+														startIcon={<AutorenewIcon />}>
+														Reroll
+													</Button>
+												</Stack>
+											)}
 										</Box>
 									);
 								})()
