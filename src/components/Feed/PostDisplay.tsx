@@ -143,33 +143,33 @@ const PostDisplay: FC<PostDisplayProps> = (props) => {
 						</Typography>
 					</Stack>
 				}
-				action={
-					session?.user.id === author.id && (
-						<>
-							<IconButton aria-label="settings" onClick={handleClick}>
-								<MoreHorizOutlinedIcon />
-							</IconButton>
-							<Menu
-								id="basic-menu"
-								anchorEl={anchorEl}
-								open={Boolean(anchorEl)}
-								onClose={handleClose}
-								anchorOrigin={{
-									vertical: 'bottom',
-									horizontal: 'right',
-								}}
-								transformOrigin={{
-									vertical: 'top',
-									horizontal: 'right',
-								}}>
-								<MenuItem onClick={handleClose}>Edit</MenuItem>
-								<MenuItem onClick={handleClose} sx={{ color: '#D32F2F' }}>
-									Delete
-								</MenuItem>
-							</Menu>
-						</>
-					)
-				}
+				// action={
+				// 	session?.user.id === author.id && (
+				// 		<>
+				// 			<IconButton aria-label="settings" onClick={handleClick}>
+				// 				<MoreHorizOutlinedIcon />
+				// 			</IconButton>
+				// 			<Menu
+				// 				id="basic-menu"
+				// 				anchorEl={anchorEl}
+				// 				open={Boolean(anchorEl)}
+				// 				onClose={handleClose}
+				// 				anchorOrigin={{
+				// 					vertical: 'bottom',
+				// 					horizontal: 'right',
+				// 				}}
+				// 				transformOrigin={{
+				// 					vertical: 'top',
+				// 					horizontal: 'right',
+				// 				}}>
+				// 				<MenuItem onClick={handleClose}>Edit</MenuItem>
+				// 				<MenuItem onClick={handleClose} sx={{ color: '#D32F2F' }}>
+				// 					Delete
+				// 				</MenuItem>
+				// 			</Menu>
+				// 		</>
+				// 	)
+				// }
 			/>
 			<Box
 				sx={{
