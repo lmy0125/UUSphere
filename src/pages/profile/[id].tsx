@@ -304,6 +304,7 @@ export const ProfilePage: PageType = () => {
 										display: {
 											md: 'block',
 										},
+										minWidth: 128,
 									}}>
 									<Button
 										onClick={() => setProfileFormToggle(true)}
@@ -337,7 +338,6 @@ export const ProfilePage: PageType = () => {
 									sx={{
 										display: {
 											md: 'block',
-											xs: 'none',
 										},
 									}}>
 									{/* {showConnect && (
