@@ -16,11 +16,11 @@ export const BackToChannelListButton = () => {
 };
 
 export const BackToChannelButton = () => {
-	const { setShowChannel } = useChatStackContext();
+	const { setShowInfoSidebar } = useChatStackContext();
 	const smUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 	if (!smUp) {
 		return (
-			<IconButton onClick={() => setShowChannel(false)}>
+			<IconButton onClick={() => setShowInfoSidebar(false)}>
 				<ArrowBackIosNewOutlinedIcon />
 			</IconButton>
 		);
