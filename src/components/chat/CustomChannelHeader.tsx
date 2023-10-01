@@ -4,6 +4,7 @@ import {
 	Stack,
 	Avatar,
 	AvatarGroup,
+	Divider,
 	IconButton,
 	Typography,
 	useMediaQuery,
@@ -27,7 +28,7 @@ const CustomChannelHeader = (props: ChannelHeaderProps) => {
 	const { data: session } = useSession();
 	const { channel, members, watcher_count } = useChannelStateContext();
 	const { displayTitle } = useChannelPreviewInfo({ channel });
-	const { setShowInfoSidebar } = useChatStackContext();
+	const { showInfoSidebar, setShowInfoSidebar } = useChatStackContext();
 	const { name } = channel.data || {};
 
 	if (channel.type === 'classroom') {
@@ -60,6 +61,7 @@ const CustomChannelHeader = (props: ChannelHeaderProps) => {
 				<TypingIndicator />
 
 				<IconButton
+					color={showInfoSidebar ? 'primary' : 'default'}
 					onClick={() => setShowInfoSidebar((prev) => !prev)}
 					style={{ marginLeft: 'auto' }}>
 					<InfoIcon sx={{ width: 30, height: 30 }} />
@@ -106,6 +108,7 @@ const CustomChannelHeader = (props: ChannelHeaderProps) => {
 					<TypingIndicator />
 
 					<IconButton
+						color={showInfoSidebar ? 'primary' : 'default'}
 						onClick={() => setShowInfoSidebar((prev) => !prev)}
 						style={{ marginLeft: 'auto' }}>
 						<InfoIcon sx={{ width: 30, height: 30 }} />
@@ -164,6 +167,7 @@ const CustomChannelHeader = (props: ChannelHeaderProps) => {
 						<TypingIndicator />
 
 						<IconButton
+							color={showInfoSidebar ? 'primary' : 'default'}
 							onClick={() => setShowInfoSidebar((prev) => !prev)}
 							style={{ marginLeft: 'auto' }}>
 							<InfoIcon sx={{ width: 30, height: 30 }} />
