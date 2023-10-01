@@ -13,6 +13,7 @@ import {
 	CardMedia,
 	CardContent,
 	Grid,
+	Stack,
 	useMediaQuery,
 	Theme,
 } from '@mui/material';
@@ -25,6 +26,7 @@ import { useSession } from 'next-auth/react';
 import UserAvatar from '@/components/UserAvatar';
 import { InfoSidebarContainer } from '@/components/chat/ChannelInfoSidebar/InfoSidebarContainer';
 import { useChatStackContext } from '@/contexts/ChatStackContext';
+import { BackToChannelButton } from '@/components/chat/BackButtons';
 
 export const ChannelInfoSidebar = () => {
 	const { data: session } = useSession();
@@ -39,21 +41,26 @@ export const ChannelInfoSidebar = () => {
 	) {
 		return (
 			<InfoSidebarContainer>
-				<>
-					<Box>
-						<Box sx={{ pt: 1, pr: 1, textAlign: 'right' }}>
-							<CloseIcon
-								onClick={() => setShowInfoSidebar(false)}
-								sx={{ cursor: 'pointer' }}
-							/>
-						</Box>
-						<MenuList>
-							{Object.entries(members ?? []).map(([key, value]) => {
-								return <PopUpProfileMenuItem key={key} value={value} />;
-							})}
-						</MenuList>
-					</Box>
-				</>
+				<Stack
+					direction="row"
+					alignItems="center"
+					justifyContent="space-between"
+					sx={{
+						px: 2,
+						py: 1.5,
+					}}>
+					<BackToChannelButton />
+					<Typography variant="subtitle1" sx={{ textAlign: 'center' }}>
+						Channel Details
+					</Typography>
+					<Box sx={{ width: 32 }}></Box>
+				</Stack>
+				<Divider />
+				<MenuList>
+					{Object.entries(members ?? []).map(([key, value]) => {
+						return <PopUpProfileMenuItem key={key} value={value} />;
+					})}
+				</MenuList>
 			</InfoSidebarContainer>
 		);
 	} else {
@@ -73,11 +80,23 @@ export const ChannelInfoSidebar = () => {
 		const recipient = getRecipient(members!, session?.user.id ?? '');
 		return (
 			<InfoSidebarContainer>
-				<Box sx={{ pt: 1, pr: 1, textAlign: 'right' }}>
-					<CloseIcon onClick={() => setShowInfoSidebar(false)} sx={{ cursor: 'pointer' }} />
-				</Box>
+				<Stack
+					direction="row"
+					alignItems="center"
+					justifyContent="space-between"
+					sx={{
+						px: 2,
+						py: 1.5,
+					}}>
+					<BackToChannelButton />
+					<Typography variant="subtitle1" sx={{ textAlign: 'center' }}>
+						Channel Details
+					</Typography>
+					<Box sx={{ width: 32 }}></Box>
+				</Stack>
+				<Divider />
 				<Box>
-					<Box sx={{ height: 120, backgroundColor: 'gray' }} />
+					<Box sx={{ height: 120, backgroundColor: '#4B6B8A' }} />
 					<CardContent sx={{ pt: 0 }}>
 						<Box
 							sx={{
@@ -165,14 +184,14 @@ const PopUpProfileMenuItem = ({
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
 	return (
-		<>
-			<MenuItem onClick={(e) => setAnchorEl(e.currentTarget)}>
+		<Box>
+			<MenuItem onClick={(e) => setAnchorEl(e.currentTarget)} sx={{ px: 3}}>
 				<ListItemIcon>
 					<UserAvatar userId={value.user?.id} size={32} />
 				</ListItemIcon>
 				<ListItemText sx={{ color: 'black' }}>{value.user?.name}</ListItemText>
 			</MenuItem>
 			<PopUpProfileCard anchorEl={anchorEl} setAnchorEl={setAnchorEl} user={value.user} />
-		</>
+		</Box>
 	);
 };
