@@ -24,33 +24,28 @@ import { CustomStreamChatGenerics } from '@/types/customStreamChat';
 import { useSession } from 'next-auth/react';
 import UserAvatar from '@/components/UserAvatar';
 import { InfoSidebarContainer } from '@/components/chat/ChannelInfoSidebar/InfoSidebarContainer';
+import { useChatStackContext } from '@/contexts/ChatStackContext';
 
-interface ChannelInfoSidebarProps {
-	isOpen: boolean;
-	onClose: () => void;
-	setIsChannelInfoOpen: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-export const ChannelInfoSidebar: React.FC<ChannelInfoSidebarProps> = ({
-	isOpen,
-	onClose,
-	setIsChannelInfoOpen,
-}) => {
+export const ChannelInfoSidebar = () => {
 	const { data: session } = useSession();
 	const { channel, members } = useChannelStateContext<CustomStreamChatGenerics>();
 	const { displayTitle } = useChannelPreviewInfo({ channel });
 	const smUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
+	const { setShowInfoSidebar } = useChatStackContext();
 
 	if (
 		channel.type === 'classroom' ||
 		(channel.data?.member_count && channel.data?.member_count > 2)
 	) {
 		return (
-			<InfoSidebarContainer isOpen={isOpen} setIsChannelInfoOpen={setIsChannelInfoOpen}>
+			<InfoSidebarContainer>
 				<>
 					<Box>
 						<Box sx={{ pt: 1, pr: 1, textAlign: 'right' }}>
-							<CloseIcon onClick={onClose} sx={{ cursor: 'pointer' }} />
+							<CloseIcon
+								onClick={() => setShowInfoSidebar(false)}
+								sx={{ cursor: 'pointer' }}
+							/>
 						</Box>
 						<MenuList>
 							{Object.entries(members ?? []).map(([key, value]) => {
@@ -77,9 +72,9 @@ export const ChannelInfoSidebar: React.FC<ChannelInfoSidebarProps> = ({
 
 		const recipient = getRecipient(members!, session?.user.id ?? '');
 		return (
-			<InfoSidebarContainer isOpen={isOpen} setIsChannelInfoOpen={setIsChannelInfoOpen}>
+			<InfoSidebarContainer>
 				<Box sx={{ pt: 1, pr: 1, textAlign: 'right' }}>
-					<CloseIcon onClick={onClose} sx={{ cursor: 'pointer' }} />
+					<CloseIcon onClick={() => setShowInfoSidebar(false)} sx={{ cursor: 'pointer' }} />
 				</Box>
 				<Box>
 					<Box sx={{ height: 120, backgroundColor: 'gray' }} />

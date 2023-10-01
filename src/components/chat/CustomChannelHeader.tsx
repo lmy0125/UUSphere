@@ -19,18 +19,15 @@ import InfoIcon from '@mui/icons-material/Info';
 import { useSession } from 'next-auth/react';
 import UserAvatar from '@/components/UserAvatar';
 import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutlined';
-import { useChatMobileContext } from '@/contexts/ChatMobileContext';
-import BackToChannelListButton from '@/components/chat/BackToChannlListButton';
+import { useChatStackContext } from '@/contexts/ChatStackContext';
+import { BackToChannelListButton } from '@/components/chat/BackButtons';
 
-interface CustomChannelHeaderProps extends ChannelHeaderProps {
-	setIsChannelInfoOpen: React.Dispatch<SetStateAction<boolean>>;
-}
-
-const CustomChannelHeader = (props: CustomChannelHeaderProps) => {
-	const { title, setIsChannelInfoOpen } = props;
+const CustomChannelHeader = (props: ChannelHeaderProps) => {
+	const { title } = props;
 	const { data: session } = useSession();
 	const { channel, members, watcher_count } = useChannelStateContext();
 	const { displayTitle } = useChannelPreviewInfo({ channel });
+	const { setShowInfoSidebar } = useChatStackContext();
 	const { name } = channel.data || {};
 
 	if (channel.type === 'classroom') {
@@ -63,7 +60,7 @@ const CustomChannelHeader = (props: CustomChannelHeaderProps) => {
 				<TypingIndicator />
 
 				<IconButton
-					onClick={() => setIsChannelInfoOpen((prev) => !prev)}
+					onClick={() => setShowInfoSidebar((prev) => !prev)}
 					style={{ marginLeft: 'auto' }}>
 					<InfoIcon sx={{ width: 30, height: 30 }} />
 				</IconButton>
@@ -109,7 +106,7 @@ const CustomChannelHeader = (props: CustomChannelHeaderProps) => {
 					<TypingIndicator />
 
 					<IconButton
-						onClick={() => setIsChannelInfoOpen((prev) => !prev)}
+						onClick={() => setShowInfoSidebar((prev) => !prev)}
 						style={{ marginLeft: 'auto' }}>
 						<InfoIcon sx={{ width: 30, height: 30 }} />
 					</IconButton>
@@ -167,7 +164,7 @@ const CustomChannelHeader = (props: CustomChannelHeaderProps) => {
 						<TypingIndicator />
 
 						<IconButton
-							onClick={() => setIsChannelInfoOpen((prev) => !prev)}
+							onClick={() => setShowInfoSidebar((prev) => !prev)}
 							style={{ marginLeft: 'auto' }}>
 							<InfoIcon sx={{ width: 30, height: 30 }} />
 						</IconButton>

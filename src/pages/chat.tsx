@@ -28,7 +28,7 @@ import { Layout as DashboardLayout } from '@/layouts/dashboard';
 import ComposeModeContextProvider, {
 	ComposeModeContextConsumer,
 } from '@/contexts/ComposeModeContext';
-import ChatMobileContextProvider from '@/contexts/ChatMobileContext';
+import ChatStackContextProvider from '@/contexts/ChatStackContext';
 import { ChatContainer } from '@/components/chat/ChatContainer';
 import { ChatSidebar } from '@/components/chat/ChatSidebar';
 // import { useDispatch } from 'src/store';
@@ -101,7 +101,7 @@ const ChatPage: PageType = () => {
 
 	return (
 		<ComposeModeContextProvider>
-			<ChatMobileContextProvider>
+			<ChatStackContextProvider>
 				{/* <Seo title="Dashboard: Chat" /> */}
 				<Divider />
 				<Box
@@ -134,9 +134,7 @@ const ChatPage: PageType = () => {
 										return (
 											<>
 												<Window hideOnThread>
-													<CustomChannelHeader
-														setIsChannelInfoOpen={setIsChannelInfoOpen}
-													/>
+													<CustomChannelHeader />
 													<MessageList Message={CustomMessage} />
 													<Divider />
 													<MessageInput
@@ -145,11 +143,7 @@ const ChatPage: PageType = () => {
 													/>
 												</Window>
 												<Thread />
-												<ChannelInfoSidebar
-													isOpen={isChannelInfoOpen}
-													onClose={() => setIsChannelInfoOpen((prev) => !prev)}
-													setIsChannelInfoOpen={setIsChannelInfoOpen}
-												/>
+												<ChannelInfoSidebar />
 											</>
 										);
 									}}
@@ -158,7 +152,7 @@ const ChatPage: PageType = () => {
 						</ChatContainer>
 					</Box>
 				</Box>
-			</ChatMobileContextProvider>
+			</ChatStackContextProvider>
 		</ComposeModeContextProvider>
 	);
 };

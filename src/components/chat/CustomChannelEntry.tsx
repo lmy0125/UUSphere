@@ -11,7 +11,7 @@ import { Stack, Avatar, AvatarGroup, Box, Badge, Typography } from '@mui/materia
 import { formatDistanceStrict } from 'date-fns';
 import { DefaultGenerics } from 'stream-chat';
 import { useComposeModeContext } from '@/contexts/ComposeModeContext';
-import { useChatMobileContext } from '@/contexts/ChatMobileContext';
+import { useChatStackContext } from '@/contexts/ChatStackContext';
 import { useSession } from 'next-auth/react';
 import UserAvatar from '@/components/UserAvatar';
 
@@ -21,7 +21,7 @@ export const CustomChannelPreview = (props: ChannelPreviewUIComponentProps<Defau
 	const { data: session } = useSession();
 	const members = channel.state.members;
 	const { setComposeMode } = useComposeModeContext();
-	const { setShowChannel } = useChatMobileContext();
+	const { setShowChannel } = useChatStackContext();
 
 	const { channel: activeChannel } = useChatContext();
 

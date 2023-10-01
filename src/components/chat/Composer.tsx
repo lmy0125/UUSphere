@@ -22,7 +22,7 @@ import axios from 'axios';
 import useSWR from 'swr';
 import { User } from '@prisma/client';
 import UserAvatar from '@/components/UserAvatar';
-import BackToChannelListButton from '@/components/chat/BackToChannlListButton';
+import { BackToChannelListButton } from '@/components/chat/BackButtons';
 
 export default function Composer() {
 	const [input, setInput] = useState('');

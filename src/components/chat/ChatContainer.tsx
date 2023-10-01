@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { styled } from '@mui/material/styles';
 import { Box, SwipeableDrawer, useMediaQuery, Theme } from '@mui/material';
-import { useChatMobileContext } from '@/contexts/ChatMobileContext';
+import { useChatStackContext } from '@/contexts/ChatStackContext';
 
 export const ChatContainerStyle = styled('div', { shouldForwardProp: (prop) => prop !== 'open' })<{
 	open?: boolean;
@@ -29,7 +29,7 @@ export const ChatContainerStyle = styled('div', { shouldForwardProp: (prop) => p
 }));
 
 export const ChatContainer = ({ children }: { children: ReactNode }) => {
-	const { showChannel, setShowChannel } = useChatMobileContext();
+	const { showChannel, setShowChannel } = useChatStackContext();
 	const smUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 	const iOS = typeof navigator !== 'undefined' && /iPad|iPhone|iPod/.test(navigator.userAgent);
 

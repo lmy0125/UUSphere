@@ -15,7 +15,7 @@ import { CustomChannelPreview, CustomChannelList } from './CustomChannelEntry';
 import { CustomDropdown, CustomResultItem } from './CustomSearch';
 import { CustomStreamChatGenerics } from '@/types/customStreamChat';
 import { useComposeModeContext } from '@/contexts/ComposeModeContext';
-import { useChatMobileContext } from '@/contexts/ChatMobileContext';
+import { useChatStackContext } from '@/contexts/ChatStackContext';
 
 interface ChatSidebarProps {
 	client: StreamChat<CustomStreamChatGenerics>;
@@ -29,7 +29,7 @@ export const ChatSidebar: FC<ChatSidebarProps> = (props) => {
 	const [searchFocused, setSearchFocused] = useState(false);
 	const [searchQuery, setSearchQuery] = useState<string>('');
 	const smUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
-	const { setShowChannel } = useChatMobileContext();
+	const { setShowChannel } = useChatStackContext();
 
 	//   const handleSearchChange = useCallback(
 	//     async (event: ChangeEvent<HTMLInputElement>): Promise<void> => {
