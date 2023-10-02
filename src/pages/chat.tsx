@@ -48,7 +48,6 @@ const ChatPage: PageType = () => {
 	const { chatClient } = useChatContext();
 	const { status } = useSession();
 	const [currentChannel, setCurrentChannel] = useState<ChannelType<CustomStreamChatGenerics>>();
-	const [isChannelInfoOpen, setIsChannelInfoOpen] = useState(false);
 	const { client, setActiveChannel } = useStreamChatContext<CustomStreamChatGenerics>();
 	const rootRef = useRef<HTMLDivElement | null>(null);
 	const searchParams = useSearchParams();

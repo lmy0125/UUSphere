@@ -20,7 +20,7 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useChannelPreviewInfo, useChannelStateContext } from 'stream-chat-react';
-import PopUpProfileCard from '@/components/chat/ChannelInfoSidebar/PopupUserProfile';
+import PopUpUserProfile from '@/components/chat/ChannelInfoSidebar/PopUpUserProfile';
 import { ChannelMemberResponse, UserResponse } from 'stream-chat';
 import { CustomStreamChatGenerics } from '@/types/customStreamChat';
 import { useSession } from 'next-auth/react';
@@ -69,16 +69,6 @@ export const ChannelInfoSidebar = () => {
 		const recipient = getRecipient(members!, session?.user.id ?? '');
 		return (
 			<InfoSidebarContainer open={showInfoSidebar} setOpen={setShowInfoSidebar}>
-				<Stack
-					direction="row"
-					alignItems="left"
-					justifyContent="space-between"
-					sx={{
-						px: 2,
-						py: 1.5,
-					}}>
-					<BackButton setOpen={setShowInfoSidebar} />
-				</Stack>
 				<Divider />
 				<Box>
 					<Box sx={{ height: 120, backgroundColor: '#4B6B8A' }} />
@@ -169,7 +159,6 @@ const PopUpProfileMenuItem = ({
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const [showProfileCard, setShowProfileCard] = useState(false);
 	const smUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
-	const iOS = typeof navigator !== 'undefined' && /iPad|iPhone|iPod/.test(navigator.userAgent);
 
 	return (
 		<Box>
@@ -185,24 +174,13 @@ const PopUpProfileMenuItem = ({
 				<ListItemText sx={{ color: 'black' }}>{value.user?.name}</ListItemText>
 			</MenuItem>
 			{smUp ? (
-				<PopUpProfileCard anchorEl={anchorEl} setAnchorEl={setAnchorEl} user={value.user} />
+				<PopUpUserProfile anchorEl={anchorEl} setAnchorEl={setAnchorEl} user={value.user} />
 			) : (
-				// <SwipeableDrawer
-				// 	anchor="right"
-				// 	open={showProfileCard}
-				// 	onOpen={() => setShowProfileCard(true)}
-				// 	onClose={() => setShowProfileCard(false)}
-				// 	disableBackdropTransition={!iOS}
-				// 	disableDiscovery={iOS}
-				// 	PaperProps={{
-				// 		sx: { width: '90vw' },
-				// 	}}>
 				<FlatUserProfile
 					user={value.user}
-					showInfoSidebar={showProfileCard}
-					setShowInfoSidebar={setShowProfileCard}
+					open={showProfileCard}
+					setOpen={setShowProfileCard}
 				/>
-				// </SwipeableDrawer>
 			)}
 		</Box>
 	);
