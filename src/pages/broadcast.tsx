@@ -9,7 +9,7 @@ import axios from 'axios';
 import useSWR from 'swr';
 import { PostDetails } from '@/types/post';
 
-const PlaygroundPage: PageType = () => {
+const BroadcastPage: PageType = () => {
 	const { data: session } = useSession();
 	const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 	const { data: posts, isLoading, mutate } = useSWR<PostDetails[]>(`/api/post`, fetcher);
@@ -25,9 +25,11 @@ const PlaygroundPage: PageType = () => {
 					mt: 1,
 				}}>
 				<Container maxWidth="lg">
-					<Stack >
-						<Typography variant="h4">Playground</Typography>
-						<Typography variant="subtitle2">Escape. Explore. Experience.</Typography>
+					<Stack>
+						<Typography variant="h4">Broadcast</Typography>
+						<Typography variant="subtitle2">
+							Share anything, anytime, anywhere. Your voice, your platform.
+						</Typography>
 					</Stack>
 					<Stack spacing={2} sx={{ mt: 2 }}>
 						{session && <PostAddForm mutate={mutate} />}
@@ -48,6 +50,6 @@ const PlaygroundPage: PageType = () => {
 	);
 };
 
-PlaygroundPage.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+BroadcastPage.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
 
-export default PlaygroundPage;
+export default BroadcastPage;

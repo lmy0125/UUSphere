@@ -34,6 +34,7 @@ import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
 import HubIcon from '@mui/icons-material/Hub';
 import EmojiPeopleIcon from '@mui/icons-material/Diversity3';
 import ContactMailIcon from '@mui/icons-material/ContactMail';
+import WifiTetheringOutlinedIcon from '@mui/icons-material/WifiTetheringOutlined';
 import { tokens } from '@/locales/tokens';
 import { paths } from '@/paths';
 
@@ -73,7 +74,7 @@ export const useSections = () => {
 						path: paths.mutualClassmates,
 						icon: (
 							<SvgIcon fontSize="small">
-								<HubIcon />
+								<EmojiPeopleIcon />
 							</SvgIcon>
 						),
 					},
@@ -87,11 +88,11 @@ export const useSections = () => {
 						),
 					},
 					{
-						title: t(tokens.nav.playground),
-						path: paths.playground,
+						title: t(tokens.nav.broadcast),
+						path: paths.broadcast,
 						icon: (
 							<SvgIcon fontSize="small">
-								<EmojiPeopleIcon />
+								<WifiTetheringOutlinedIcon />
 							</SvgIcon>
 						),
 					},
