@@ -23,7 +23,7 @@ interface ProfileCardProps {
 	user: UserResponse<CustomStreamChatGenerics> | undefined;
 }
 
-const PopupProfileCard: React.FC<ProfileCardProps> = ({ anchorEl, setAnchorEl, user }) => {
+const PopupUserProfile: React.FC<ProfileCardProps> = ({ anchorEl, setAnchorEl, user }) => {
 	const { client, setActiveChannel } = useChatContext();
 
 	const handleMessageUser = async () => {
@@ -43,7 +43,7 @@ const PopupProfileCard: React.FC<ProfileCardProps> = ({ anchorEl, setAnchorEl, u
 		<Popper open={open} anchorEl={anchorEl} placement="left-start">
 			<ClickAwayListener onClickAway={() => setAnchorEl(null)}>
 				<Card sx={{ width: 320, pb: 5 }}>
-					<Box sx={{ height: 120, backgroundColor: 'gray' }} />
+					<Box sx={{ height: 120, backgroundColor: '#4B6B8A' }} />
 					<CardContent sx={{ pt: 0 }}>
 						<Box
 							sx={{
@@ -130,4 +130,4 @@ const PopupProfileCard: React.FC<ProfileCardProps> = ({ anchorEl, setAnchorEl, u
 	);
 };
 
-export default PopupProfileCard;
+export default PopupUserProfile;
