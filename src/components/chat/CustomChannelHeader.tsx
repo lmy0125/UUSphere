@@ -21,14 +21,14 @@ import { useSession } from 'next-auth/react';
 import UserAvatar from '@/components/UserAvatar';
 import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutlined';
 import { useChatStackContext } from '@/contexts/ChatStackContext';
-import { BackToChannelListButton } from '@/components/chat/BackButtons';
+import BackButton from '@/components/chat/BackButton';
 
 const CustomChannelHeader = (props: ChannelHeaderProps) => {
 	const { title } = props;
 	const { data: session } = useSession();
 	const { channel, members, watcher_count } = useChannelStateContext();
 	const { displayTitle } = useChannelPreviewInfo({ channel });
-	const { showInfoSidebar, setShowInfoSidebar } = useChatStackContext();
+	const { showInfoSidebar, setShowInfoSidebar, setShowChannel } = useChatStackContext();
 	const { name } = channel.data || {};
 
 	if (channel.type === 'classroom') {
@@ -41,7 +41,7 @@ const CustomChannelHeader = (props: ChannelHeaderProps) => {
 					px: 2,
 					py: 1.5,
 				}}>
-				<BackToChannelListButton />
+				<BackButton setOpen={setShowChannel} />
 				<Avatar variant="rounded" sx={{ textAlign: 'center' }}>
 					{/* @ts-ignore */}
 					{channel.data?.code}
@@ -85,7 +85,7 @@ const CustomChannelHeader = (props: ChannelHeaderProps) => {
 						px: 2,
 						py: 1.5,
 					}}>
-					<BackToChannelListButton />
+					<BackButton setOpen={setShowChannel} />
 					<UserAvatar userId={recipient?.id} />
 
 					<div style={{ overflow: 'hidden' }}>
@@ -132,7 +132,7 @@ const CustomChannelHeader = (props: ChannelHeaderProps) => {
 							px: 2,
 							py: 1.5,
 						}}>
-						<BackToChannelListButton />
+						<BackButton setOpen={setShowChannel} />
 						<AvatarGroup
 							max={2}
 							sx={{

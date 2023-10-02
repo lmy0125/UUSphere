@@ -14,48 +14,37 @@ import {
 	CardContent,
 	Grid,
 	Stack,
+	SwipeableDrawer,
 	useMediaQuery,
 	Theme,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useChannelPreviewInfo, useChannelStateContext } from 'stream-chat-react';
-import PopUpProfileCard from '@/components/chat/PopUpProfileCard';
+import PopUpProfileCard from '@/components/chat/ChannelInfoSidebar/PopupUserProfile';
 import { ChannelMemberResponse, UserResponse } from 'stream-chat';
 import { CustomStreamChatGenerics } from '@/types/customStreamChat';
 import { useSession } from 'next-auth/react';
 import UserAvatar from '@/components/UserAvatar';
 import { InfoSidebarContainer } from '@/components/chat/ChannelInfoSidebar/InfoSidebarContainer';
+import BackButton from '@/components/chat/BackButton';
+import FlatUserProfile from '@/components/chat/ChannelInfoSidebar/FlatUserProfile';
 import { useChatStackContext } from '@/contexts/ChatStackContext';
-import { BackToChannelButton } from '@/components/chat/BackButtons';
 
 export const ChannelInfoSidebar = () => {
 	const { data: session } = useSession();
 	const { channel, members } = useChannelStateContext<CustomStreamChatGenerics>();
 	const { displayTitle } = useChannelPreviewInfo({ channel });
-	const smUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
-	const { setShowInfoSidebar } = useChatStackContext();
+	const { showInfoSidebar, setShowInfoSidebar } = useChatStackContext();
 
 	if (
 		channel.type === 'classroom' ||
 		(channel.data?.member_count && channel.data?.member_count > 2)
 	) {
 		return (
-			<InfoSidebarContainer>
-				<Stack
-					direction="row"
-					alignItems="center"
-					justifyContent="space-between"
-					sx={{
-						px: 2,
-						py: 1.5,
-					}}>
-					<BackToChannelButton />
-					<Typography variant="subtitle1" sx={{ textAlign: 'center' }}>
-						Channel Details
-					</Typography>
-					<Box sx={{ width: 32 }}></Box>
-				</Stack>
-				<Divider />
+			<InfoSidebarContainer
+				open={showInfoSidebar}
+				setOpen={setShowInfoSidebar}
+				title="Channel Details">
 				<MenuList>
 					{Object.entries(members ?? []).map(([key, value]) => {
 						return <PopUpProfileMenuItem key={key} value={value} />;
@@ -79,20 +68,16 @@ export const ChannelInfoSidebar = () => {
 
 		const recipient = getRecipient(members!, session?.user.id ?? '');
 		return (
-			<InfoSidebarContainer>
+			<InfoSidebarContainer open={showInfoSidebar} setOpen={setShowInfoSidebar}>
 				<Stack
 					direction="row"
-					alignItems="center"
+					alignItems="left"
 					justifyContent="space-between"
 					sx={{
 						px: 2,
 						py: 1.5,
 					}}>
-					<BackToChannelButton />
-					<Typography variant="subtitle1" sx={{ textAlign: 'center' }}>
-						Channel Details
-					</Typography>
-					<Box sx={{ width: 32 }}></Box>
+					<BackButton setOpen={setShowInfoSidebar} />
 				</Stack>
 				<Divider />
 				<Box>
@@ -182,16 +167,43 @@ const PopUpProfileMenuItem = ({
 	value: ChannelMemberResponse<CustomStreamChatGenerics>;
 }) => {
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+	const [showProfileCard, setShowProfileCard] = useState(false);
+	const smUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
+	const iOS = typeof navigator !== 'undefined' && /iPad|iPhone|iPod/.test(navigator.userAgent);
 
 	return (
 		<Box>
-			<MenuItem onClick={(e) => setAnchorEl(e.currentTarget)} sx={{ px: 3}}>
+			<MenuItem
+				onClick={(e) => {
+					setAnchorEl(e.currentTarget);
+					setShowProfileCard(true);
+				}}
+				sx={{ px: 3 }}>
 				<ListItemIcon>
 					<UserAvatar userId={value.user?.id} size={32} />
 				</ListItemIcon>
 				<ListItemText sx={{ color: 'black' }}>{value.user?.name}</ListItemText>
 			</MenuItem>
-			<PopUpProfileCard anchorEl={anchorEl} setAnchorEl={setAnchorEl} user={value.user} />
+			{smUp ? (
+				<PopUpProfileCard anchorEl={anchorEl} setAnchorEl={setAnchorEl} user={value.user} />
+			) : (
+				// <SwipeableDrawer
+				// 	anchor="right"
+				// 	open={showProfileCard}
+				// 	onOpen={() => setShowProfileCard(true)}
+				// 	onClose={() => setShowProfileCard(false)}
+				// 	disableBackdropTransition={!iOS}
+				// 	disableDiscovery={iOS}
+				// 	PaperProps={{
+				// 		sx: { width: '90vw' },
+				// 	}}>
+				<FlatUserProfile
+					user={value.user}
+					showInfoSidebar={showProfileCard}
+					setShowInfoSidebar={setShowProfileCard}
+				/>
+				// </SwipeableDrawer>
+			)}
 		</Box>
 	);
 };

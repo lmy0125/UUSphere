@@ -22,7 +22,8 @@ import axios from 'axios';
 import useSWR from 'swr';
 import { User } from '@prisma/client';
 import UserAvatar from '@/components/UserAvatar';
-import { BackToChannelListButton } from '@/components/chat/BackButtons';
+import BackButton from '@/components/chat/BackButton';
+import { useChatStackContext } from '@/contexts/ChatStackContext';
 
 export default function Composer() {
 	const [input, setInput] = useState('');
@@ -30,6 +31,7 @@ export default function Composer() {
 	const { sendMessage } = useChannelActionContext();
 	const { client, setActiveChannel } = useChatContext();
 	const { setComposeMode } = useComposeModeContext();
+	const { setShowChannel } = useChatStackContext();
 	const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 	const { data: allUsers, isLoading } = useSWR<User[]>(`/api/users`, fetcher);
 	// filter out the user themselves so they can't send message to themselves
@@ -113,7 +115,7 @@ export default function Composer() {
 					alignItems: 'center',
 					p: 1,
 				}}>
-				<BackToChannelListButton />
+				<BackButton setOpen={setShowChannel} />
 				<Typography color="text.secondary" sx={{ mx: 1 }} variant="body2">
 					To:
 				</Typography>
