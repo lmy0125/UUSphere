@@ -79,7 +79,7 @@ const PostAddForm: FC<PostAddFormProps> = ({ mutate }) => {
 						<OutlinedInput
 							fullWidth
 							multiline
-							placeholder="Share your thoughts"
+							placeholder="Share the moment"
 							rows={2}
 							value={content}
 							onChange={(e) => setContent(e.target.value)}

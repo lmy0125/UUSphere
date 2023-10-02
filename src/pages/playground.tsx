@@ -25,10 +25,11 @@ const PlaygroundPage: PageType = () => {
 					mt: 1,
 				}}>
 				<Container maxWidth="lg">
-					<Stack spacing={1}>
+					<Stack >
 						<Typography variant="h4">Playground</Typography>
+						<Typography variant="subtitle2">Escape. Explore. Experience.</Typography>
 					</Stack>
-					<Stack spacing={3} sx={{ mt: 3 }}>
+					<Stack spacing={2} sx={{ mt: 2 }}>
 						{session && <PostAddForm mutate={mutate} />}
 						{posts?.map((post) => (
 							<PostDisplay
