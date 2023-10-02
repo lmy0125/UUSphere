@@ -32,7 +32,7 @@ import MoreHorizOutlinedIcon from '@mui/icons-material/MoreHorizOutlined';
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import { allAthletes } from '@/constants/randomNames';
+import { randomNames } from '@/constants/randomNames';
 
 interface PostDisplayProps {
 	isLiked: boolean;
@@ -50,8 +50,8 @@ const PostDisplay: FC<PostDisplayProps> = (props) => {
 	const [numOfLikes, setNumOfLikes] = useState<number>(likes.length);
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const randomName = useMemo(() => {
-		const randomIndex = Math.floor(Math.random() * allAthletes.length);
-		return allAthletes[randomIndex];
+		const randomIndex = Math.floor(Math.random() * randomNames.length);
+		return randomNames[randomIndex];
 	}, []);
 	const randomAvatar = useMemo(() => {
 		return (

@@ -1,4 +1,4 @@
-export const allAthletes = [
+export const randomNames = [
 	'Jim Brown',
 	'Jerry Rice',
 	'Joe Montana',
