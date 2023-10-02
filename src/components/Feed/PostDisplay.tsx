@@ -56,7 +56,9 @@ const PostDisplay: FC<PostDisplayProps> = (props) => {
 	const randomAvatar = useMemo(() => {
 		return (
 			<Avatar>
-				<BigHead mask={false} />
+				<Box sx={{ width: '100%', height: '100%' }}>
+					<BigHead mask={false} />
+				</Box>
 			</Avatar>
 		);
 	}, []);

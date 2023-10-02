@@ -158,7 +158,9 @@ const ProfileEditForm: FC<ProfileEditFormProps> = ({ user, mutate, setProfileFor
 															personalInfo.bigHeadAvatar?.backgroundColor ??
 															'#a9c8e6',
 													}}>
-													<BigHead {...cleanedBigHeadStyle} mask={false} />
+													<Box sx={{ width: '100%', height: '100%' }}>
+														<BigHead {...cleanedBigHeadStyle} mask={false} />
+													</Box>
 												</Avatar>
 												{!smUp && (
 													<Stack alignItems="center" spacing={2}>

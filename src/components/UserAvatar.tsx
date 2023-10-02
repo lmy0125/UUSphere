@@ -28,30 +28,17 @@ export default function UserAvatar({ userId, size, border }: UserAvatar) {
 						Object.entries(bigHeadStyle).filter(([key, value]) => value !== null)
 					);
 					return (
-						<>
-							<Avatar
-								sx={{
-									height: size,
-									width: size,
-									backgroundColor: backgroundColor,
-									border: border,
-								}}>
-								<Box sx={{ width: '100%', height: '100%' }}>
-									<BigHead {...cleanedBigHeadStyle} />
-								</Box>
-							</Avatar>
-							{/* <Box
-								sx={{
-									height: size,
-									width: size,
-									backgroundColor: backgroundColor,
-									border: border,
-									borderRadius: '50%',
-									overflow: 'hidden',
-								}}>
+						<Avatar
+							sx={{
+								height: size,
+								width: size,
+								backgroundColor: backgroundColor,
+								border: border,
+							}}>
+							<Box sx={{ width: '100%', height: '100%' }}>
 								<BigHead {...cleanedBigHeadStyle} />
-							</Box> */}
-						</>
+							</Box>
+						</Avatar>
 					);
 				})()
 			) : (
