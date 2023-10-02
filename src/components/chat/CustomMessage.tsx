@@ -40,12 +40,12 @@ const CustomMessage = () => {
 				direction={isMyMessage() ? 'row-reverse' : 'row'}
 				spacing={2}
 				sx={{
-					maxWidth: 500,
 					ml: isMyMessage() ? 'auto' : 0,
 					mr: !isMyMessage() ? 'auto' : 0,
+					maxWidth: '80%',
 				}}>
 				<UserAvatar userId={message.user?.id} size={32} />
-				<Box sx={{ flexShrink: 0, maxWidth: '95%' }}>
+				<Box sx={{ flexShrink: 1 }}>
 					<Stack
 						sx={{ alignItems: 'center', mb: 1 }}
 						direction={isMyMessage() ? 'row-reverse' : 'row'}
@@ -70,16 +70,16 @@ const CustomMessage = () => {
 						elevation={10}
 						sx={{
 							display: 'inline-block',
-							backgroundColor: isMyMessage() ? 'text.secondary' : 'background.paper',
+							backgroundColor: isMyMessage() ? '#797979' : 'background.paper',
 							color: isMyMessage() ? 'primary.contrastText' : 'text.primary',
 							float: isMyMessage() ? 'right' : 'left',
 							px: 3,
-							py: 0.1,
+							py: 2,
 							borderRadius: 3,
 						}}>
 						{/* <MessageText /> */}
 
-						<p>{message.text}</p>
+						<Typography>{message.text}</Typography>
 						{hasAttachments && message.attachments && (
 							<Box sx={{ pb: 2 }}>
 								<Attachment attachments={message.attachments} />

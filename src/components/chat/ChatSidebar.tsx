@@ -140,8 +140,13 @@ export const ChatSidebar: FC<ChatSidebarProps> = (props) => {
 		setComposeMode(true);
 	};
 
-	const content = (
-		<Stack sx={{ width: smUp ? 380 : '100vw', height: '100%', overflow: 'hidden' }}>
+	return (
+		<Stack
+			sx={{
+				flex: smUp ? '0 0 380px' : '0 0 100vw',
+				height: '100%',
+				overflow: 'hidden',
+			}}>
 			<Stack alignItems="center" direction="row" spacing={2} sx={{ p: 2 }}>
 				<Typography variant="h5" sx={{ flexGrow: 1 }}>
 					Chats
@@ -206,8 +211,6 @@ export const ChatSidebar: FC<ChatSidebarProps> = (props) => {
 			</Stack>
 		</Stack>
 	);
-
-	return <>{content}</>;
 };
 
 ChatSidebar.propTypes = {
