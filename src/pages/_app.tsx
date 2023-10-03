@@ -16,6 +16,7 @@ import ChatContextProvider from '@/contexts/ChatContext';
 import 'simplebar-react/dist/simplebar.min.css';
 import nProgress from 'nprogress';
 import Toaster from '@/components/Toaster';
+import ChatStackContextProvider from '@/contexts/ChatStackContext';
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
 	getLayout?: (page: ReactElement) => ReactNode;
@@ -77,7 +78,7 @@ export default function App({
 									{/* {showSlashScreen ? (
 									<SplashScreen />
 								) : ( */}
-									<>
+									<ChatStackContextProvider>
 										{getLayout(<Component {...pageProps} />)}
 
 										{/* <SettingsButton onClick={settings.handleDrawerOpen} />
@@ -99,7 +100,7 @@ export default function App({
 											}}
 										/> */}
 										<Toaster />
-									</>
+									</ChatStackContextProvider>
 									{/* )}
 							</RTL> */}
 								</ThemeProvider>

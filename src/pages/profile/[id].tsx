@@ -39,6 +39,7 @@ import axios from 'axios';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
 import useSWR from 'swr';
 import UserAvatar from '@/components/UserAvatar';
+import { MessageUser } from '@/utils/MessageUser';
 
 const tabs = [
 	{ label: 'About', value: 'about' },
@@ -149,12 +150,8 @@ export const ProfilePage: PageType = () => {
 	);
 
 	const handleMessageUser = async () => {
-		if (client.user && user) {
-			const channel = client.channel('messaging', {
-				members: [client.user.id, user.id],
-			});
-			await channel.watch();
-			router.push(`/chat?channelId=${channel.id}`);
+		if (user) {
+			MessageUser(user.id);
 		}
 	};
 

@@ -16,6 +16,7 @@ import { UserResponse } from 'stream-chat';
 import { CustomStreamChatGenerics } from '@/types/customStreamChat';
 import { useChatContext } from 'stream-chat-react';
 import UserAvatar from '@/components/UserAvatar';
+import { MessageUser } from '@/utils/MessageUser';
 
 interface ProfileCardProps {
 	anchorEl: HTMLElement | null;
@@ -24,16 +25,12 @@ interface ProfileCardProps {
 }
 
 const PopupUserProfile: React.FC<ProfileCardProps> = ({ anchorEl, setAnchorEl, user }) => {
-	const { client, setActiveChannel } = useChatContext();
+	const { client } = useChatContext();
 
 	const handleMessageUser = async () => {
 		setAnchorEl(null);
-		if (client.user && user) {
-			const channel = client.channel('messaging', {
-				members: [client.user.id, user.id],
-			});
-			await channel.watch();
-			setActiveChannel(channel);
+		if (user) {
+			MessageUser(user.id);
 		}
 	};
 
