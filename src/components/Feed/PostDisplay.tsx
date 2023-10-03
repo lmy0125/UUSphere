@@ -112,8 +112,11 @@ const PostDisplay: FC<PostDisplayProps> = (props) => {
 				disableTypography
 				title={
 					post.anonymous ? (
-						<Stack direction="row">
-							<Typography variant="subtitle2">{randomName}</Typography>
+						<Stack direction="row" spacing={1} alignItems="center">
+							<Typography variant="subtitle2">{randomName}</Typography>{' '}
+							<Typography variant="caption" color="text.secondary" sx={{ fontWeight: 400 }}>
+								Anonymous
+							</Typography>
 						</Stack>
 					) : (
 						<Box
