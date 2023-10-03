@@ -13,7 +13,6 @@ import { useRouter } from 'next/router';
 import { useChatContext } from '@/contexts/ChatContext';
 import { MessageChatSquare } from '@untitled-ui/icons-react/build/esm';
 import UserAvatar from '@/components/UserAvatar';
-import { MessageUser } from '@/utils/MessageUser';
 
 interface ProfileCardProps {
 	userId: string;
@@ -81,7 +80,13 @@ const ProfileCard: FC<ProfileCardProps> = (props) => {
 	const isSelf = status === 'self';
 
 	const handleMessageUser = async () => {
-		MessageUser(props.userId);
+		if (client && client.user) {
+			const channel = client.channel('messaging', {
+				members: [client.user.id, props.userId],
+			});
+			await channel.watch();
+			router.push(`/chat?channelId=${channel.id}`);
+		}
 	};
 
 	if (!profileCardInfo) {

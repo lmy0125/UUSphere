@@ -7,7 +7,6 @@ import { UserResponse } from 'stream-chat';
 import { CustomStreamChatGenerics } from '@/types/customStreamChat';
 import { useChatContext } from 'stream-chat-react';
 import { useChatStackContext } from '@/contexts/ChatStackContext';
-import { MessageUser } from '@/utils/MessageUser';
 
 export default function FlatUserProfile({
 	user,
@@ -22,8 +21,12 @@ export default function FlatUserProfile({
 	const { setShowInfoSidebar } = useChatStackContext();
 
 	const handleMessageUser = async () => {
-		if (user) {
-			MessageUser(user.id);
+		if (client.user && user) {
+			const channel = client.channel('messaging', {
+				members: [client.user.id, user.id],
+			});
+			await channel.watch();
+			setActiveChannel(channel);
 			setOpen(false);
 			setShowInfoSidebar(false);
 		}
