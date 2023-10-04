@@ -81,7 +81,7 @@ const MutualClassmatesPage: PageType = () => {
 	}
 
 	return (
-		<Container maxWidth="xl" sx={{ mt: 1 }}>
+		<Container maxWidth="xl" sx={{ mt: 1, pb: 8 }}>
 			<Stack spacing={2}>
 				<div>
 					<Typography variant="h4">Mutual Classmates</Typography>
