@@ -41,7 +41,7 @@ export default function usePost() {
 		try {
 			await axios.delete(`api/post/${postId}`);
 			mutatePost();
-            toast.error('Post deleted');
+            toast.success('Post deleted');
 		} catch (err) {
 			alert('Failed joinSection ' + err);
 			toast.error('Error when delete post');
