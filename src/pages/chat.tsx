@@ -28,7 +28,6 @@ import { Layout as DashboardLayout } from '@/layouts/dashboard';
 import ComposeModeContextProvider, {
 	ComposeModeContextConsumer,
 } from '@/contexts/ComposeModeContext';
-import ChatStackContextProvider from '@/contexts/ChatStackContext';
 import { ChatContainer } from '@/components/chat/ChatContainer';
 import { ChatSidebar } from '@/components/chat/ChatSidebar';
 // import { useDispatch } from 'src/store';
@@ -42,6 +41,7 @@ import { ChannelInfoSidebar } from '@/components/chat/ChannelInfoSidebar';
 import CustomMessage from '@/components/chat/CustomMessage';
 import AuthModal from '@/components/AuthModal';
 import Composer from '@/components/chat/Composer';
+import { useChatStackContext } from '@/contexts/ChatStackContext';
 
 const ChatPage: PageType = () => {
 	const [authModal, setAuthModal] = useState(false);
@@ -52,6 +52,7 @@ const ChatPage: PageType = () => {
 	const rootRef = useRef<HTMLDivElement | null>(null);
 	const searchParams = useSearchParams();
 	const channelId = searchParams.get('channelId') || undefined;
+	const { setShowChannel } = useChatStackContext();
 
 	useEffect(() => {
 		const displayChannel = async () => {
@@ -67,6 +68,7 @@ const ChatPage: PageType = () => {
 
 			if (setActiveChannel && currentChannel) {
 				setActiveChannel(currentChannel);
+				setShowChannel(true);
 			}
 		};
 		displayChannel();
@@ -100,58 +102,56 @@ const ChatPage: PageType = () => {
 
 	return (
 		<ComposeModeContextProvider>
-			<ChatStackContextProvider>
-				{/* <Seo title="Dashboard: Chat" /> */}
-				<Divider />
+			{/* <Seo title="Dashboard: Chat" /> */}
+			<Divider />
+			<Box
+				component="main"
+				sx={{
+					backgroundColor: 'background.paper',
+					flex: '1 1 auto',
+					overflow: 'hidden',
+					position: 'relative',
+				}}>
 				<Box
-					component="main"
+					ref={rootRef}
 					sx={{
-						backgroundColor: 'background.paper',
-						flex: '1 1 auto',
-						overflow: 'hidden',
-						position: 'relative',
+						bottom: 0,
+						display: 'flex',
+						left: 0,
+						position: 'absolute',
+						right: 0,
+						top: 0,
 					}}>
-					<Box
-						ref={rootRef}
-						sx={{
-							bottom: 0,
-							display: 'flex',
-							left: 0,
-							position: 'absolute',
-							right: 0,
-							top: 0,
-						}}>
-						<ChatSidebar client={client} />
+					<ChatSidebar client={client} />
 
-						<ChatContainer>
-							<Channel>
-								<ComposeModeContextConsumer>
-									{(value) => {
-										if (value.composeMode) {
-											return <Composer />;
-										}
-										return (
-											<>
-												<Window hideOnThread>
-													<CustomChannelHeader />
-													<MessageList Message={CustomMessage} />
-													<Divider />
-													<MessageInput
-														grow
-														// Input={CustomMessageInput}
-													/>
-												</Window>
-												<Thread />
-												<ChannelInfoSidebar />
-											</>
-										);
-									}}
-								</ComposeModeContextConsumer>
-							</Channel>
-						</ChatContainer>
-					</Box>
+					<ChatContainer>
+						<Channel>
+							<ComposeModeContextConsumer>
+								{(value) => {
+									if (value.composeMode) {
+										return <Composer />;
+									}
+									return (
+										<>
+											<Window hideOnThread>
+												<CustomChannelHeader />
+												<MessageList Message={CustomMessage} />
+												<Divider />
+												<MessageInput
+													grow
+													// Input={CustomMessageInput}
+												/>
+											</Window>
+											<Thread />
+											<ChannelInfoSidebar />
+										</>
+									);
+								}}
+							</ComposeModeContextConsumer>
+						</Channel>
+					</ChatContainer>
 				</Box>
-			</ChatStackContextProvider>
+			</Box>
 		</ComposeModeContextProvider>
 	);
 };

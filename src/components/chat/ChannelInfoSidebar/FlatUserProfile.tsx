@@ -8,6 +8,7 @@ import { CustomStreamChatGenerics } from '@/types/customStreamChat';
 import { useChatContext } from 'stream-chat-react';
 import { useChatStackContext } from '@/contexts/ChatStackContext';
 
+// This component only shows on mobile screen
 export default function FlatUserProfile({
 	user,
 	open,

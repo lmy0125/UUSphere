@@ -21,7 +21,7 @@ export const CustomChannelPreview = (props: ChannelPreviewUIComponentProps<Defau
 	const { data: session } = useSession();
 	const members = channel.state.members;
 	const { setComposeMode } = useComposeModeContext();
-	const { setShowChannel } = useChatStackContext();
+	const { showChannel, setShowChannel } = useChatStackContext();
 
 	const { channel: activeChannel } = useChatContext();
 
@@ -90,6 +90,7 @@ export const CustomChannelPreview = (props: ChannelPreviewUIComponentProps<Defau
 
 	const handleSelectChannel = async () => {
 		setShowChannel(true);
+		console.log('showChannel', showChannel);
 		if (setActiveChannel) {
 			setComposeMode(false);
 			setActiveChannel(channel);

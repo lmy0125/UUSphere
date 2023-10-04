@@ -23,6 +23,7 @@ interface ProfileCardProps {
 	user: UserResponse<CustomStreamChatGenerics> | undefined;
 }
 
+// This component only shows on large screen
 const PopupUserProfile: React.FC<ProfileCardProps> = ({ anchorEl, setAnchorEl, user }) => {
 	const { client, setActiveChannel } = useChatContext();
 
