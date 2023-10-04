@@ -107,6 +107,14 @@ const PostDisplay: FC<PostDisplayProps> = (props) => {
 		}
 	}, []);
 
+	const createdAt = () => {
+		const timeInfo = formatDistanceToNowStrict(new Date(post.createdAt));
+		if (timeInfo.includes('second') || timeInfo.includes('seconds')) {
+			return 'Just now';
+		}
+		return timeInfo + ' ago';
+	};
+
 	return (
 		<Card {...other}>
 			<CardHeader
@@ -146,7 +154,7 @@ const PostDisplay: FC<PostDisplayProps> = (props) => {
 							<ClockIcon />
 						</SvgIcon> */}
 						<Typography color="text.secondary" variant="caption">
-							{formatDistanceToNowStrict(new Date(post.createdAt))} ago
+							{createdAt()}
 						</Typography>
 					</Stack>
 				}

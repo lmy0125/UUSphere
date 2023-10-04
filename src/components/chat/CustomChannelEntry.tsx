@@ -83,14 +83,17 @@ export const CustomChannelPreview = (props: ChannelPreviewUIComponentProps<Defau
 		if (!channel.state?.last_message_at) {
 			return null;
 		}
-		return formatDistanceStrict(channel.state?.last_message_at, new Date(), {
+		const timeInfo = formatDistanceStrict(channel.state?.last_message_at, new Date(), {
 			addSuffix: false,
 		});
+		if (timeInfo.includes('seconds')) {
+			return 'Just now';
+		}
+		return timeInfo;
 	};
 
 	const handleSelectChannel = async () => {
 		setShowChannel(true);
-		console.log('showChannel', showChannel);
 		if (setActiveChannel) {
 			setComposeMode(false);
 			setActiveChannel(channel);
