@@ -33,6 +33,7 @@ import { useSession } from 'next-auth/react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { randomNames } from '@/constants/randomNames';
+import { DeletePostModal } from '@/components/Feed/ConfirmModals';
 
 interface PostDisplayProps {
 	isLiked: boolean;
@@ -49,6 +50,7 @@ const PostDisplay: FC<PostDisplayProps> = (props) => {
 	const [isLiked, setIsLiked] = useState<boolean>(props.isLiked);
 	const [numOfLikes, setNumOfLikes] = useState<number>(likes.length);
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+	const [deletePostModal, setDeletePostModal] = useState(false);
 	const randomName = useMemo(() => {
 		const randomIndex = Math.floor(Math.random() * randomNames.length);
 		return randomNames[randomIndex];
@@ -148,33 +150,38 @@ const PostDisplay: FC<PostDisplayProps> = (props) => {
 						</Typography>
 					</Stack>
 				}
-				// action={
-				// 	session?.user.id === author.id && (
-				// 		<>
-				// 			<IconButton aria-label="settings" onClick={handleClick}>
-				// 				<MoreHorizOutlinedIcon />
-				// 			</IconButton>
-				// 			<Menu
-				// 				id="basic-menu"
-				// 				anchorEl={anchorEl}
-				// 				open={Boolean(anchorEl)}
-				// 				onClose={handleClose}
-				// 				anchorOrigin={{
-				// 					vertical: 'bottom',
-				// 					horizontal: 'right',
-				// 				}}
-				// 				transformOrigin={{
-				// 					vertical: 'top',
-				// 					horizontal: 'right',
-				// 				}}>
-				// 				<MenuItem onClick={handleClose}>Edit</MenuItem>
-				// 				<MenuItem onClick={handleClose} sx={{ color: '#D32F2F' }}>
-				// 					Delete
-				// 				</MenuItem>
-				// 			</Menu>
-				// 		</>
-				// 	)
-				// }
+				action={
+					session?.user.id === author.id && (
+						<>
+							<IconButton aria-label="settings" onClick={handleClick}>
+								<MoreHorizOutlinedIcon />
+							</IconButton>
+							<Menu
+								id="basic-menu"
+								anchorEl={anchorEl}
+								open={Boolean(anchorEl)}
+								onClose={handleClose}
+								anchorOrigin={{
+									vertical: 'bottom',
+									horizontal: 'right',
+								}}
+								transformOrigin={{
+									vertical: 'top',
+									horizontal: 'right',
+								}}>
+								{/* <MenuItem onClick={handleClose}>Edit</MenuItem> */}
+								<MenuItem
+									onClick={() => {
+										setDeletePostModal(true);
+										handleClose();
+									}}
+									sx={{ color: '#D32F2F' }}>
+									Delete
+								</MenuItem>
+							</Menu>
+						</>
+					)
+				}
 			/>
 			<Box
 				sx={{
@@ -248,6 +255,11 @@ const PostDisplay: FC<PostDisplayProps> = (props) => {
 				<Divider sx={{ my: 3 }} />
 				<SocialCommentAdd /> */}
 			</Box>
+			<DeletePostModal
+				open={deletePostModal}
+				setDeletePostModal={setDeletePostModal}
+				postId={post.id}
+			/>
 		</Card>
 	);
 };

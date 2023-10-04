@@ -31,6 +31,7 @@ import toast from 'react-hot-toast';
 import EmojiPicker, { EmojiClickData } from 'emoji-picker-react';
 import { KeyedMutator } from 'swr';
 import { PostDetails } from '@/types/post';
+import usePost from '@/hooks/usePost';
 
 interface PostAddFormProps {
 	mutate: KeyedMutator<PostDetails[]>;
@@ -41,26 +42,17 @@ const PostAddForm: FC<PostAddFormProps> = ({ mutate }) => {
 	const [content, setContent] = useState('');
 	const [anonymous, setAnonymous] = useState(false);
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-	const [openEmojiPicker, setOpenEmojiPicker] = useState(false);
 	const [region, setRegion] = useState({
 		code: 'GLB',
 		label: 'Global',
 		phone: '',
 	});
 	const smUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
+	const { createPost } = usePost();
 
 	const handlePost = async () => {
 		if (session) {
-			const res = await axios.post('/api/post', {
-				anonymous,
-				content: content,
-				userId: session?.user.id,
-			});
-			mutate();
-			if (res.status === 200) {
-				setContent('');
-				toast.success('Post created');
-			}
+			createPost({ anonymous, content, setContent, userId: session.user.id });
 		}
 	};
 

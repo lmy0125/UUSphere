@@ -5,14 +5,11 @@ import { Box, Container, Stack, Typography } from '@mui/material';
 import PostAddForm from '@/components/Feed/PostAddForm';
 import PostDisplay from '@/components/Feed/PostDisplay';
 import { useSession } from 'next-auth/react';
-import axios from 'axios';
-import useSWR from 'swr';
-import { PostDetails } from '@/types/post';
+import usePost from '@/hooks/usePost';
 
 const BroadcastPage: PageType = () => {
 	const { data: session } = useSession();
-	const fetcher = (url: string) => axios.get(url).then((res) => res.data);
-	const { data: posts, isLoading, mutate } = useSWR<PostDetails[]>(`/api/post`, fetcher);
+	const { posts, mutatePost } = usePost();
 
 	return (
 		<>
@@ -32,7 +29,7 @@ const BroadcastPage: PageType = () => {
 						</Typography>
 					</Stack>
 					<Stack spacing={2} sx={{ mt: 2 }}>
-						{session && <PostAddForm mutate={mutate} />}
+						{session && <PostAddForm mutate={mutatePost} />}
 						{posts?.map((post) => (
 							<PostDisplay
 								key={post.id}
