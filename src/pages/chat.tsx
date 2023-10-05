@@ -64,11 +64,13 @@ const ChatPage: PageType = () => {
 				members: { $in: [client?.user?.id ?? ''] },
 			};
 			const channels = await client?.queryChannels(filter);
-			setCurrentChannel(channels?.[0]);
+			if (channels && channels.length > 0) {
+				setCurrentChannel(channels?.[0]);
 
-			if (setActiveChannel && currentChannel) {
-				setActiveChannel(currentChannel);
-				setShowChannel(true);
+				if (setActiveChannel && currentChannel) {
+					setActiveChannel(currentChannel);
+					setShowChannel(true);
+				}
 			}
 		};
 		displayChannel();
@@ -139,6 +141,7 @@ const ChatPage: PageType = () => {
 												<Divider />
 												<MessageInput
 													grow
+													disableMentions
 													// Input={CustomMessageInput}
 												/>
 											</Window>
