@@ -13,20 +13,21 @@ import { useRouter } from 'next/router';
 import { useChatContext } from '@/contexts/ChatContext';
 import { MessageChatSquare } from '@untitled-ui/icons-react/build/esm';
 import UserAvatar from '@/components/UserAvatar';
+import UserBadges from '@/components/UserBadges';
 
 interface ProfileCardProps {
-	userId: string;
+	user: User;
 	connection: Connection;
 	mutualClasses?: string[];
 }
 
-interface ProfileCardInfo extends User {
+interface ProfileCardInfo {
 	classes: Class[];
 	mutualClasses: string[];
 }
 
 const ProfileCard: FC<ProfileCardProps> = (props) => {
-	const { connection } = props;
+	const { connection, user } = props;
 	const [status, setStatus] = useState(connection.status);
 	// Todo: check connection status here for add friend functionality
 	const router = useRouter();
@@ -34,7 +35,7 @@ const ProfileCard: FC<ProfileCardProps> = (props) => {
 
 	const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 	const { data: profileCardInfo } = useSWR<ProfileCardInfo>(
-		`/api/getProfileCardInfo?userId=${props.userId}`,
+		`/api/mutualClassmatesInfo?userId=${user.id}`,
 		fetcher
 	);
 
@@ -82,7 +83,7 @@ const ProfileCard: FC<ProfileCardProps> = (props) => {
 	const handleMessageUser = async () => {
 		if (client && client.user) {
 			const channel = client.channel('messaging', {
-				members: [client.user.id, props.userId],
+				members: [client.user.id, user.id],
 			});
 			await channel.watch();
 			router.push(`/chat?channelId=${channel.id}`);
@@ -94,10 +95,10 @@ const ProfileCard: FC<ProfileCardProps> = (props) => {
 	}
 
 	const userInfoString = [
-		profileCardInfo.grade,
-		profileCardInfo.college,
-		profileCardInfo.major,
-		profileCardInfo.homeland,
+		user.grade,
+		user.college,
+		user.major,
+		user.homeland,
 	]
 		.filter((s) => s !== null && s !== '')
 		.join(' • ');
@@ -112,12 +113,14 @@ const ProfileCard: FC<ProfileCardProps> = (props) => {
 					spacing={2}
 					sx={{ p: 2 }}>
 					<Stack alignItems="flex-start" direction="row" spacing={2}>
-						<Link href={`/profile/${profileCardInfo.id}`}>
-							<UserAvatar userId={profileCardInfo.id} size={56} />
+						<Link href={`/profile/${user.id}`}>
+							<UserAvatar userId={user.id} size={56} />
 						</Link>
 
 						<Box sx={{ flexGrow: 1 }}>
-							<Box
+							<Stack
+								direction="row"
+								alignItems="center"
 								sx={{
 									a: {
 										color: 'inherit',
@@ -127,10 +130,11 @@ const ProfileCard: FC<ProfileCardProps> = (props) => {
 										},
 									},
 								}}>
-								<Link color="text.primary" href={`/profile/${profileCardInfo.id}`}>
-									{profileCardInfo.name}
+								<Link color="text.primary" href={`/profile/${user.id}`}>
+									{user.name}
 								</Link>
-							</Box>
+								<UserBadges user={user} />
+							</Stack>
 
 							<Typography color="text.secondary" variant="body2">
 								{userInfoString}
@@ -158,7 +162,7 @@ const ProfileCard: FC<ProfileCardProps> = (props) => {
 						</Box>
 					</Stack>
 
-					{client?.user?.id !== props.userId && (
+					{client?.user?.id !== user.id && (
 						<Box sx={{ width: '112px' }}>
 							<Button
 								size="small"

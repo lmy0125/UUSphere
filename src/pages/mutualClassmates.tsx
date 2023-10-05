@@ -108,7 +108,7 @@ const MutualClassmatesPage: PageType = () => {
 						name: value.user.name,
 						status: status as ConnectionStatus,
 					};
-					return <ProfileCard key={key} userId={key} connection={connection} />;
+					return <ProfileCard key={key} user={value.user} connection={connection} />;
 				})}
 			</Stack>
 		</Container>
