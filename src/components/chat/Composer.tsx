@@ -96,8 +96,12 @@ export default function Composer() {
 			await channel.watch();
 			if (setActiveChannel) {
 				setActiveChannel(channel);
-				sendMessage(message);
+				await channel.sendMessage({
+					text: message.text,
+					attachments: message.attachments,
+				});
 				setComposeMode(false);
+				setShowChannel(true);
 			}
 		}
 	};
@@ -149,7 +153,7 @@ export default function Composer() {
 			</Box>
 
 			<Box sx={{ flexGrow: 1 }} />
-			<MessageInput grow overrideSubmitHandler={overrideSubmitHandler} />
+			<MessageInput grow disableMentions overrideSubmitHandler={overrideSubmitHandler} />
 		</Box>
 	);
 }
