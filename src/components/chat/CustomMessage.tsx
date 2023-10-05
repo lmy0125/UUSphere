@@ -81,7 +81,12 @@ const CustomMessage = () => {
 
 						<Typography>{message.text}</Typography>
 						{hasAttachments && message.attachments && (
-							<Box sx={{ pb: 2 }}>
+							<Box
+								sx={{
+									'.str-chat__modal--open': {
+										zIndex: 2000,
+									},
+								}}>
 								<Attachment attachments={message.attachments} />
 							</Box>
 						)}
