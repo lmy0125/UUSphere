@@ -39,6 +39,7 @@ import axios from 'axios';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
 import useSWR from 'swr';
 import UserAvatar from '@/components/UserAvatar';
+import UserBadges from '@/components/UserBadges';
 
 const tabs = [
 	{ label: 'About', value: 'about' },
@@ -265,31 +266,17 @@ export const ProfilePage: PageType = () => {
 									<Typography color="text.secondary" variant="overline">
 										Rookie
 									</Typography>
-									<Typography
-										variant="h6"
-										style={{
-											display: 'flex',
-											justifyContent: 'center',
-										}}>
-										{user.name}
-										{user.gender === 'Male' && (
-											<MaleIcon fontSize="small" sx={{ ml: 1 }} />
-										)}
-										{user.gender === 'Female' && (
-											<FemaleIcon fontSize="small" sx={{ ml: 1 }} />
-										)}
-										{user.gender === 'Non-binary' && (
-											<HorizontalRuleIcon fontSize="small" sx={{ ml: 1 }} />
-										)}
-										{user.verifiedStudent && (
-											<Tooltip title="Verified Student" arrow placement="top">
-												<HowToRegIcon
-													color="success"
-													sx={{ ml: 1, height: 22, width: 22 }}
-												/>
-											</Tooltip>
-										)}
-									</Typography>
+									<Stack direction="row" alignItems="center">
+										<Typography
+											variant="h6"
+											style={{
+												display: 'flex',
+												justifyContent: 'center',
+											}}>
+											{user.name}
+										</Typography>
+										<UserBadges user={user} />
+									</Stack>
 								</div>
 							</Stack>
 							<Box sx={{ flexGrow: 1 }} />
