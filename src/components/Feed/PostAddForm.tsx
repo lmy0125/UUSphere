@@ -26,8 +26,6 @@ import {
 import { useSession } from 'next-auth/react';
 import { homelands } from '@/constants/personalInfoOptions';
 import UserAvatar from '@/components/UserAvatar';
-import axios from 'axios';
-import toast from 'react-hot-toast';
 import EmojiPicker, { EmojiClickData } from 'emoji-picker-react';
 import { KeyedMutator } from 'swr';
 import { PostDetails } from '@/types/post';

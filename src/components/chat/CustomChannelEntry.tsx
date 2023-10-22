@@ -7,7 +7,7 @@ import {
 	ChannelListMessengerProps,
 	ChatDownProps,
 } from 'stream-chat-react';
-import { Stack, Avatar, AvatarGroup, Box, Badge, Typography } from '@mui/material';
+import { Stack, Avatar, AvatarGroup, Box, Badge, Chip, Typography } from '@mui/material';
 import { formatDistanceStrict } from 'date-fns';
 import { DefaultGenerics } from 'stream-chat';
 import { useComposeModeContext } from '@/contexts/ComposeModeContext';
