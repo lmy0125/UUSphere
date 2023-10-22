@@ -73,7 +73,7 @@ console.log(users);
 					};
 					return (
 						<Box sx={{ mb: 3 }} key={connection.id}>
-							<ProfileCard userId={user.id} connection={connection} />
+							<ProfileCard user={user} connection={connection} />
 						</Box>
 					);
 				})}

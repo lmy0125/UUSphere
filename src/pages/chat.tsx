@@ -74,7 +74,7 @@ const ChatPage: PageType = () => {
 			}
 		};
 		displayChannel();
-	}, [channelId, setActiveChannel, client, currentChannel]);
+	}, [channelId, setActiveChannel, client, currentChannel, setShowChannel]);
 
 	if (status === 'loading') {
 		return <></>;

@@ -88,7 +88,7 @@ const PostDisplay: FC<PostDisplayProps> = (props) => {
 				setNumOfLikes((prevLikes) => prevLikes - 1);
 			}
 		}
-	}, []);
+	}, [post.id, session]);
 
 	const handleUnlike = useCallback(async () => {
 		if (session) {
@@ -105,7 +105,7 @@ const PostDisplay: FC<PostDisplayProps> = (props) => {
 				setNumOfLikes((prevLikes) => prevLikes + 1);
 			}
 		}
-	}, []);
+	}, [post.id, session]);
 
 	const createdAt = () => {
 		const timeInfo = formatDistanceToNowStrict(new Date(post.createdAt));
