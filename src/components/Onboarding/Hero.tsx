@@ -1,14 +1,27 @@
-import type { FC } from 'react';
+import { FC, useState } from 'react';
 import EyeIcon from '@untitled-ui/icons-react/build/esm/Eye';
 import LayoutBottomIcon from '@untitled-ui/icons-react/build/esm/LayoutBottom';
-import { Box, Button, Container, Rating, Stack, SvgIcon, Typography } from '@mui/material';
+import {
+	Box,
+	Button,
+	Container,
+	Rating,
+	Stack,
+	SvgIcon,
+	Typography,
+	useMediaQuery,
+	Theme,
+} from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { RouterLink } from '@/components/router-link';
 import { paths } from '@/paths';
+import AuthModal from '@/components/AuthModal';
 // import { HomeCodeSamples } from './home-code-samples';
 
 const Hero: FC = () => {
+	const [authModal, setAuthModal] = useState(false);
 	const theme = useTheme();
+	const smUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 
 	return (
 		<Box
@@ -16,7 +29,8 @@ const Hero: FC = () => {
 				backgroundRepeat: 'no-repeat',
 				backgroundPosition: 'top center',
 				backgroundImage: 'url("/assets/gradient-bg.svg")',
-				pt: '120px',
+				pt: '100px',
+				pb: 8,
 			}}>
 			<Container maxWidth="lg">
 				<Box maxWidth="sm">
@@ -37,47 +51,38 @@ const Hero: FC = () => {
 						join classes of interest, and create a vibrant network that enhances your journey
 						through higher education.
 					</Typography>
-					<Stack alignItems="center" direction="row" spacing={2} sx={{ my: 3 }}>
-						<Button
-							component={RouterLink}
-							href={paths.dashboard.index}
-							startIcon={
-								<SvgIcon fontSize="small">
-									<EyeIcon />
-								</SvgIcon>
-							}
-							sx={(theme) =>
-								theme.palette.mode === 'dark'
-									? {
-											backgroundColor: 'neutral.50',
-											color: 'neutral.900',
-											'&:hover': {
-												backgroundColor: 'neutral.200',
-											},
-									  }
-									: {
-											backgroundColor: 'neutral.900',
-											color: 'neutral.50',
-											'&:hover': {
-												backgroundColor: 'neutral.700',
-											},
-									  }
-							}
-							variant="contained">
-							Get Started
-						</Button>
-						{/* <Button
-							color="inherit"
-							component={RouterLink}
-							href={paths.components.index}
-							startIcon={
-								<SvgIcon fontSize="small">
-									<LayoutBottomIcon />
-								</SvgIcon>
-							}>
-							Components
-						</Button> */}
-					</Stack>
+					{!smUp && (
+						<Stack
+							alignItems="center"
+							justifyContent="center"
+							direction="row"
+							spacing={2}
+							sx={{ my: 3 }}>
+							<Button
+								// sx={(theme) =>
+								// 	theme.palette.mode === 'dark'
+								// 		? {
+								// 				backgroundColor: 'neutral.50',
+								// 				color: 'neutral.900',
+								// 				'&:hover': {
+								// 					backgroundColor: 'neutral.200',
+								// 				},
+								// 		  }
+								// 		: {
+								// 				backgroundColor: 'neutral.900',
+								// 				color: 'neutral.50',
+								// 				'&:hover': {
+								// 					backgroundColor: 'neutral.700',
+								// 				},
+								// 		  }
+								// }
+								onClick={() => setAuthModal(true)}
+								variant="contained">
+								Get Started
+							</Button>
+							<AuthModal open={authModal} setAuthModal={setAuthModal} />
+						</Stack>
+					)}
 				</Box>
 				{/* <Box
           sx={{
