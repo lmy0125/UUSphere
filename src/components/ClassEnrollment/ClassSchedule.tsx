@@ -30,7 +30,7 @@ const ClassSchedule = () => {
 	useEffect(() => {
 		const getEnrolledClasses = async () => {
 			try {
-				const response = await axios.get(`/api/getEnrolledClasses`);
+				const response = await axios.get(`/api/getEnrolledClasses?userId=${session?.user.id}`);
 
 				const classes = response.data.classes.map((obj: any) => {
 					const { courseId, professorId, course, ...rest } = obj;
