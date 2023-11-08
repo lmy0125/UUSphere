@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { DateSelectArg, EventClickArg, EventDropArg, EventInput } from '@fullcalendar/core';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -15,7 +15,6 @@ import { CalendarContainer } from './calendar-container';
 // import { useDispatch, useSelector } from 'src/store';
 // import { thunks } from 'src/thunks/calendar';
 import type { CalendarEvent, CalendarView } from '@/types/calendar';
-import type { Page as PageType } from '@/types/page';
 import { Section } from '@/types/class';
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
@@ -66,17 +65,20 @@ const useCurrentEvent = (
 	}, [dialogData, events]);
 };
 
-const Calendar: PageType = () => {
+interface CalendarProps {
+	userId: string;
+}
+
+const Calendar: FC<CalendarProps> = ({ userId }) => {
 	// const dispatch = useDispatch();
 	const { data: session } = useSession();
 	const calendarRef = useRef<FullCalendar | null>(null);
-	const [sections, setSections] = useState<Section[]>();
 	const [events, setEvents] = useState<EventInput[]>();
 
 	useEffect(() => {
 		const getEnrolledClassesMeetings = async () => {
 			try {
-				const response = await axios.get(`/api/getEnrolledClasses`);
+				const response = await axios.get(`/api/getEnrolledClasses?userId=${userId}`);
 				const getMeetings = (section: Section, color: string): EventInput[] => {
 					const meetings = section.meetings.map((meeting) => {
 						const event: EventInput = {
@@ -124,7 +126,7 @@ const Calendar: PageType = () => {
 		if (session) {
 			getEnrolledClassesMeetings();
 		}
-	}, [session]);
+	}, [session, userId]);
 
 	const mdUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('md'));
 	const [date, setDate] = useState<Date>(new Date());

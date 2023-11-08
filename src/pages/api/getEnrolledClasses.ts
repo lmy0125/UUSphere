@@ -1,19 +1,14 @@
 import prisma from '@/lib/prisma';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from './auth/[...nextauth]';
 
 export default async function getEnrolledClasses(req: NextApiRequest, res: NextApiResponse) {
-	const session = await getServerSession(req, res, authOptions);
-	if (!session) {
-		return;
-	}
+	const userId = req.query.userId?.toString() ?? '';
 
 	if (req.method === 'GET') {
 		try {
 			const sections = await prisma.user.findUnique({
 				where: {
-					id: session.user.id,
+					id: userId,
 				},
 				select: {
 					sections: {
@@ -23,7 +18,7 @@ export default async function getEnrolledClasses(req: NextApiRequest, res: NextA
 						include: {
 							sections: {
 								where: {
-									students: { some: { id: session.user.id } },
+									students: { some: { id: userId } },
 								},
 								select: {
 									id: true,

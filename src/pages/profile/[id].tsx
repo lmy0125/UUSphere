@@ -387,7 +387,7 @@ export const ProfilePage: PageType = () => {
 						{currentTab === 'about' && (
 							<About user={user} setProfileFormToggle={setProfileFormToggle} />
 						)}
-						{currentTab === 'schedule' && <Calendar />}
+						{currentTab === 'schedule' && <Calendar userId={router.query.id as string} />}
 						{currentTab === 'clubs' && <Clubs />}
 					</Box>
 				</Container>
