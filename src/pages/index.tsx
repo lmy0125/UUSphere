@@ -80,7 +80,7 @@ const useClassStore = (searchState: ClassSearchState, quarter: string) => {
 	const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 	const { data, error, isLoading } = useSWR(
 		searchState.filters.name
-			? `/api/getClasses/?name=${searchState.filters.name}&quarter=${quarter}`
+			? `/api/classes?name=${searchState.filters.name}&quarter=${quarter}`
 			: null,
 		fetcher
 	);
