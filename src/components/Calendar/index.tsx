@@ -273,7 +273,7 @@ const Calendar: FC<CalendarProps> = ({ userId }) => {
 	// );
 
 	return (
-		<>
+		<Card sx={{mt:5, pb:2}}>
 			<Box
 				component="main"
 				sx={{
@@ -340,7 +340,7 @@ const Calendar: FC<CalendarProps> = ({ userId }) => {
         onEditComplete={updateDialog.handleClose}
         open={updateDialog.open}
       /> */}
-		</>
+		</Card>
 	);
 };
 
