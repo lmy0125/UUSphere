@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, FC } from 'react';
 import { Scrollbar } from '@/components/scrollbar';
 import {
 	Button,
@@ -20,17 +20,22 @@ import { useClassEnrollmentContext } from '@/contexts/ClassEnrollmentContext';
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
 
-const ClassSchedule = () => {
+interface ClassScheduleProps {
+	userId: string;
+}
+
+const ClassSchedule: FC<ClassScheduleProps> = ({ userId }) => {
 	const { classInfoJoined, setClassInfoJoined, classInfoDropped, setClassInfoDropped } =
 		useClassEnrollmentContext();
 	const { data: session } = useSession();
 	const [enrolledClasses, setEnrolledClasses] = useState<ClassInfo[]>([]);
 	const smUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
+	const editable = userId == session?.user.id;
 
 	useEffect(() => {
 		const getEnrolledClasses = async () => {
 			try {
-				const response = await axios.get(`/api/getEnrolledClasses?userId=${session?.user.id}`);
+				const response = await axios.get(`/api/getEnrolledClasses?userId=${userId}`);
 
 				const classes = response.data.classes.map((obj: any) => {
 					const { courseId, professorId, course, ...rest } = obj;
@@ -47,7 +52,7 @@ const ClassSchedule = () => {
 		if (session) {
 			getEnrolledClasses();
 		}
-	}, [session]);
+	}, [session, userId]);
 
 	useEffect(() => {
 		if (classInfoJoined) {
@@ -67,7 +72,7 @@ const ClassSchedule = () => {
 	return (
 		<>
 			<Card sx={{ mt: 5 }}>
-				<CardHeader title="My Schedule" />
+				<CardHeader title="Schedule" />
 				<Divider />
 				<Scrollbar>
 					<Table>
@@ -78,12 +83,12 @@ const ClassSchedule = () => {
 								{smUp && <TableCell width="25%">Title</TableCell>}
 								{smUp && <TableCell width="25%">Instructor</TableCell>}
 								<TableCell>Lecture</TableCell>
-								<TableCell>Action</TableCell>
+								{editable && <TableCell>Action</TableCell>}
 							</TableRow>
 						</TableHead>
 						<TableBody>
 							{enrolledClasses.map((c) => {
-								return <ClassEntry key={c.id} classInfo={c} />;
+								return <ClassEntry key={c.id} classInfo={c} editable={editable} />;
 							})}
 						</TableBody>
 					</Table>
@@ -93,7 +98,7 @@ const ClassSchedule = () => {
 	);
 };
 
-const ClassEntry = ({ classInfo }: { classInfo: ClassInfo }) => {
+const ClassEntry = ({ classInfo, editable }: { classInfo: ClassInfo; editable: boolean }) => {
 	const [dropSectionModal, setDropSectionModal] = useState(false);
 	const smUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 
@@ -122,11 +127,13 @@ const ClassEntry = ({ classInfo }: { classInfo: ClassInfo }) => {
 						{startTime} -- {endTime}
 					</Typography>
 				</TableCell>
-				<TableCell>
-					<Button onClick={() => setDropSectionModal(true)} size="small">
-						Drop
-					</Button>
-				</TableCell>
+				{editable && (
+					<TableCell>
+						<Button onClick={() => setDropSectionModal(true)} size="small">
+							Drop
+						</Button>
+					</TableCell>
+				)}
 			</TableRow>
 			<DropSectionModal
 				open={dropSectionModal}
