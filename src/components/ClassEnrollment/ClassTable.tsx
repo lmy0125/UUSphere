@@ -115,7 +115,7 @@ const ClassRow: FC<{
 			return;
 		}
 		try {
-			const res = await axios.post('api/checkHasClass', { classId: classInfo.id });
+			const res = await axios.post('/api/checkHasClass', { classId: classInfo.id });
 			if (res.data.classes.length == 1) {
 				setHasClass(true);
 				setSectionTakenId(res.data.classes[0].sections[0].id);
@@ -127,7 +127,7 @@ const ClassRow: FC<{
 
 	const getNumOfEnrolledStudent = useCallback(async () => {
 		try {
-			const res = await axios.get(`api/getNumOfEnrolledStudentForClass?classId=${classInfo.id}`);
+			const res = await axios.get(`/api/getNumOfEnrolledStudentForClass?classId=${classInfo.id}`);
 			if (res.data) {
 				setNumOfEnrolledStudentForClass(res.data.numOfStudent);
 				setTotalSeats(res.data.total_seats);

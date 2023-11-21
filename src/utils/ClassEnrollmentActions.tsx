@@ -37,7 +37,7 @@ export const dropSection = async (
 ) => {
 	// Remove in databse
 	try {
-		axios.post('api/dropClass', { sectionId: sectionId });
+		axios.post('/api/dropClass', { sectionId: sectionId });
 	} catch (err) {
 		alert('Failed dropSection ' + err);
 	}
