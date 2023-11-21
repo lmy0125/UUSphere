@@ -30,6 +30,7 @@ import { User } from '@/types/User';
 import Calendar from '@/components/Calendar';
 import { useSession } from 'next-auth/react';
 import About from '@/components/Profile/About';
+import Schedule from '@/components/Profile/Schedule';
 import Clubs from '@/components/Profile/Clubs';
 import ProfileEditForm from '@/components/Profile/ProfileEditForm';
 import MaleIcon from '@mui/icons-material/Male';
@@ -387,7 +388,9 @@ export const ProfilePage: PageType = () => {
 						{currentTab === 'about' && (
 							<About user={user} setProfileFormToggle={setProfileFormToggle} />
 						)}
-						{currentTab === 'schedule' && <Calendar userId={router.query.id as string} />}
+						{currentTab === 'schedule' && <Schedule userId={router.query.id as string} />}
+
+						{/* {currentTab === 'schedule' && <Calendar userId={router.query.id as string} />} */}
 						{currentTab === 'clubs' && <Clubs />}
 					</Box>
 				</Container>

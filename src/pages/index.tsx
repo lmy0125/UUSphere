@@ -22,6 +22,7 @@ import type { Page as PageType } from '@/types/page';
 import axios from 'axios';
 import useSWR from 'swr';
 import { ClassEnrollmentContextProvider } from '@/contexts/ClassEnrollmentContext';
+import { useSession } from 'next-auth/react';
 
 interface Filters {
 	name?: string;
@@ -105,6 +106,7 @@ const useClassStore = (searchState: ClassSearchState, quarter: string) => {
 };
 
 const ClassEnrollmentPage: PageType = () => {
+	const { data: session } = useSession();
 	const [quarter, setQuarter] = useState('FA23');
 	const classSearch = useClassSearch();
 	const classStore = useClassStore(classSearch.state, quarter);
@@ -174,7 +176,7 @@ const ClassEnrollmentPage: PageType = () => {
 							/>
 						</Card>
 					</Stack>
-					<ClassSchedule />
+					<ClassSchedule userId={session?.user.id ?? ''} />
 				</Container>
 			</Box>
 		</ClassEnrollmentContextProvider>
