@@ -28,7 +28,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 							meetings: true,
 						},
 					},
-					course: { select: { name: true } },
+					course: { select: { name: true, description: true } },
 					instructor: { select: { name: true } },
 				},
 			});

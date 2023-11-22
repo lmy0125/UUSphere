@@ -96,6 +96,7 @@ const useClassStore = (searchState: ClassSearchState, quarter: string) => {
 		const { courseId, professorId, course, ...rest } = obj;
 		rest.name = obj.course.name;
 		rest.instructor = obj.instructor.name;
+		rest.description = obj.course.description;
 		return rest;
 	});
 

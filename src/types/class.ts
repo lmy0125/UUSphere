@@ -3,6 +3,7 @@ export interface ClassInfo {
 	code: string | null;
 	name: string | null;
 	instructor: string | null;
+	description: string | null;
 	quarter: string | null;
 	sections: Section[];
 }
