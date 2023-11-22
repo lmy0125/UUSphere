@@ -36,6 +36,7 @@ import { ClassInfo, Section } from '@/types/class';
 import AuthModal from '@/components/AuthModal';
 import { JoinSectionModal, DropSectionModal } from '@/components/ClassEnrollment/ConfirmModals';
 import { useClassEnrollmentContext } from '@/contexts/ClassEnrollmentContext';
+import ratings from '@mtucourses/rate-my-professors';
 
 interface ClassTableProps {
 	count?: number;
@@ -112,7 +113,7 @@ const ClassRow: FC<{
 	const [numOfEnrolledStudentForClass, setNumOfEnrolledStudentForClass] = useState(0);
 	const [totalSeats, setTotalSeats] = useState(0);
 	const [enrollmentRatio, setEnrollmentRatio] = useState(0);
-	const [descriptionOpen, setDescriptionOpen] = useState(false);
+	const [profRating, setProfRating] = useState(0);
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const smUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 
@@ -155,6 +156,27 @@ const ClassRow: FC<{
 		getNumOfEnrolledStudent();
 	}, [checkHasClass, getNumOfEnrolledStudent]);
 
+	useEffect(() => {
+		const fetchRating = async () => {
+			const schools = await ratings.searchSchool('University of California San Diego');
+			if (classInfo.instructor) {
+				const split = classInfo.instructor.split(', ');
+				let fullName = classInfo.instructor;
+				if (split.length > 1) {
+					const firstName = split[1].split(' ')[0];
+					const lastName = split[0];
+					fullName = firstName + ' ' + lastName;
+				}
+				const teachers = await ratings.searchTeacher(fullName, schools[0].id);
+				if (teachers.length > 0) {
+					const rating = await ratings.getTeacher(teachers[0].id);
+					setProfRating(rating.avgRating);
+				}
+			}
+		};
+		fetchRating();
+	}, []);
+
 	const StyledRating = styled(Rating)({
 		'& .MuiRating-iconFilled': {
 			color: '#404145',
@@ -184,12 +206,11 @@ const ClassRow: FC<{
 						<SvgIcon>{expandSection ? <ChevronDownIcon /> : <ChevronRightIcon />}</SvgIcon>
 					</IconButton>
 				</TableCell>
-				<TableCell>
-					<Box
-						sx={{ cursor: 'pointer' }}
-						onClick={(e) => {
-							setAnchorEl(e.currentTarget);
-						}}>
+				<TableCell
+					onClick={(e) => {
+						setAnchorEl(e.currentTarget);
+					}}>
+					<Box sx={{ cursor: 'pointer' }}>
 						<Typography variant="subtitle2">{classInfo.code}</Typography>
 					</Box>
 					<Popper open={Boolean(anchorEl)} anchorEl={anchorEl} placement="right-start">
@@ -218,7 +239,9 @@ const ClassRow: FC<{
 								readOnly
 								icon={<StarRateRoundedIcon sx={{ fontSize: 18 }} />}
 							/>
-							<Typography sx={{ fontSize: '14px', fontWeight: 450 }}>4.8</Typography>
+							<Typography sx={{ fontSize: '14px', fontWeight: 450 }}>
+								{profRating == 0 ? 'N/A' : profRating}
+							</Typography>
 						</Stack>
 					</Box>
 				</TableCell>
