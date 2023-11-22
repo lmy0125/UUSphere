@@ -1,5 +1,6 @@
 import type { ChangeEvent, Dispatch, FC, MouseEvent, SetStateAction } from 'react';
 import { useCallback, useState, useEffect } from 'react';
+import { styled } from '@mui/material/styles';
 import PropTypes from 'prop-types';
 import { toast } from 'react-hot-toast';
 import ChevronDownIcon from '@untitled-ui/icons-react/build/esm/ChevronDown';
@@ -7,9 +8,11 @@ import ChevronRightIcon from '@untitled-ui/icons-react/build/esm/ChevronRight';
 import {
 	Box,
 	Button,
+	Card,
 	Collapse,
 	IconButton,
 	LinearProgress,
+	Stack,
 	SvgIcon,
 	Table,
 	TableBody,
@@ -18,7 +21,12 @@ import {
 	TablePagination,
 	TableRow,
 	Typography,
+	Paper,
+	Popper,
+	ClickAwayListener,
+	Rating,
 } from '@mui/material';
+import StarRateRoundedIcon from '@mui/icons-material/StarRateRounded';
 import type { Theme } from '@mui/material';
 import { useMediaQuery } from '@mui/material';
 import { Scrollbar } from '@/components/scrollbar';
@@ -58,7 +66,7 @@ export const ClassTable: FC<ClassTableProps> = (props) => {
 							<TableCell />
 							<TableCell>Name</TableCell>
 							{smUp && <TableCell width="40%">Title</TableCell>}
-							<TableCell width={smUp ? "25%" : "35%"}>Instructor</TableCell>
+							<TableCell width={smUp ? '25%' : '35%'}>Instructor</TableCell>
 							<TableCell>Total Seats</TableCell>
 						</TableRow>
 					</TableHead>
@@ -104,6 +112,8 @@ const ClassRow: FC<{
 	const [numOfEnrolledStudentForClass, setNumOfEnrolledStudentForClass] = useState(0);
 	const [totalSeats, setTotalSeats] = useState(0);
 	const [enrollmentRatio, setEnrollmentRatio] = useState(0);
+	const [descriptionOpen, setDescriptionOpen] = useState(false);
+	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const smUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 
 	const handleClassToggle = () => {
@@ -127,7 +137,9 @@ const ClassRow: FC<{
 
 	const getNumOfEnrolledStudent = useCallback(async () => {
 		try {
-			const res = await axios.get(`/api/getNumOfEnrolledStudentForClass?classId=${classInfo.id}`);
+			const res = await axios.get(
+				`/api/getNumOfEnrolledStudentForClass?classId=${classInfo.id}`
+			);
 			if (res.data) {
 				setNumOfEnrolledStudentForClass(res.data.numOfStudent);
 				setTotalSeats(res.data.total_seats);
@@ -142,6 +154,12 @@ const ClassRow: FC<{
 		checkHasClass();
 		getNumOfEnrolledStudent();
 	}, [checkHasClass, getNumOfEnrolledStudent]);
+
+	const StyledRating = styled(Rating)({
+		'& .MuiRating-iconFilled': {
+			color: '#404145',
+		},
+	});
 
 	return (
 		<>
@@ -167,9 +185,23 @@ const ClassRow: FC<{
 					</IconButton>
 				</TableCell>
 				<TableCell>
-					<Box sx={{ cursor: 'pointer' }}>
+					<Box
+						sx={{ cursor: 'pointer' }}
+						onClick={(e) => {
+							setAnchorEl(e.currentTarget);
+						}}>
 						<Typography variant="subtitle2">{classInfo.code}</Typography>
 					</Box>
+					<Popper open={Boolean(anchorEl)} anchorEl={anchorEl} placement="right-start">
+						<ClickAwayListener onClickAway={() => setAnchorEl(null)}>
+							<Paper sx={{ p: 3, width: '50vw', maxWidth: '1000px' }} elevation={10}>
+								<Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 550 }}>
+									{classInfo.code} - {classInfo.name}
+								</Typography>
+								<Typography>{classInfo.description}</Typography>
+							</Paper>
+						</ClickAwayListener>
+					</Popper>
 				</TableCell>
 				{smUp && (
 					<TableCell>
@@ -177,8 +209,17 @@ const ClassRow: FC<{
 					</TableCell>
 				)}
 				<TableCell>
-					<Box sx={{ cursor: 'pointer' }}>
+					<Box>
 						<Typography variant="subtitle2">{classInfo.instructor}</Typography>
+						<Stack direction="row" alignItems="center" spacing={0.5}>
+							<StyledRating
+								value={1}
+								max={1}
+								readOnly
+								icon={<StarRateRoundedIcon sx={{ fontSize: 18 }} />}
+							/>
+							<Typography sx={{ fontSize: '14px', fontWeight: 450 }}>4.8</Typography>
+						</Stack>
 					</Box>
 				</TableCell>
 
