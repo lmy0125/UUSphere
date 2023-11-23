@@ -39,7 +39,6 @@ const ClassSchedule: FC<ClassScheduleProps> = ({ userId, quarter }) => {
 				const response = await axios.get(
 					`/api/enrolledClasses?userId=${userId}&quarter=${quarter}`
 				);
-				console.log(response);
 				const classes = response.data.classes.map((obj: any) => {
 					const { courseId, professorId, course, ...rest } = obj;
 					rest.name = obj.course.name;
@@ -74,7 +73,7 @@ const ClassSchedule: FC<ClassScheduleProps> = ({ userId, quarter }) => {
 
 	return (
 		<>
-			<Card sx={{ mt: 5 }}>
+			<Card>
 				<CardHeader title="Schedule" />
 				<Divider />
 				<Scrollbar>

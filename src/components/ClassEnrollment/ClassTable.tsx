@@ -20,6 +20,7 @@ import {
 	TableHead,
 	TablePagination,
 	TableRow,
+	Tooltip,
 	Typography,
 	Paper,
 	Popper,
@@ -207,10 +208,11 @@ const ClassRow: FC<{
 					</IconButton>
 				</TableCell>
 				<TableCell
+					sx={{ cursor: 'pointer' }}
 					onClick={(e) => {
 						setAnchorEl(e.currentTarget);
 					}}>
-					<Box sx={{ cursor: 'pointer' }}>
+					<Box>
 						<Typography variant="subtitle2">{classInfo.code}</Typography>
 					</Box>
 					<Popper open={Boolean(anchorEl)} anchorEl={anchorEl} placement="right-start">

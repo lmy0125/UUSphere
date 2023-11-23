@@ -183,7 +183,9 @@ const ClassEnrollmentPage: PageType = () => {
 							/>
 						</Card>
 					</Stack>
-					<ClassSchedule userId={session?.user.id ?? ''} quarter={quarter} />
+					<Box sx={{ mt: 4 }}>
+						<ClassSchedule userId={session?.user.id ?? ''} quarter={quarter} />
+					</Box>
 				</Container>
 			</Box>
 		</ClassEnrollmentContextProvider>
