@@ -112,6 +112,9 @@ const ClassEnrollmentPage: PageType = () => {
 	const classSearch = useClassSearch();
 	const classStore = useClassStore(classSearch.state, quarter);
 
+	useEffect(() => {
+		classSearch.handlePageChange(null, 0);
+	}, [quarter]);
 	// usePageView();
 
 	return (
@@ -141,7 +144,7 @@ const ClassEnrollmentPage: PageType = () => {
 									onChange={(event) => setQuarter(event.target.value)}
 									label="Quarter">
 									<MenuItem value="FA23">FA 23</MenuItem>
-									<MenuItem value="SP24">SP 24</MenuItem>
+									<MenuItem value="WI24">WI 24</MenuItem>
 								</Select>
 							</FormControl>
 							{/* <Breadcrumbs separator={<BreadcrumbsSeparator />}>
@@ -164,6 +167,9 @@ const ClassEnrollmentPage: PageType = () => {
 									</Typography>
 								</Breadcrumbs> */}
 						</Stack>
+						<Typography variant="subtitle2" color="text.secondary">
+							Instructor ratings are currently from ratemyprofessors.com
+						</Typography>
 
 						<Card>
 							<ClassSearch onFiltersChange={classSearch.handleFiltersChange} />
@@ -177,7 +183,7 @@ const ClassEnrollmentPage: PageType = () => {
 							/>
 						</Card>
 					</Stack>
-					<ClassSchedule userId={session?.user.id ?? ''} />
+					<ClassSchedule userId={session?.user.id ?? ''} quarter={quarter} />
 				</Container>
 			</Box>
 		</ClassEnrollmentContextProvider>
