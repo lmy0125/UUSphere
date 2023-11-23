@@ -3,6 +3,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function getEnrolledClasses(req: NextApiRequest, res: NextApiResponse) {
 	const userId = req.query.userId?.toString() ?? '';
+	const quarter = req.query.quarter?.toString() ?? '';
 
 	if (req.method === 'GET') {
 		try {
@@ -11,10 +12,10 @@ export default async function getEnrolledClasses(req: NextApiRequest, res: NextA
 					id: userId,
 				},
 				select: {
-					sections: {
-						include: { class: { select: { code: true, instructor: true } }, meetings: true },
-					},
 					classes: {
+						where: {
+							quarter: quarter,
+						},
 						include: {
 							sections: {
 								where: {

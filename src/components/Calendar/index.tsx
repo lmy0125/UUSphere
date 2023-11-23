@@ -78,7 +78,7 @@ const Calendar: FC<CalendarProps> = ({ userId }) => {
 	useEffect(() => {
 		const getEnrolledClassesMeetings = async () => {
 			try {
-				const response = await axios.get(`/api/getEnrolledClasses?userId=${userId}`);
+				const response = await axios.get(`/api/enrolledClasses?userId=${userId}`);
 				const getMeetings = (section: Section, color: string): EventInput[] => {
 					const meetings = section.meetings.map((meeting) => {
 						const event: EventInput = {

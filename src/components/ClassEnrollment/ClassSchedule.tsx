@@ -22,9 +22,10 @@ import { useSession } from 'next-auth/react';
 
 interface ClassScheduleProps {
 	userId: string;
+	quarter: string;
 }
 
-const ClassSchedule: FC<ClassScheduleProps> = ({ userId }) => {
+const ClassSchedule: FC<ClassScheduleProps> = ({ userId, quarter }) => {
 	const { classInfoJoined, setClassInfoJoined, classInfoDropped, setClassInfoDropped } =
 		useClassEnrollmentContext();
 	const { data: session } = useSession();
@@ -35,8 +36,10 @@ const ClassSchedule: FC<ClassScheduleProps> = ({ userId }) => {
 	useEffect(() => {
 		const getEnrolledClasses = async () => {
 			try {
-				const response = await axios.get(`/api/getEnrolledClasses?userId=${userId}`);
-
+				const response = await axios.get(
+					`/api/enrolledClasses?userId=${userId}&quarter=${quarter}`
+				);
+				console.log(response);
 				const classes = response.data.classes.map((obj: any) => {
 					const { courseId, professorId, course, ...rest } = obj;
 					rest.name = obj.course.name;
@@ -52,7 +55,7 @@ const ClassSchedule: FC<ClassScheduleProps> = ({ userId }) => {
 		if (session) {
 			getEnrolledClasses();
 		}
-	}, [session, userId]);
+	}, [session, userId, quarter]);
 
 	useEffect(() => {
 		if (classInfoJoined) {
