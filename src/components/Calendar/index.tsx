@@ -67,9 +67,10 @@ const useCurrentEvent = (
 
 interface CalendarProps {
 	userId: string;
+	quarter: string;
 }
 
-const Calendar: FC<CalendarProps> = ({ userId }) => {
+const Calendar: FC<CalendarProps> = ({ userId, quarter }) => {
 	// const dispatch = useDispatch();
 	const { data: session } = useSession();
 	const calendarRef = useRef<FullCalendar | null>(null);
@@ -78,7 +79,9 @@ const Calendar: FC<CalendarProps> = ({ userId }) => {
 	useEffect(() => {
 		const getEnrolledClassesMeetings = async () => {
 			try {
-				const response = await axios.get(`/api/enrolledClasses?userId=${userId}`);
+				const response = await axios.get(
+					`/api/enrolledClasses?userId=${userId}&quarter=${quarter}`
+				);
 				const getMeetings = (section: Section, color: string): EventInput[] => {
 					const meetings = section.meetings.map((meeting) => {
 						const event: EventInput = {
@@ -110,12 +113,15 @@ const Calendar: FC<CalendarProps> = ({ userId }) => {
 					'#944d3e', // Salmon
 					'#004d00', // Lime
 				];
-				for (const [index, section] of response.data.sections.entries()) {
+				// get all sections from different classes
+				let sections: Section[] = [];
+				for (const c of response.data.classes) {
+					sections = sections.concat(c.sections);
+				}
+				// get meetings from all sections
+				for (const [index, section] of sections.entries()) {
 					eventsArray = eventsArray.concat(getMeetings(section, colors[index]));
 				}
-				// const formatEvents = response.data.sections.map((section: Section) => {
-				// 	return getMeetings(section);
-				// });
 				// if (isMounted()) {
 				setEvents(eventsArray);
 				// }
@@ -126,7 +132,7 @@ const Calendar: FC<CalendarProps> = ({ userId }) => {
 		if (session) {
 			getEnrolledClassesMeetings();
 		}
-	}, [session, userId]);
+	}, [session, userId, quarter]);
 
 	const mdUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('md'));
 	const [date, setDate] = useState<Date>(new Date());
@@ -273,7 +279,7 @@ const Calendar: FC<CalendarProps> = ({ userId }) => {
 	// );
 
 	return (
-		<Card sx={{mt:5, pb:2}}>
+		<Card sx={{ mt: 5, pb: 2 }}>
 			<Box
 				component="main"
 				sx={{

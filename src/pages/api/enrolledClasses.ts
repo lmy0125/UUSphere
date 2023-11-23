@@ -12,11 +12,6 @@ export default async function getEnrolledClasses(req: NextApiRequest, res: NextA
 					id: userId,
 				},
 				select: {
-					// used for calendar events
-					sections: {
-						include: { class: { select: { code: true, instructor: true } }, meetings: true },
-					},
-					// used for class schedule
 					classes: {
 						where: {
 							quarter: quarter,
@@ -32,6 +27,7 @@ export default async function getEnrolledClasses(req: NextApiRequest, res: NextA
 									code: true,
 									total_seats: true,
 									meetings: true,
+									class: { select: { code: true, instructor: true } },
 								},
 							},
 							course: { select: { name: true } },
@@ -40,7 +36,6 @@ export default async function getEnrolledClasses(req: NextApiRequest, res: NextA
 					},
 				},
 			});
-			// console.log(sections);
 			res.status(200).json(sections);
 		} catch (e) {
 			res.status(500).json({ message: 'Something went wrong' });
