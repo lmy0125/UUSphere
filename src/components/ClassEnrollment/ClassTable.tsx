@@ -145,7 +145,11 @@ const ClassRow: FC<{
 			if (res.data) {
 				setNumOfEnrolledStudentForClass(res.data.numOfStudent);
 				setTotalSeats(res.data.total_seats);
-				setEnrollmentRatio(res.data.numOfStudent / res.data.total_seats);
+				if (res.data.total_seats == 0) {
+					setEnrollmentRatio(0);
+				} else {
+					setEnrollmentRatio(res.data.numOfStudent / res.data.total_seats);
+				}
 			}
 		} catch (err) {
 			console.error('Failed to getNumOfEnrolledStudent' + err);
@@ -265,7 +269,7 @@ const ClassRow: FC<{
 						}}
 					/>
 					<Typography color="text.secondary" variant="body2">
-						{numOfEnrolledStudentForClass} / {totalSeats}
+						{numOfEnrolledStudentForClass} / {totalSeats == 0 ? '--' : totalSeats}
 					</Typography>
 				</TableCell>
 			</TableRow>
@@ -411,7 +415,11 @@ const SectionRow: FC<{
 	}, [sectionDropped, section.id, handleStateWhenDropSection, setSectionDropped]);
 
 	useEffect(() => {
-		setEnrollmentRatio(numOfEnrolledStudentForSection / section.total_seats!);
+		if (section.total_seats == 0) {
+			setEnrollmentRatio(0);
+		} else {
+			setEnrollmentRatio(numOfEnrolledStudentForSection / section.total_seats!);
+		}
 	}, [numOfEnrolledStudentForSection, section.total_seats]);
 
 	return (
@@ -440,7 +448,8 @@ const SectionRow: FC<{
 						}}
 					/>
 					<Typography color="text.secondary" variant="body2">
-						{numOfEnrolledStudentForSection} / {section.total_seats}
+						{numOfEnrolledStudentForSection} /
+						{section.total_seats == 0 ? '--' : section.total_seats}
 					</Typography>
 				</TableCell>
 			)}
