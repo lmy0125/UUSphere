@@ -12,6 +12,11 @@ export default async function getEnrolledClasses(req: NextApiRequest, res: NextA
 					id: userId,
 				},
 				select: {
+					// used for calendar events
+					sections: {
+						include: { class: { select: { code: true, instructor: true } }, meetings: true },
+					},
+					// used for class schedule
 					classes: {
 						where: {
 							quarter: quarter,
