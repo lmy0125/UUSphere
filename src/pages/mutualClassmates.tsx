@@ -2,7 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import type { Page as PageType } from '@/types/page';
 import { Layout as DashboardLayout } from '@/layouts/dashboard';
-import { Container, CircularProgress, Button, Stack, Typography } from '@mui/material';
+import {
+	Container,
+	CircularProgress,
+	Box,
+	Button,
+	Stack,
+	Tabs,
+	Tab,
+	Typography,
+} from '@mui/material';
 import axios from 'axios';
 import useSWR from 'swr';
 import { paths } from '@/paths';
@@ -23,10 +32,14 @@ interface MutualClassmates {
 const MutualClassmatesPage: PageType = () => {
 	const { status } = useSession();
 	const [authModal, setAuthModal] = useState(false);
+	const [quarterIndex, setQuarterIndex] = useState(0);
+	const quarters = ['WI24', 'FA23'];
 	const router = useRouter();
 	const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 	let { data: mutualClassmates, isLoading } = useSWR<MutualClassmates>(
-		status === 'authenticated' ? '/api/getMutualClassmates' : null,
+		status === 'authenticated'
+			? `/api/mutualClassmates?quarter=${quarters[quarterIndex]}`
+			: null,
 		fetcher
 	);
 
@@ -89,6 +102,19 @@ const MutualClassmatesPage: PageType = () => {
 						Students who take more than one same classes as you
 					</Typography>
 				</div>
+				<Box>
+					<Tabs
+						indicatorColor="primary"
+						onChange={(_, value) => setQuarterIndex(value)}
+						scrollButtons="auto"
+						sx={{ px: 3 }}
+						textColor="primary"
+						value={quarterIndex}
+						variant="scrollable">
+						<Tab key={0} label="WI24" />
+						<Tab key={1} label="FA23" />
+					</Tabs>
+				</Box>
 				{Object.entries(mutualClassmates).length === 0 && !isLoading && (
 					<Stack sx={{ alignItems: 'center' }}>
 						<Typography variant="h5" sx={{ fontWeight: 500, mb: 1 }}>

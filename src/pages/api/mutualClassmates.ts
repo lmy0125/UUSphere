@@ -11,6 +11,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 		return res.status(401).json({ message: 'Unauthorized.' });
 	}
 
+	const quarter = req.query.quarter?.toString() ?? '';
+
 	if (req.method === 'GET') {
 		try {
 			const user = await prisma.user.findFirst({
@@ -18,7 +20,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 					id: session?.user.id,
 				},
 				select: {
-					classes: true,
+					classes: { where: { quarter: quarter } },
 				},
 			});
 
