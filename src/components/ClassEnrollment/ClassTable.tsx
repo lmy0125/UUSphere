@@ -156,31 +156,32 @@ const ClassRow: FC<{
 		}
 	}, [classInfo.id]);
 
+	const getProfessorRating = useCallback(async () => {
+		try {
+			const res = await axios.get(`/api/professorRating?professor=${classInfo.instructor}`);
+			if (res.data > 0) {
+				setProfRating(res.data);
+			}
+		} catch (err) {
+			console.error('Failed to getProfessorRating' + err);
+		}
+	}, [classInfo.id]);
+
 	useEffect(() => {
 		checkHasClass();
 		getNumOfEnrolledStudent();
-	}, [checkHasClass, getNumOfEnrolledStudent]);
+		getProfessorRating();
+	}, [checkHasClass, getNumOfEnrolledStudent, getProfessorRating]);
 
-	useEffect(() => {
-		const fetchRating = async () => {
-			const schools = await ratings.searchSchool('University of California San Diego');
-			if (classInfo.instructor) {
-				const split = classInfo.instructor.split(', ');
-				let fullName = classInfo.instructor;
-				if (split.length > 1) {
-					const firstName = split[1].split(' ')[0];
-					const lastName = split[0];
-					fullName = firstName + ' ' + lastName;
-				}
-				const teachers = await ratings.searchTeacher(fullName, schools[0].id);
-				if (teachers.length > 0) {
-					const rating = await ratings.getTeacher(teachers[0].id);
-					setProfRating(rating.avgRating);
-				}
-			}
-		};
-		fetchRating();
-	}, []);
+	// useEffect(() => {
+	// 	const fetchRating = async () => {
+	// 		const res = await axios.get(`/api/professorRating?professor=${classInfo.instructor}`);
+	// 		if (res.data) {
+	// 			setProfRating(res.data);
+	// 		}
+	// 	};
+	// 	fetchRating();
+	// }, [classInfo]);
 
 	const StyledRating = styled(Rating)({
 		'& .MuiRating-iconFilled': {
