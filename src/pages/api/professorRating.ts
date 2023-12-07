@@ -18,11 +18,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 				if (teachers.length > 0) {
 					const rating = await ratings.getTeacher(teachers[0].id);
 					res.status(200).json(rating.avgRating);
+					return;
+				} else {
+					res.status(200).end();
 				}
+			} else {
+				res.status(200).end();
 			}
-			// else {
-			res.status(200).json(-1);
-			// }
 		} catch (e) {
 			res.status(500).json({ message: 'Failed to get user. ' + e });
 		}

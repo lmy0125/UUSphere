@@ -159,7 +159,7 @@ const ClassRow: FC<{
 	const getProfessorRating = useCallback(async () => {
 		try {
 			const res = await axios.get(`/api/professorRating?professor=${classInfo.instructor}`);
-			if (res.data > 0) {
+			if (res.data) {
 				setProfRating(res.data);
 			}
 		} catch (err) {
