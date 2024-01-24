@@ -16,11 +16,11 @@ export const ClassSearch: FC<ProductListSearchProps> = (props) => {
 	const { onFiltersChange, ...other } = props;
 	const queryRef = useRef<HTMLInputElement | null>(null);
 	const [filters, setFilters] = useState<Filters>({});
-	const [query, setQuery] = useState<string>('');
+	const [inputValue, setInputValue] = useState<string>('');
 
 	const handleQueryChange = useCallback((event: FormEvent<HTMLFormElement>): void => {
 		event.preventDefault();
-		setQuery(queryRef.current?.value || '');
+		setInputValue(queryRef.current?.value || '');
 	}, []);
 
 	const handleSearchClass = () => {
@@ -45,9 +45,9 @@ export const ClassSearch: FC<ProductListSearchProps> = (props) => {
 					inputProps={{ ref: queryRef }}
 					placeholder="Search by class name"
 					sx={{ flexGrow: 1 }}
-					value={query}
+					value={inputValue}
 					onChange={(e) => {
-						setQuery(e.target.value);
+						setInputValue(e.target.value);
 						setFilters({ name: e.target.value });
 					}}
 					onKeyDown={(e: KeyboardEvent) => {
