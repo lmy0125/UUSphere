@@ -3,6 +3,7 @@ export const tokens = {
 		languageChanged: 'common.languageChanged',
 	},
 	nav: {
+		idleClassrooms: 'Idle Classrooms',
 		class: 'Class',
 		mutualClassmates: 'Mutual Classmates',
 		chat: 'Chat',

@@ -1,5 +1,6 @@
 export const paths = {
 	index: '/',
+	idleClassrooms: '/idleClassrooms',
 	broadcast: '/broadcast',
 	mutualClassmates: '/mutualClassmates',
 	chat: '/chat',
