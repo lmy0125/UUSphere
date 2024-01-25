@@ -8,11 +8,11 @@ interface Filters {
 	name?: string;
 }
 
-interface ProductListSearchProps {
+interface ClassSearchProps {
 	onFiltersChange?: (filters: Filters) => void;
 }
 
-export const ClassSearch: FC<ProductListSearchProps> = (props) => {
+export const ClassSearch: FC<ClassSearchProps> = (props) => {
 	const { onFiltersChange, ...other } = props;
 	const queryRef = useRef<HTMLInputElement | null>(null);
 	const [filters, setFilters] = useState<Filters>({});
