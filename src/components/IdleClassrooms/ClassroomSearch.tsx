@@ -14,6 +14,8 @@ import {
 	TextField,
 	Typography,
 	FormControlLabel,
+	useMediaQuery,
+	Theme,
 } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -47,12 +49,12 @@ const timeIntervalMarks = [
 		label: '08:00',
 	},
 	{
-		value: 12,
-		label: '12:00',
+		value: 13,
+		label: '13:00',
 	},
 	{
-		value: 18,
-		label: '18:00',
+		value: 17,
+		label: '17:00',
 	},
 	{
 		value: 22,
@@ -90,6 +92,7 @@ export const ClassroomSearch: FC<ClassroomSearchProps> = (props) => {
 		hours + minutes / 60,
 	]);
 	const [disableSlider, setDisableSlider] = useState<boolean>(false);
+	const smUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 
 	const handleTimeIntervalChange = (event: Event, newValue: number | number[]): void => {
 		setTimeInterval(newValue as [number, number]); // Casting newValue to a tuple of numbers
@@ -139,7 +142,7 @@ export const ClassroomSearch: FC<ClassroomSearchProps> = (props) => {
 				</Stack>
 				<Stack
 					direction="row"
-					spacing={4}
+					spacing={smUp ? 2 : 0}
 					flexWrap="wrap"
 					justifyContent="space-between"
 					alignItems="center">
@@ -163,10 +166,14 @@ export const ClassroomSearch: FC<ClassroomSearchProps> = (props) => {
 
 					<Box
 						sx={{
-							px: 3,
-							width: '40%',
+							minWidth: 280,
+							px: 2,
 						}}>
-						<Stack direction="row" justifyContent="space-between" spacing={4}>
+						<Stack
+							direction="row"
+							justifyContent="space-between"
+							spacing={4}
+							mt={smUp ? 0 : 2}>
 							<Typography id="input-slider" gutterBottom>
 								Time Interval
 							</Typography>
@@ -181,18 +188,20 @@ export const ClassroomSearch: FC<ClassroomSearchProps> = (props) => {
 								label="Disabled"
 							/>
 						</Stack>
-						<Slider
-							disabled={disableSlider}
-							value={timeInterval}
-							min={8}
-							max={22}
-							step={0.5} // 30 minute increments
-							getAriaValueText={valuetext}
-							valueLabelDisplay="auto"
-							valueLabelFormat={valuetext}
-							onChange={handleTimeIntervalChange}
-							marks={timeIntervalMarks}
-						/>
+						<Box sx={{ minWidth: 150 }}>
+							<Slider
+								disabled={disableSlider}
+								value={timeInterval}
+								min={8}
+								max={22}
+								step={0.5} // 30 minute increments
+								getAriaValueText={valuetext}
+								valueLabelDisplay="auto"
+								valueLabelFormat={valuetext}
+								onChange={handleTimeIntervalChange}
+								marks={timeIntervalMarks}
+							/>
+						</Box>
 					</Box>
 
 					{/* <LocalizationProvider dateAdapter={AdapterDayjs}>
