@@ -7,7 +7,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 	const day = Number(req.query.day) ?? -1;
 	const startTime = req.query.startTime?.toString().toUpperCase() ?? '';
 	const endTime = req.query.endTime?.toString().toUpperCase() ?? '';
-	// console.log(classroomName)
+
 	if (req.method === 'GET') {
 		try {
 			const classesFA23 = await prisma.class.findMany({

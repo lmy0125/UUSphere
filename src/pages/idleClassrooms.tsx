@@ -73,8 +73,6 @@ const IdleClassroomsPage: PageType = () => {
 		fetcher
 	);
 
-	console.log(filters, classroomsIdleTimes);
-
 	return (
 		<>
 			{/* <Seo title="Dashboard: Social Feed" /> */}
