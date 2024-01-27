@@ -18,3 +18,10 @@ export interface TimeInterval {
 	start: string;
 	end: string;
 }
+
+export interface ClassroomFilters {
+	name: string;
+	day: number;
+	startTime: string;
+	endTime: string;
+}
