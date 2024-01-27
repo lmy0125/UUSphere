@@ -132,7 +132,13 @@ const Row: FC<{
 					onClick={(e) => {
 						setAnchorEl(e.currentTarget);
 					}}>
-					<Typography variant="subtitle2">{classroom.name}</Typography>
+					<a
+						href={`https://act.ucsd.edu/maps/?isisCode=${classroom.name.split(' ')[0]}`}
+						target="_blank"
+						rel="noopener noreferrer"
+						style={{ textDecoration: 'none', color: 'inherit' }}>
+						<Typography variant="subtitle2">{classroom.name}</Typography>
+					</a>
 				</TableCell>
 
 				<TableCell>
