@@ -8,7 +8,10 @@ interface TimelineProps {
 export const Timeline: FC<TimelineProps> = (props) => {
 	return (
 		<>
-			{props.timeIntervals.map((interval, index) => interval.start + '--' + interval.end + ', ')}
+			{props.timeIntervals.map((interval, index) => {
+				const comma = index == props.timeIntervals.length - 1 ? '' : ', ';
+				return interval.start + '--' + interval.end + comma;
+			})}
 		</>
 	);
 };

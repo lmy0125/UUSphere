@@ -25,7 +25,7 @@ const useClassroomSearch = () => {
 			name: '',
 			day: day,
 			startTime: hours + ':' + minutes,
-			endTime: '',
+			endTime: hours + ':' + minutes,
 		},
 		page: 0,
 		rowsPerPage: 5,
@@ -73,6 +73,8 @@ const IdleClassroomsPage: PageType = () => {
 		fetcher
 	);
 
+	// console.log(filters, classroomsIdleTimes);
+
 	return (
 		<>
 			{/* <Seo title="Dashboard: Social Feed" /> */}
@@ -88,12 +90,15 @@ const IdleClassroomsPage: PageType = () => {
 						<div>
 							<Typography variant="h4">Idle Classrooms</Typography>
 							<Typography variant="subtitle2">
-								Discover Empty Classrooms with Ease.
+								Discover empty classrooms for peaceful study sessions.
 							</Typography>
 						</div>
 
 						<Card>
-							<ClassroomSearch onFiltersChange={classroomSearch.handleFiltersChange} day={filters.day} />
+							<ClassroomSearch
+								onFiltersChange={classroomSearch.handleFiltersChange}
+								day={filters.day}
+							/>
 							<ClassroomTable
 								onPageChange={classroomSearch.handlePageChange}
 								onRowsPerPageChange={classroomSearch.handleRowsPerPageChange}
@@ -101,7 +106,7 @@ const IdleClassroomsPage: PageType = () => {
 								count={classroomsIdleTimes?.length}
 								page={classroomSearch.state.page}
 								rowsPerPage={classroomSearch.state.rowsPerPage}
-                                day={filters.day}
+								day={filters.day}
 							/>
 						</Card>
 					</Stack>
