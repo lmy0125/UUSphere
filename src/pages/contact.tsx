@@ -57,7 +57,10 @@ const Contact: PageType = () => {
 	} else if (status !== 'authenticated') {
 		return (
 			<Container maxWidth="xl" sx={{ mt: 1 }}>
-				<Typography variant="h4">Chat</Typography>
+				<Typography variant="h4">Contact Us</Typography>
+				<Typography variant="subtitle2">
+					Please feel free to share any thoughts or suggestions you have!
+				</Typography>
 				<Stack sx={{ alignItems: 'center', mt: 8 }}>
 					<Button variant="contained" onClick={() => setAuthModal(true)}>
 						Login
@@ -89,7 +92,7 @@ const Contact: PageType = () => {
 	return (
 		<Container maxWidth="xl" sx={{ mt: 1, pb: 8 }}>
 			<div>
-				<Typography variant="h4">Contact</Typography>
+				<Typography variant="h4">Contact Us</Typography>
 				<Typography variant="subtitle2">
 					Please feel free to share any thoughts or suggestions you have!
 				</Typography>
