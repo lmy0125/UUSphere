@@ -81,7 +81,7 @@ const useCssVars = (color: NavColor): Record<string, string> => {
 					};
 				} else {
 					return {
-						'--nav-bg': theme.palette.neutral[50],
+						'--nav-bg': theme.palette.neutral[200],
 						'--nav-color': theme.palette.text.primary,
 						'--nav-border-color': theme.palette.divider,
 						'--nav-logo-border': theme.palette.neutral[200],

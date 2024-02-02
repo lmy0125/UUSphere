@@ -42,11 +42,11 @@ const storeSettings = (value: Record<string, any>): void => {
 };
 
 const initialSettings: Settings = {
-  colorPreset: 'indigo',
+  colorPreset: 'custom',
   contrast: 'normal',
   direction: 'ltr',
   layout: 'vertical',
-  navColor: 'evident',
+  navColor: 'discreet',
   paletteMode: 'light',
   responsiveFontSizes: true,
   stretch: false
