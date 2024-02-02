@@ -2,7 +2,7 @@ import type { FC } from 'react';
 import PropTypes from 'prop-types';
 import Menu01Icon from '@untitled-ui/icons-react/build/esm/Menu01';
 import type { Theme } from '@mui/material';
-import { Button, Box, IconButton, Stack, SvgIcon, useMediaQuery } from '@mui/material';
+import { Button, Box, IconButton, Stack, SvgIcon, useMediaQuery, Typography } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 import { AccountButton } from '../account-button';
 // import { ContactsButton } from '../contacts-button';
@@ -56,6 +56,9 @@ export const TopNav: FC<TopNavProps> = (props) => {
 							</SvgIcon>
 						</IconButton>
 					)}
+					<Typography variant="h4" fontFamily="Roboto">
+						UCSD
+					</Typography>
 					{/* <SearchBox /> */}
 				</Stack>
 				<Stack alignItems="center" direction="row" spacing={2}>
