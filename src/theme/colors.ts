@@ -97,3 +97,12 @@ export const error = withAlphas({
   darkest: '#7A271A',
   contrastText: '#FFFFFF'
 });
+
+export const custom = withAlphas({
+  lightest: '#5ac0e6',
+  light: '#52b0d2',
+  main: '#489bb7',
+  dark: '#40879e',
+  darkest: '#316571',
+  contrastText: '#FFFFFF'
+});
