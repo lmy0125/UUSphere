@@ -151,7 +151,7 @@ export const MobileNav: FC<MobileNavProps> = (props) => {
 								p: '6px',
 								width: 135,
 							}}>
-							<Logo />
+							<Logo height={60} width={135} />
 						</Box>
 						{/* <TenantSwitch sx={{ flexGrow: 1 }} /> */}
 					</Stack>

@@ -206,7 +206,7 @@ export const TopNav: FC<TopNavProps> = (props) => {
 							p: '4px',
 							width: 40,
 						}}>
-						<Logo />
+						<Logo height={60} width={135} />
 					</Box>
 					<Stack alignItems="center" direction="row" spacing={2} {...props}>
 						<Box sx={{ flexGrow: 1 }}>
