@@ -35,7 +35,7 @@ import HubIcon from '@mui/icons-material/Hub';
 import EmojiPeopleIcon from '@mui/icons-material/Diversity3';
 import ContactMailIcon from '@mui/icons-material/ContactMail';
 import WifiTetheringOutlinedIcon from '@mui/icons-material/WifiTetheringOutlined';
-import DeskIcon from '@mui/icons-material/Desk';
+import ChairAltIcon from '@mui/icons-material/ChairAlt';
 import { tokens } from '@/locales/tokens';
 import { paths } from '@/paths';
 
@@ -66,13 +66,13 @@ export const useSections = () => {
 						path: paths.idleClassrooms,
 						icon: (
 							<SvgIcon fontSize="small">
-								<DeskIcon />
+								<ChairAltIcon />
 							</SvgIcon>
 						),
 					},
 					{
-						title: t(tokens.nav.class),
-						path: paths.index,
+						title: t(tokens.nav.classes),
+						path: paths.classes,
 						icon: (
 							<SvgIcon fontSize="small">
 								<SchoolIcon />

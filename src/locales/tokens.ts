@@ -4,7 +4,7 @@ export const tokens = {
 	},
 	nav: {
 		idleClassrooms: 'Idle Classrooms',
-		class: 'Class',
+		classes: 'Classes',
 		mutualClassmates: 'Mutual Classmates',
 		chat: 'Chat',
 		broadcast: 'Broadcast',
