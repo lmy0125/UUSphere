@@ -48,13 +48,22 @@ const ChatPage: PageType = () => {
 	const { chatClient } = useChatContext();
 	const { status } = useSession();
 	const [currentChannel, setCurrentChannel] = useState<ChannelType<CustomStreamChatGenerics>>();
-	const { client, setActiveChannel } = useStreamChatContext<CustomStreamChatGenerics>();
+	const { client, setActiveChannel, channel } = useStreamChatContext<CustomStreamChatGenerics>();
 	const rootRef = useRef<HTMLDivElement | null>(null);
 	const searchParams = useSearchParams();
 	const channelId = searchParams.get('channelId') || undefined;
 	const { setShowChannel } = useChatStackContext();
 
 	useEffect(() => {
+		if (setActiveChannel) {
+			// console.log("set active", channel);
+			setActiveChannel(undefined);
+			// console.log("set active2", channel);
+		}
+	}, [setActiveChannel]);
+
+	useEffect(() => {
+		// handle navigation from another page with query channelId
 		const displayChannel = async () => {
 			if (!channelId) {
 				return;
@@ -64,6 +73,7 @@ const ChatPage: PageType = () => {
 				members: { $in: [client?.user?.id ?? ''] },
 			};
 			const channels = await client?.queryChannels(filter);
+
 			if (channels && channels.length > 0) {
 				setCurrentChannel(channels?.[0]);
 
@@ -84,7 +94,7 @@ const ChatPage: PageType = () => {
 				<Typography variant="h4">Chat</Typography>
 				<Stack sx={{ alignItems: 'center', mt: 8 }}>
 					<Button variant="contained" onClick={() => setAuthModal(true)}>
-						Please login to use this feature
+						Login to use this feature
 					</Button>
 					<AuthModal open={authModal} setAuthModal={setAuthModal} />
 				</Stack>

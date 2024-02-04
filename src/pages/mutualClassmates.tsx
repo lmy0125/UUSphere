@@ -85,7 +85,7 @@ const MutualClassmatesPage: PageType = () => {
 				</Typography>
 				<Stack sx={{ alignItems: 'center', mt: 8 }}>
 					<Button variant="contained" onClick={() => setAuthModal(true)}>
-						Please login to use this feature
+						Login to use this feature
 					</Button>
 					<AuthModal open={authModal} setAuthModal={setAuthModal} />
 				</Stack>
