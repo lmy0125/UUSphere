@@ -2,7 +2,8 @@ import React from 'react';
 import { useState } from 'react';
 import Image from 'next/image';
 import { signIn } from 'next-auth/react';
-import { Modal, Box, Typography, Button, Stack } from '@mui/material';
+import { Modal, Box, Typography, Button, Stack, Paper } from '@mui/material';
+import { Logo } from '@/components/logo';
 
 export default function AuthModal({
 	open,
@@ -23,25 +24,37 @@ export default function AuthModal({
 
 	return (
 		<Modal open={open} onClose={() => setAuthModal(false)}>
-			<Box sx={modalStyle}>
+			<Paper sx={modalStyle} elevation={12}>
 				<Box
 					sx={{
 						display: 'flex',
 						flexDirection: 'column',
 						alignItems: 'center',
 					}}>
-					<Typography variant="h5">Sign up/Log in</Typography>
-					<Typography align="center" color="text.primary" sx={{ mt: 2 }} variant="body1">
-						This product is in active development and ongoing improvement.
+					<Stack direction="row" alignItems="center">
+						<Typography variant="h5" sx={{ fontWeight: 500 }}>
+							Welcome to
+						</Typography>
+						<Logo width={95} height={42} />
+					</Stack>
+
+					<Typography align="center" color="text.secondary" sx={{ mt: 2 }} variant="body1">
+						Log in with your UCSD email account to get full access of the platform.
 					</Typography>
 				</Box>
 				<Stack alignItems="center" direction="row" spacing={3} sx={{ mt: 4 }}>
-					<Button onClick={signInWithGoogle} fullWidth color="inherit" disabled={disabled}>
+					<Button
+						onClick={signInWithGoogle}
+						fullWidth
+						variant="outlined"
+						color="inherit"
+						disabled={disabled}
+						sx={{ boarderColor: 'primary' }}>
 						<Image src="/google.svg" alt="Google" width={32} height={32} />
-						<Typography ml={1}>Sign in with Google</Typography>
+						<Typography ml={1}>Login with Google</Typography>
 					</Button>
 				</Stack>
-			</Box>
+			</Paper>
 		</Modal>
 	);
 }
@@ -52,10 +65,12 @@ const modalStyle = {
 	left: '50%',
 	transform: 'translate(-50%, -50%)',
 	width: '80%',
-	maxWidth: 550,
+	maxWidth: 400,
+	gradientBg: { backgroundImage: 'linear-gradient(to bottom, #00c4a8, white)' },
 	bgcolor: 'background.paper',
 	border: '2px',
-	borderRadius: '8px',
+	borderRadius: '4px',
 	boxShadow: 24,
-	p: 4,
+	px: 6,
+	py:12,
 };
