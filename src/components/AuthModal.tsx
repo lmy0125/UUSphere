@@ -38,11 +38,11 @@ export default function AuthModal({
 						<Logo width={95} height={42} />
 					</Stack>
 
-					<Typography align="center" color="text.secondary" sx={{ mt: 2 }} variant="body1">
-						Log in with your UCSD email account to get full access of the platform.
+					<Typography align="center" color="text.secondary" sx={{ mt: 4 }} variant="body1">
+						Login/Signup with your UCSD email account to get full access of the platform.
 					</Typography>
 				</Box>
-				<Stack alignItems="center" direction="row" spacing={3} sx={{ mt: 4 }}>
+				<Stack alignItems="center" direction="row" spacing={3} sx={{ mt: 6 }}>
 					<Button
 						onClick={signInWithGoogle}
 						fullWidth
@@ -51,7 +51,7 @@ export default function AuthModal({
 						disabled={disabled}
 						sx={{ boarderColor: 'primary' }}>
 						<Image src="/google.svg" alt="Google" width={32} height={32} />
-						<Typography ml={1}>Login with Google</Typography>
+						<Typography ml={1}>Login/Signup with Google</Typography>
 					</Button>
 				</Stack>
 			</Paper>
@@ -66,11 +66,11 @@ const modalStyle = {
 	transform: 'translate(-50%, -50%)',
 	width: '80%',
 	maxWidth: 400,
-	gradientBg: { backgroundImage: 'linear-gradient(to bottom, #00c4a8, white)' },
+	backgroundImage: 'linear-gradient( rgba(0,196,168,0.6) 0%, white 40%)',
 	bgcolor: 'background.paper',
 	border: '2px',
 	borderRadius: '4px',
 	boxShadow: 24,
 	px: 6,
-	py:12,
+	py: 8,
 };
