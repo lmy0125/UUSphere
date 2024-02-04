@@ -99,10 +99,10 @@ export const error = withAlphas({
 });
 
 export const custom = withAlphas({
-  lightest: '#5ac0e6',
-  light: '#52b0d2',
-  main: '#489bb7',
-  dark: '#40879e',
-  darkest: '#316571',
+  lightest: '#e0f7f4',
+  light: '#7bdece',
+  main: '#00c4a8',
+  dark: '#00a88a',
+  darkest: '#00866a',
   contrastText: '#FFFFFF'
 });
