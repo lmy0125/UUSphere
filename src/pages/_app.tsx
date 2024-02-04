@@ -72,6 +72,7 @@ export default function App({
 									<Head>
 										<meta name="color-scheme" content={settings.paletteMode} />
 										<meta name="theme-color" content={theme.palette.neutral[900]} />
+										<link rel="icon" href="/logo-icon.ico" />
 										<title>UUSphere</title>
 									</Head>
 									{/* <RTL direction={settings.direction}> */}
