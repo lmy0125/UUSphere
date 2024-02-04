@@ -167,9 +167,14 @@ const ClassEnrollmentPage: PageType = () => {
 									</Typography>
 								</Breadcrumbs> */}
 						</Stack>
-						<Typography variant="subtitle2" color="text.secondary">
-							Instructor ratings are currently from ratemyprofessors.com
-						</Typography>
+						<div>
+							<Typography variant="subtitle2">
+								Join classes and meet with your classmates!
+							</Typography>
+							<Typography variant="subtitle2" color="text.secondary">
+								Instructor ratings are currently fetched from ratemyprofessors.com
+							</Typography>
+						</div>
 
 						<Card>
 							<ClassSearch onFiltersChange={classSearch.handleFiltersChange} />

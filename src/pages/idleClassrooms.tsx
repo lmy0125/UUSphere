@@ -92,6 +92,9 @@ const IdleClassroomsPage: PageType = () => {
 							<Typography variant="subtitle2">
 								Discover empty classrooms for peaceful study sessions.
 							</Typography>
+							<Typography variant="subtitle2" color="text.secondary">
+								The information below is derived from the class schedules listed on WebReg. Please note that other events may take place in these classrooms.
+							</Typography>
 						</div>
 
 						<Card>

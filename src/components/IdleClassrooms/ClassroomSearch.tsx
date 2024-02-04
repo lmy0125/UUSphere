@@ -174,7 +174,7 @@ export const ClassroomSearch: FC<ClassroomSearchProps> = (props) => {
 							justifyContent="space-between"
 							spacing={4}
 							mt={smUp ? 0 : 2}>
-							<Typography id="input-slider" gutterBottom>
+							<Typography variant="subtitle1">
 								Time Interval
 							</Typography>
 							<FormControlLabel
