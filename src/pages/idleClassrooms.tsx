@@ -93,12 +93,14 @@ const IdleClassroomsPage: PageType = () => {
 								Discover empty classrooms for peaceful study sessions.
 							</Typography>
 							<Typography variant="subtitle2" color="text.secondary">
-								The information below is derived from the class schedules listed on WebReg. Please note that other events may take place in these classrooms.
+								The information below is derived from the class schedules listed on WebReg.
+								Please note that other events may take place in these classrooms.
 							</Typography>
 						</div>
 
 						<Card>
 							<ClassroomSearch
+								data-isloading={isLoading}
 								onFiltersChange={classroomSearch.handleFiltersChange}
 								day={filters.day}
 							/>

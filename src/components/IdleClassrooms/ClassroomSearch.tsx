@@ -17,6 +17,7 @@ import {
 	useMediaQuery,
 	Theme,
 } from '@mui/material';
+import LoadingButton from '@mui/lab/LoadingButton';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
@@ -26,6 +27,7 @@ import { ClassroomFilters } from '@/types/classroom';
 interface ClassroomSearchProps {
 	onFiltersChange?: (filters: ClassroomFilters) => void;
 	day: number;
+	'data-isloading': boolean;
 }
 
 interface Option {
@@ -174,9 +176,7 @@ export const ClassroomSearch: FC<ClassroomSearchProps> = (props) => {
 							justifyContent="space-between"
 							spacing={4}
 							mt={smUp ? 0 : 2}>
-							<Typography variant="subtitle1">
-								Time Interval
-							</Typography>
+							<Typography variant="subtitle1">Time Interval</Typography>
 							<FormControlLabel
 								control={
 									<Switch
@@ -219,9 +219,12 @@ export const ClassroomSearch: FC<ClassroomSearchProps> = (props) => {
 						/>
 					</LocalizationProvider> */}
 
-					<Button variant="outlined" onClick={handleApplyFilters}>
+					<LoadingButton
+						onClick={handleApplyFilters}
+						loading={props['data-isloading']}
+						variant="outlined">
 						Apply
-					</Button>
+					</LoadingButton>
 				</Stack>
 			</Stack>
 		</div>

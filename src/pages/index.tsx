@@ -86,10 +86,10 @@ const useClassStore = (searchState: ClassSearchState, quarter: string) => {
 	);
 	if (error) {
 		console.error('Failed to get classes', error);
-		return { classes: [], classesCount: 0 };
+		return { classes: [], classesCount: 0, isLoading: isLoading };
 	}
 	if (isLoading) {
-		return { classes: [], classesCount: 0 };
+		return { classes: [], classesCount: 0, isLoading: isLoading };
 	}
 
 	const classes = data?.map((obj: any) => {
@@ -103,6 +103,7 @@ const useClassStore = (searchState: ClassSearchState, quarter: string) => {
 	return {
 		classes: classes,
 		classesCount: classes?.length,
+		isLoading: isLoading,
 	};
 };
 
@@ -177,7 +178,10 @@ const ClassEnrollmentPage: PageType = () => {
 						</div>
 
 						<Card>
-							<ClassSearch onFiltersChange={classSearch.handleFiltersChange} />
+							<ClassSearch
+								onFiltersChange={classSearch.handleFiltersChange}
+								data-isloading={classStore.isLoading}
+							/>
 							<ClassTable
 								onPageChange={classSearch.handlePageChange}
 								onRowsPerPageChange={classSearch.handleRowsPerPageChange}

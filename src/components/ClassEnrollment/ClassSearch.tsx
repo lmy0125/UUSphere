@@ -3,6 +3,7 @@ import { FormEvent, useCallback, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import SearchMdIcon from '@untitled-ui/icons-react/build/esm/SearchMd';
 import { Input, Stack, SvgIcon, Button } from '@mui/material';
+import LoadingButton from '@mui/lab/LoadingButton';
 
 interface Filters {
 	name?: string;
@@ -10,6 +11,7 @@ interface Filters {
 
 interface ClassSearchProps {
 	onFiltersChange?: (filters: Filters) => void;
+	'data-isloading': boolean;
 }
 
 export const ClassSearch: FC<ClassSearchProps> = (props) => {
@@ -56,9 +58,12 @@ export const ClassSearch: FC<ClassSearchProps> = (props) => {
 						}
 					}}
 				/>
-				<Button variant="outlined" onClick={handleSearchClass}>
+				<LoadingButton
+					onClick={handleSearchClass}
+					loading={props['data-isloading']}
+					variant="outlined">
 					Search
-				</Button>
+				</LoadingButton>
 			</Stack>
 		</div>
 	);
