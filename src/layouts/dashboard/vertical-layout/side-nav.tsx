@@ -181,19 +181,15 @@ export const SideNav: FC<SideNavProps> = (props) => {
 					},
 				}}>
 				<Stack sx={{ height: '100%' }}>
-					<Stack alignItems="center" direction="row" spacing={2} sx={{ p: 3 }}>
+					<Stack alignItems="center" direction="row" spacing={2} sx={{ p: 2 }}>
 						<Box
 							component={RouterLink}
 							href={paths.index}
 							sx={{
-								borderColor: 'var(--nav-logo-border)',
-								borderRadius: 1,
-								borderStyle: 'solid',
-								borderWidth: 1,
 								display: 'flex',
-								height: 40,
-								p: '4px',
-								width: 40,
+								height: 60,
+								p: '6px',
+								width: 135,
 							}}>
 							<Logo />
 						</Box>
