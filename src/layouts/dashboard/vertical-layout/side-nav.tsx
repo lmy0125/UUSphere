@@ -188,10 +188,10 @@ export const SideNav: FC<SideNavProps> = (props) => {
 							sx={{
 								display: 'flex',
 								height: 60,
-								p: '6px',
 								width: 135,
+								p: '6px',
 							}}>
-							<Logo />
+							<Logo height={60} width={135} />
 						</Box>
 						{/* <TenantSwitch sx={{ flexGrow: 1 }} /> */}
 					</Stack>

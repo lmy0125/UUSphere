@@ -1,13 +1,11 @@
 import type { FC } from 'react';
-import Image from 'next/image'
+import Image from 'next/image';
 
-export const Logo: FC = () => {
-  return (
-    <Image
-      src="/logo-full3.png"
-      width={135}
-      height={60}
-      alt="Logo"
-    />
-  );
+type LogoProps = {
+	width: number;
+	height: number;
+};
+
+export const Logo: FC<LogoProps> = ({ width, height }) => {
+	return <Image src="/logo-full3.png" width={width} height={height} alt="Logo" />;
 };
