@@ -10,6 +10,7 @@ export interface ClassroomSchedules {
 }
 
 export interface ClassroomIdleTimes {
+	[key: string]: any; // index signature
 	name: string;
 	idleTimes: TimeInterval[][];
 }
