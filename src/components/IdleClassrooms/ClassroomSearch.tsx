@@ -136,8 +136,8 @@ export const ClassroomSearch: FC<ClassroomSearchProps> = (props) => {
 							setInputValue(e.target.value);
 						}}
 						onKeyDown={(e: KeyboardEvent) => {
-							e.preventDefault();
 							if (e.key === 'Enter') {
+								e.preventDefault();
 								handleApplyFilters();
 							}
 						}}
