@@ -67,6 +67,6 @@
 		"@types/nodemailer": "^6.4.11",
 		"@types/nprogress": "^0.2.0",
 		"@types/react-color": "^3.0.6",
-		"prisma": "^5.2.0"
+		"prisma": "^5.9.1"
 	}
 }
