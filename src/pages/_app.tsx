@@ -1,5 +1,4 @@
 // import '@/styles/globals.css';
-import '@/styles/customMessage.scss';
 import type { AppProps } from 'next/app';
 import type { ReactElement, ReactNode } from 'react';
 import { useEffect } from 'react';
