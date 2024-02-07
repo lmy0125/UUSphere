@@ -137,14 +137,13 @@ const ChatPage: PageType = () => {
 					<ChatSidebar client={client} />
 
 					<ChatContainer>
-						<Channel>
-							<ComposeModeContextConsumer>
-								{(value) => {
-									if (value.composeMode) {
-										return <Composer />;
-									}
+						<ComposeModeContextConsumer>
+							{(value) => {
+								if (value.composeMode) {
+									return <Composer />;
+								} else {
 									return (
-										<>
+										<Channel>
 											<Window hideOnThread>
 												<CustomChannelHeader />
 												<MessageList Message={CustomMessage} />
@@ -157,11 +156,11 @@ const ChatPage: PageType = () => {
 											</Window>
 											<Thread />
 											<ChannelInfoSidebar />
-										</>
+										</Channel>
 									);
-								}}
-							</ComposeModeContextConsumer>
-						</Channel>
+								}
+							}}
+						</ComposeModeContextConsumer>
 					</ChatContainer>
 				</Box>
 			</Box>
