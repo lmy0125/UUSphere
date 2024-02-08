@@ -45,45 +45,46 @@ export default function App({
 	}, []);
 
 	return (
-		<AuthProvider session={session}>
+		<>
 			<SpeedInsights />
-			<ChatContextProvider>
-				<SettingsProvider>
-					<SettingsConsumer>
-						{(settings) => {
-							// Prevent theme flicker when restoring custom settings from browser storage
-							if (!settings.isInitialized) {
-								// return null;
-							}
+			<AuthProvider session={session}>
+				<ChatContextProvider>
+					<SettingsProvider>
+						<SettingsConsumer>
+							{(settings) => {
+								// Prevent theme flicker when restoring custom settings from browser storage
+								if (!settings.isInitialized) {
+									// return null;
+								}
 
-							const theme = createTheme({
-								colorPreset: settings.colorPreset,
-								contrast: settings.contrast,
-								direction: settings.direction,
-								paletteMode: settings.paletteMode,
-								responsiveFontSizes: settings.responsiveFontSizes,
-							});
+								const theme = createTheme({
+									colorPreset: settings.colorPreset,
+									contrast: settings.contrast,
+									direction: settings.direction,
+									paletteMode: settings.paletteMode,
+									responsiveFontSizes: settings.responsiveFontSizes,
+								});
 
-							// Prevent guards from redirecting
-							// const showSlashScreen = !auth.isInitialized;
+								// Prevent guards from redirecting
+								// const showSlashScreen = !auth.isInitialized;
 
-							return (
-								<ThemeProvider theme={theme}>
-									<Head>
-										<meta name="color-scheme" content={settings.paletteMode} />
-										<meta name="theme-color" content={theme.palette.neutral[900]} />
-										<link rel="icon" href="/logo-icon.ico" />
-										<title>UUSphere</title>
-									</Head>
-									{/* <RTL direction={settings.direction}> */}
-									<CssBaseline />
-									{/* {showSlashScreen ? (
+								return (
+									<ThemeProvider theme={theme}>
+										<Head>
+											<meta name="color-scheme" content={settings.paletteMode} />
+											<meta name="theme-color" content={theme.palette.neutral[900]} />
+											<link rel="icon" href="/logo-icon.ico" />
+											<title>UUSphere</title>
+										</Head>
+										{/* <RTL direction={settings.direction}> */}
+										<CssBaseline />
+										{/* {showSlashScreen ? (
 									<SplashScreen />
 								) : ( */}
-									<ChatStackContextProvider>
-										{getLayout(<Component {...pageProps} />)}
+										<ChatStackContextProvider>
+											{getLayout(<Component {...pageProps} />)}
 
-										{/* <SettingsButton onClick={settings.handleDrawerOpen} />
+											{/* <SettingsButton onClick={settings.handleDrawerOpen} />
 										<SettingsDrawer
 											canReset={settings.isCustom}
 											onClose={settings.handleDrawerClose}
@@ -101,16 +102,17 @@ export default function App({
 												navColor: settings.navColor,
 											}}
 										/> */}
-										<Toaster />
-									</ChatStackContextProvider>
-									{/* )}
+											<Toaster />
+										</ChatStackContextProvider>
+										{/* )}
 							</RTL> */}
-								</ThemeProvider>
-							);
-						}}
-					</SettingsConsumer>
-				</SettingsProvider>
-			</ChatContextProvider>
-		</AuthProvider>
+									</ThemeProvider>
+								);
+							}}
+						</SettingsConsumer>
+					</SettingsProvider>
+				</ChatContextProvider>
+			</AuthProvider>
+		</>
 	);
 }
