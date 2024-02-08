@@ -1,5 +1,6 @@
 // import '@/styles/globals.css';
 import type { AppProps } from 'next/app';
+import { useRouter } from 'next/router';
 import type { ReactElement, ReactNode } from 'react';
 import { useEffect } from 'react';
 import Router from 'next/router';
@@ -15,7 +16,7 @@ import ChatContextProvider from '@/contexts/ChatContext';
 import 'simplebar-react/dist/simplebar.min.css';
 import nProgress from 'nprogress';
 import Toaster from '@/components/Toaster';
-import { SpeedInsights } from '@vercel/speed-insights/next';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import ChatStackContextProvider from '@/contexts/ChatStackContext';
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
@@ -31,6 +32,7 @@ export default function App({
 	pageProps: { session, ...pageProps },
 }: AppPropsWithLayout) {
 	const getLayout = Component.getLayout ?? ((page) => page);
+	const router = useRouter();
 
 	useEffect(() => {
 		Router.events.on('routeChangeStart', nProgress.start);
@@ -82,7 +84,7 @@ export default function App({
 								) : ( */}
 										<ChatStackContextProvider>
 											{getLayout(<Component {...pageProps} />)}
-											<SpeedInsights />
+
 											{/* <SettingsButton onClick={settings.handleDrawerOpen} />
 										<SettingsDrawer
 											canReset={settings.isCustom}
@@ -112,6 +114,7 @@ export default function App({
 					</SettingsProvider>
 				</ChatContextProvider>
 			</AuthProvider>
+			<SpeedInsights route={router.pathname} />
 		</>
 	);
 }
