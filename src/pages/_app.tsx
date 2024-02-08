@@ -46,7 +46,6 @@ export default function App({
 
 	return (
 		<>
-			<SpeedInsights />
 			<AuthProvider session={session}>
 				<ChatContextProvider>
 					<SettingsProvider>
@@ -83,7 +82,7 @@ export default function App({
 								) : ( */}
 										<ChatStackContextProvider>
 											{getLayout(<Component {...pageProps} />)}
-
+											<SpeedInsights />
 											{/* <SettingsButton onClick={settings.handleDrawerOpen} />
 										<SettingsDrawer
 											canReset={settings.isCustom}
