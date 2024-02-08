@@ -17,6 +17,7 @@ import 'simplebar-react/dist/simplebar.min.css';
 import nProgress from 'nprogress';
 import Toaster from '@/components/Toaster';
 import { SpeedInsights } from '@vercel/speed-insights/react';
+import { Analytics } from '@vercel/analytics/react';
 import ChatStackContextProvider from '@/contexts/ChatStackContext';
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
@@ -115,6 +116,7 @@ export default function App({
 				</ChatContextProvider>
 			</AuthProvider>
 			<SpeedInsights route={router.pathname} />
+			<Analytics />
 		</>
 	);
 }
