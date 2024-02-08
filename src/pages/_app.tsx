@@ -15,8 +15,8 @@ import ChatContextProvider from '@/contexts/ChatContext';
 import 'simplebar-react/dist/simplebar.min.css';
 import nProgress from 'nprogress';
 import Toaster from '@/components/Toaster';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import ChatStackContextProvider from '@/contexts/ChatStackContext';
-
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
 	getLayout?: (page: ReactElement) => ReactNode;
@@ -46,6 +46,7 @@ export default function App({
 
 	return (
 		<AuthProvider session={session}>
+			<SpeedInsights />
 			<ChatContextProvider>
 				<SettingsProvider>
 					<SettingsConsumer>
