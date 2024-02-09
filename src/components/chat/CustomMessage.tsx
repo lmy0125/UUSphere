@@ -70,8 +70,8 @@ const CustomMessage = () => {
 						elevation={10}
 						sx={{
 							display: 'inline-block',
-							backgroundColor: isMyMessage() ? '#797979' : 'background.paper',
-							color: isMyMessage() ? 'primary.contrastText' : 'text.primary',
+							backgroundColor: isMyMessage() ? 'primary.light' : 'background.paper',
+							color: isMyMessage() ? 'text.contrastText' : 'text.primary',
 							float: isMyMessage() ? 'right' : 'left',
 							px: 3,
 							py: 2,
