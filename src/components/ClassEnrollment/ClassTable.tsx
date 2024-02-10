@@ -165,7 +165,7 @@ const ClassRow: FC<{
 		} catch (err) {
 			console.error('Failed to getProfessorRating' + err);
 		}
-	}, [classInfo.id]);
+	}, [classInfo.instructor]);
 
 	useEffect(() => {
 		checkHasClass();

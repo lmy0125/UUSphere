@@ -145,13 +145,15 @@ const ClassEnrollmentPage: PageType = () => {
 									value={quarter}
 									onChange={(event) => setQuarter(event.target.value)}
 									label="Quarter">
-									{availableQuarters.map((quarter: string) => {
+									{availableQuarters.map((quarter: string, index) => {
 										return (
-											<MenuItem value={quarter}>
+											<MenuItem key={index} value={quarter}>
 												{quarter.substring(0, 2)} {quarter.substring(2)}
 											</MenuItem>
 										);
 									})}
+									{/* <MenuItem value="FA23">FA 23</MenuItem>
+									<MenuItem value="WI24">WI 24</MenuItem> */}
 								</Select>
 							</FormControl>
 							{/* <Breadcrumbs separator={<BreadcrumbsSeparator />}>
