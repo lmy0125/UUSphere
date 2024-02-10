@@ -23,6 +23,7 @@ import axios from 'axios';
 import useSWR from 'swr';
 import { ClassEnrollmentContextProvider } from '@/contexts/ClassEnrollmentContext';
 import { useSession } from 'next-auth/react';
+import { availableQuarters } from '@/constants/availableQuarters';
 
 interface Filters {
 	name?: string;
@@ -144,8 +145,13 @@ const ClassEnrollmentPage: PageType = () => {
 									value={quarter}
 									onChange={(event) => setQuarter(event.target.value)}
 									label="Quarter">
-									<MenuItem value="FA23">FA 23</MenuItem>
-									<MenuItem value="WI24">WI 24</MenuItem>
+									{availableQuarters.map((quarter: string) => {
+										return (
+											<MenuItem value={quarter}>
+												{quarter.substring(0, 2)} {quarter.substring(2)}
+											</MenuItem>
+										);
+									})}
 								</Select>
 							</FormControl>
 							{/* <Breadcrumbs separator={<BreadcrumbsSeparator />}>
