@@ -20,6 +20,7 @@ import { ConnectionStatus } from '@/types/social';
 import { User } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 import AuthModal from '@/components/AuthModal';
+import { availableQuarters } from '@/constants/availableQuarters';
 
 interface MutualClassmates {
 	[classmateId: string]: {
@@ -33,13 +34,11 @@ const MutualClassmatesPage: PageType = () => {
 	const { status } = useSession();
 	const [authModal, setAuthModal] = useState(false);
 	const [quarterIndex, setQuarterIndex] = useState(0);
-	const quarters = ['WI24', 'FA23'];
+	const quarters = availableQuarters;
 	const router = useRouter();
 	const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 	let { data: mutualClassmates, isLoading } = useSWR<MutualClassmates>(
-		status === 'authenticated'
-			? `/api/mutualClassmates?quarter=${quarters[quarterIndex]}`
-			: null,
+		status === 'authenticated' ? `/api/mutualClassmates?quarter=${quarters[quarterIndex]}` : null,
 		fetcher
 	);
 
@@ -111,8 +110,9 @@ const MutualClassmatesPage: PageType = () => {
 						textColor="primary"
 						value={quarterIndex}
 						variant="scrollable">
-						<Tab key={0} label="WI24" />
-						<Tab key={1} label="FA23" />
+						{availableQuarters.map((quarter, index) => (
+							<Tab key={index} label={quarter} />
+						))}
 					</Tabs>
 				</Box>
 				{Object.entries(mutualClassmates).length === 0 && !isLoading && (

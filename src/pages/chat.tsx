@@ -55,14 +55,6 @@ const ChatPage: PageType = () => {
 	const { setShowChannel } = useChatStackContext();
 
 	useEffect(() => {
-		if (setActiveChannel) {
-			// console.log("set active", channel);
-			setActiveChannel(undefined);
-			// console.log("set active2", channel);
-		}
-	}, [setActiveChannel]);
-
-	useEffect(() => {
 		// handle navigation from another page with query channelId
 		const displayChannel = async () => {
 			if (!channelId) {

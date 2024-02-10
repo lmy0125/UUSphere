@@ -3,6 +3,7 @@ import { Box, Container, Tab, Tabs } from '@mui/material';
 import ClassScheulde from '@/components/ClassEnrollment/ClassSchedule';
 import Calendar from '@/components/Calendar';
 import { ClassEnrollmentContextProvider } from '@/contexts/ClassEnrollmentContext';
+import { availableQuarters } from '@/constants/availableQuarters';
 
 interface ScheduleProps {
 	userId: string;
@@ -10,7 +11,7 @@ interface ScheduleProps {
 
 export default function Schedule({ userId }: ScheduleProps) {
 	const [quarterIndex, setQuarterIndex] = useState(0);
-	const quarters = ['WI24', 'FA23'];
+	const quarters = availableQuarters;
 
 	return (
 		<>
@@ -23,8 +24,9 @@ export default function Schedule({ userId }: ScheduleProps) {
 					textColor="primary"
 					value={quarterIndex}
 					variant="scrollable">
-					<Tab key={0} label="WI24" />
-					<Tab key={1} label="FA23" />
+					{availableQuarters.map((quarter, index) => (
+						<Tab key={index} label={quarter} />
+					))}
 				</Tabs>
 			</Box>
 			<ClassEnrollmentContextProvider>
