@@ -90,6 +90,7 @@ export const ClassTable: FC<ClassTableProps> = (props) => {
 				page={page}
 				rowsPerPage={rowsPerPage}
 				rowsPerPageOptions={[5, 10, 25]}
+				labelRowsPerPage="Rows"
 			/>
 		</>
 	);
