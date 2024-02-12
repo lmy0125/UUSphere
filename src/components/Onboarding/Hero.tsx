@@ -18,7 +18,7 @@ import { paths } from '@/paths';
 import AuthModal from '@/components/AuthModal';
 // import { HomeCodeSamples } from './home-code-samples';
 
-const Hero: FC = () => {
+export const Hero: FC = () => {
 	const [authModal, setAuthModal] = useState(false);
 	const theme = useTheme();
 	const smUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
@@ -29,16 +29,16 @@ const Hero: FC = () => {
 				backgroundRepeat: 'no-repeat',
 				backgroundPosition: 'top center',
 				backgroundImage: 'url("/assets/gradient-bg.svg")',
-				pt: '100px',
-				pb: 8,
+				pt: '150px',
+				pb: 12,
 			}}>
-			<Container maxWidth="lg">
-				<Box maxWidth="sm">
-					<Typography variant="h1" sx={{ mb: 2 }}>
-						Your ultimate companion for an enriched&nbsp;
-						{/* Let us worry about the&nbsp; */}
+			<Container maxWidth="md">
+				<Box textAlign="center">
+					<Typography variant="h2" sx={{ mb: 2 }}>
+						Ultimate companion for an enriched&nbsp;
 						<Typography component="span" color="primary.main" variant="inherit">
-							University Experience
+							University Experience&nbsp;
+							<br />
 						</Typography>
 					</Typography>
 					<Typography
@@ -46,44 +46,39 @@ const Hero: FC = () => {
 						sx={{
 							fontSize: 20,
 							fontWeight: 500,
+							px: 7,
 						}}>
-						Our innovative platform empowers you to connect with fellow students, effortlessly
-						join classes of interest, and create a vibrant network that enhances your journey
-						through higher education.
+						Our platform provides additional tools on top of the school's system and empowers
+						you to create a vibrant network that assist your journey at UCSD.
 					</Typography>
-					{!smUp && (
-						<Stack
-							alignItems="center"
-							justifyContent="center"
-							direction="row"
-							spacing={2}
-							sx={{ my: 3 }}>
-							<Button
-								// sx={(theme) =>
-								// 	theme.palette.mode === 'dark'
-								// 		? {
-								// 				backgroundColor: 'neutral.50',
-								// 				color: 'neutral.900',
-								// 				'&:hover': {
-								// 					backgroundColor: 'neutral.200',
-								// 				},
-								// 		  }
-								// 		: {
-								// 				backgroundColor: 'neutral.900',
-								// 				color: 'neutral.50',
-								// 				'&:hover': {
-								// 					backgroundColor: 'neutral.700',
-								// 				},
-								// 		  }
-								// }
-								onClick={() => setAuthModal(true)}
-								variant="contained">
-								Get Started
-							</Button>
-							<AuthModal open={authModal} setAuthModal={setAuthModal} />
-						</Stack>
-					)}
+
+					<Button
+						sx={(theme) =>
+							theme.palette.mode === 'dark'
+								? {
+										backgroundColor: 'neutral.50',
+										color: 'neutral.900',
+										'&:hover': {
+											backgroundColor: 'neutral.200',
+										},
+										mt: 3,
+								  }
+								: {
+										backgroundColor: 'neutral.900',
+										color: 'neutral.50',
+										'&:hover': {
+											backgroundColor: 'neutral.700',
+										},
+										mt: 3,
+								  }
+						}
+						onClick={() => setAuthModal(true)}
+						variant="contained">
+						Get Started
+					</Button>
+					<AuthModal open={authModal} setAuthModal={setAuthModal} />
 				</Box>
+
 				{/* <Box
           sx={{
             pt: '120px',
@@ -136,5 +131,3 @@ const Hero: FC = () => {
 		</Box>
 	);
 };
-
-export default Hero;
