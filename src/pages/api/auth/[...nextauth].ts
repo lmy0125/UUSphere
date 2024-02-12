@@ -120,14 +120,14 @@ export const authOptions = {
 			// if (url.startsWith('/')) return `${baseUrl}${url}`;
 			// // Allows callback URLs on the same origin
 			// else if (new URL(url).origin === baseUrl) return url;
-			return baseUrl;
+			return '/vacantClassrooms';
 		},
 		async signIn({ user, account }: { user: User | AdapterUser; account: Account | null }) {
 			// Check if the user is signing in for the first time
-			if (account?.provider === 'google' && user.id === account?.id) {
-				// Redirect to a different URL for first-time login
-				return '/first-time-login'; // Replace with your desired URL
-			}
+			// if (account?.provider === 'google' && user.id === account?.id) {
+			// 	// Redirect to a different URL for first-time login
+			// 	return '/first-time-login'; // Replace with your desired URL
+			// }
 			return true;
 		},
 	},

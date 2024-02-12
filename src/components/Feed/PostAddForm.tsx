@@ -49,7 +49,7 @@ const PostAddForm: FC<PostAddFormProps> = ({ mutate }) => {
 	const { createPost } = usePost();
 
 	const handlePost = async () => {
-		if (session) {
+		if (session && content) {
 			createPost({ anonymous, content, setContent, userId: session.user.id });
 		}
 	};

@@ -1,5 +1,6 @@
 import type { FC } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import User03Icon from '@untitled-ui/icons-react/build/esm/User03';
 import {
@@ -32,9 +33,12 @@ interface AccountPopoverProps {
 export const AccountPopover: FC<AccountPopoverProps> = (props) => {
 	const { anchorEl, onClose, open, user, ...other } = props;
 	const { chatClient: client } = useChatContext();
+	const router = useRouter();
 
 	const handleLogOut = async () => {
-		signOut();
+		signOut({ redirect: false }).then(() => {
+			router.push('/'); // Redirect to the dashboard page after signing out
+		});
 		client?.disconnectUser();
 	};
 

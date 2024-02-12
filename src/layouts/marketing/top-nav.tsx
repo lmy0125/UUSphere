@@ -22,6 +22,7 @@ import { paths } from '@/paths';
 // import { PagesPopover } from './pages-popover';
 import { TopNavItem } from './top-nav-item';
 import AuthModal from '@/components/AuthModal';
+import { AccountButton } from '../dashboard/account-button';
 
 interface Item {
 	disabled?: boolean;
@@ -114,16 +115,9 @@ export const TopNav: FC<TopNavProps> = (props) => {
 							href={paths.index}
 							spacing={1}
 							sx={{ textDecoration: 'none' }}>
-							{/* <Box
-								sx={{
-									display: 'inline-flex',
-									height: 24,
-									width: 24,
-								}}>
-								<Logo />
-							</Box> */}
+							<Logo width={122} height={54} />
 
-							<Box
+							{/* <Box
 								sx={{
 									color: 'text.primary',
 									fontFamily: "'Plus Jakarta Sans', sans-serif",
@@ -136,7 +130,7 @@ export const TopNav: FC<TopNavProps> = (props) => {
 									},
 								}}>
 								UUSphere
-							</Box>
+							</Box> */}
 						</Stack>
 					</Stack>
 					{mdUp && (
@@ -183,14 +177,7 @@ export const TopNav: FC<TopNavProps> = (props) => {
 						justifyContent="flex-end"
 						spacing={2}
 						sx={{ flexGrow: 1 }}>
-						{smUp && (
-							<Button
-								onClick={() => setAuthModal(true)}
-								size={mdUp ? 'medium' : 'small'}
-								variant="contained">
-								Login / Signup
-							</Button>
-						)}
+						<AccountButton />
 						<AuthModal open={authModal} setAuthModal={setAuthModal} />
 						{/* {!mdUp && (
               <IconButton onClick={onMobileNavOpen}>
