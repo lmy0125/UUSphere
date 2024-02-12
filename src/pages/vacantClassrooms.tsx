@@ -73,8 +73,6 @@ const VacantClassroomsPage: PageType = () => {
 		fetcher
 	);
 
-	// console.log(filters, classroomsIdleTimes);
-
 	return (
 		<>
 			{/* <Seo title="Dashboard: Social Feed" /> */}
@@ -88,7 +86,7 @@ const VacantClassroomsPage: PageType = () => {
 				<Container maxWidth="lg">
 					<Stack spacing={2}>
 						<div>
-							<Typography variant="h4">Idle Classrooms</Typography>
+							<Typography variant="h4">Vacant Classrooms</Typography>
 							<Typography variant="subtitle2">
 								Discover empty classrooms for peaceful study sessions.
 							</Typography>

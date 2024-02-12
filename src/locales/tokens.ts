@@ -3,7 +3,7 @@ export const tokens = {
 		languageChanged: 'common.languageChanged',
 	},
 	nav: {
-		idleClassrooms: 'Idle Classrooms',
+		vacantClassrooms: 'Vacant Classrooms',
 		classes: 'Classes',
 		mutualClassmates: 'Mutual Classmates',
 		chat: 'Chat',

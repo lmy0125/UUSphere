@@ -62,8 +62,8 @@ export const useSections = () => {
 			{
 				items: [
 					{
-						title: t(tokens.nav.idleClassrooms),
-						path: paths.idleClassrooms,
+						title: t(tokens.nav.vacantClassrooms),
+						path: paths.vacantClassrooms,
 						icon: (
 							<SvgIcon fontSize="small">
 								<ChairAltIcon />

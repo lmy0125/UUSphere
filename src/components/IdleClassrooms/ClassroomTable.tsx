@@ -57,7 +57,7 @@ export const ClassroomTable: FC<ClassroomsTableProps> = (props) => {
 						<TableRow>
 							<TableCell />
 							<TableCell>Name</TableCell>
-							<TableCell width="60%">Idle Time {daysMap[props.day]}</TableCell>
+							<TableCell width="60%">Vacant Time {daysMap[props.day]}</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
@@ -154,7 +154,7 @@ const Row: FC<{
 								<TableHead>
 									<TableRow>
 										<TableCell>Day</TableCell>
-										<TableCell>Idle Time</TableCell>
+										<TableCell>Vacant Time</TableCell>
 									</TableRow>
 								</TableHead>
 								<TableBody>
