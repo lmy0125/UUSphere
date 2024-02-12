@@ -50,7 +50,7 @@ export const Hero: FC = () => {
 							fontWeight: 500,
 							px: 7,
 						}}>
-						Our platform provides additional tools on top of the school's system and empowers
+						Our platform provides additional tools on top of the school&apos;s system and empowers
 						you to create a vibrant network that assist your journey at UCSD.
 					</Typography>
 
