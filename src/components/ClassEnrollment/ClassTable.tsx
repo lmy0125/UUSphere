@@ -472,6 +472,10 @@ const SectionRow: FC<{
 								setAuthModal(!authModal);
 								return;
 							}
+							if (!session.user.email.split('@')[1].includes('ucsd')) {
+								toast.error('Sorry, your account is not a student account.');
+								return;
+							}
 							setJoinSectionModal(true);
 						}}
 						size="small"
