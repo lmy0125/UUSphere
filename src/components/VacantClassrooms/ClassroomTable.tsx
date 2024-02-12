@@ -24,7 +24,7 @@ import type { Theme } from '@mui/material';
 import { useMediaQuery } from '@mui/material';
 import { Scrollbar } from '@/components/scrollbar';
 import { ClassroomIdleTimes, TimeInterval } from '@/types/classroom';
-import { Timeline } from '@/components/IdleClassrooms/Timeline';
+import { Timeline } from '@/components/VacantClassrooms/Timeline';
 
 interface ClassroomsTableProps {
 	count?: number;

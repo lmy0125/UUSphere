@@ -5,8 +5,8 @@ import { Box, Container, Card, Stack, Typography } from '@mui/material';
 import useSWR from 'swr';
 import axios from 'axios';
 import { ClassroomFilters, ClassroomIdleTimes } from '@/types/classroom';
-import { ClassroomTable } from '@/components/IdleClassrooms/ClassroomTable';
-import { ClassroomSearch } from '@/components/IdleClassrooms/ClassroomSearch';
+import { ClassroomTable } from '@/components/VacantClassrooms/ClassroomTable';
+import { ClassroomSearch } from '@/components/VacantClassrooms/ClassroomSearch';
 
 interface ClassroomSearchState {
 	filters: ClassroomFilters;
