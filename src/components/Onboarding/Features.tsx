@@ -27,7 +27,7 @@ const features: Feature[] = [
 		description:
 			'Find and utilize vacant classrooms on campus with ease. Ideal for studying, group work, or a quiet reading space away from the busy library.',
 		imageDark: '/assets/home-features-experts-dark.png',
-		imageLight: '/assets/home-features-experts-light.png',
+		imageLight: '/images/features/vacant-classrooms.png',
 	},
 	{
 		id: '2',
@@ -35,7 +35,7 @@ const features: Feature[] = [
 		description:
 			'Instantly join a class-specific chat group to connect with classmates. Share resources, discuss coursework, and build a community without the need to set up separate channels.',
 		imageDark: '/assets/home-features-figma-dark.png',
-		imageLight: '/assets/home-features-figma-light.png',
+		imageLight: '/images/features/chat.png',
 	},
 	{
 		id: '3',
@@ -43,7 +43,7 @@ const features: Feature[] = [
 		description:
 			'Discover and connect with students who are in multiple classes with you. Perfect for forming study groups or making new friends with similar academic interests.',
 		imageDark: '/assets/home-features-tech-dark.png',
-		imageLight: '/assets/home-features-tech-light.png',
+		imageLight: '/images/features/mutual-classmates.png',
 	},
 	{
 		id: '4',
@@ -51,7 +51,7 @@ const features: Feature[] = [
 		description:
 			'Share your experiences, vent, or offer insights on campus life. Engage with peers in a supportive space where everyone can relate and respond.',
 		imageDark: '/assets/home-features-customize-dark.png',
-		imageLight: '/assets/home-features-customize-light.png',
+		imageLight: '/images/features/broadcast.png',
 	},
 ];
 
@@ -124,24 +124,6 @@ export const Features: FC = () => {
 										<Typography color="inherit" variant="body2">
 											{feature.description}
 										</Typography>
-										{feature.id === 'figma' && (
-											<Box sx={{ mt: 3 }}>
-												<Button
-													color="success"
-													component="a"
-													endIcon={
-														<SvgIcon fontSize="small">
-															<LinkExternal01Icon />
-														</SvgIcon>
-													}
-													href="https://www.figma.com/file/xrx6uDljzsWuDZiuz3ITCp/Devias-Kit-Pro-UI-6.0-Master"
-													size="small"
-													target="_blank"
-													variant="contained">
-													Preview in Figma
-												</Button>
-											</Box>
-										)}
 									</Box>
 								);
 							})}
@@ -154,7 +136,7 @@ export const Features: FC = () => {
 									width: '100%',
 								},
 							}}>
-							<img src={image} />
+							<img src={image} style={{ borderRadius: 20 }} />
 						</Box>
 					</Grid>
 				</Grid>
