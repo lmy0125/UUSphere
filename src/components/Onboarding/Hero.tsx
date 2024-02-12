@@ -1,4 +1,5 @@
 import { FC, useState } from 'react';
+import { useRouter } from 'next/router';
 import EyeIcon from '@untitled-ui/icons-react/build/esm/Eye';
 import LayoutBottomIcon from '@untitled-ui/icons-react/build/esm/LayoutBottom';
 import {
@@ -19,6 +20,7 @@ import AuthModal from '@/components/AuthModal';
 // import { HomeCodeSamples } from './home-code-samples';
 
 export const Hero: FC = () => {
+	const router = useRouter();
 	const [authModal, setAuthModal] = useState(false);
 	const theme = useTheme();
 	const smUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
@@ -72,7 +74,7 @@ export const Hero: FC = () => {
 										mt: 3,
 								  }
 						}
-						onClick={() => setAuthModal(true)}
+						onClick={() => router.push('/vacantClassrooms')}
 						variant="contained">
 						Get Started
 					</Button>

@@ -22,7 +22,7 @@ export const AccountButton: FC = () => {
 		return (
 			<>
 				<Button onClick={() => setAuthModal(!authModal)} variant="contained">
-					Login
+					Login / Signup
 				</Button>
 				<AuthModal open={authModal} setAuthModal={() => setAuthModal(false)} />
 			</>

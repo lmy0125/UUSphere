@@ -26,7 +26,7 @@ const features: Feature[] = [
 		title: 'Access to vacant classrooms',
 		description:
 			'Find and utilize vacant classrooms on campus with ease. Ideal for studying, group work, or a quiet reading space away from the busy library.',
-		imageDark: '/assets/home-features-experts-dark.png',
+		imageDark: '/images/features/vacant-classrooms.png',
 		imageLight: '/images/features/vacant-classrooms.png',
 	},
 	{
@@ -34,7 +34,7 @@ const features: Feature[] = [
 		title: 'Join class group chat',
 		description:
 			'Instantly join a class-specific chat group to connect with classmates. Share resources, discuss coursework, and build a community without the need to set up separate channels.',
-		imageDark: '/assets/home-features-figma-dark.png',
+		imageDark: '/images/features/chat.png',
 		imageLight: '/images/features/chat.png',
 	},
 	{
@@ -42,7 +42,7 @@ const features: Feature[] = [
 		title: 'Discover multual classmates',
 		description:
 			'Discover and connect with students who are in multiple classes with you. Perfect for forming study groups or making new friends with similar academic interests.',
-		imageDark: '/assets/home-features-tech-dark.png',
+		imageDark: '/images/features/mutual-classmates.png',
 		imageLight: '/images/features/mutual-classmates.png',
 	},
 	{
@@ -50,7 +50,7 @@ const features: Feature[] = [
 		title: 'Share you thoughts',
 		description:
 			'Share your experiences, vent, or offer insights on campus life. Engage with peers in a supportive space where everyone can relate and respond.',
-		imageDark: '/assets/home-features-customize-dark.png',
+		imageDark: '/images/features/broadcast.png',
 		imageLight: '/images/features/broadcast.png',
 	},
 ];

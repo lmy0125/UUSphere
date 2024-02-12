@@ -22,6 +22,7 @@ import { paths } from '@/paths';
 // import { PagesPopover } from './pages-popover';
 import { TopNavItem } from './top-nav-item';
 import AuthModal from '@/components/AuthModal';
+import { AccountButton } from '../dashboard/account-button';
 
 interface Item {
 	disabled?: boolean;
@@ -176,12 +177,7 @@ export const TopNav: FC<TopNavProps> = (props) => {
 						justifyContent="flex-end"
 						spacing={2}
 						sx={{ flexGrow: 1 }}>
-						<Button
-							onClick={() => setAuthModal(true)}
-							size={mdUp ? 'medium' : 'small'}
-							variant="contained">
-							Login / Signup
-						</Button>
+						<AccountButton />
 						<AuthModal open={authModal} setAuthModal={setAuthModal} />
 						{/* {!mdUp && (
               <IconButton onClick={onMobileNavOpen}>
