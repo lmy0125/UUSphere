@@ -69,7 +69,7 @@ const VacantClassroomsPage: PageType = () => {
 	const classroomSearch = useClassroomSearch();
 	const filters = classroomSearch.state.filters;
 	const { data: classroomsIdleTimes, isLoading } = useSWR<ClassroomIdleTimes[]>(
-		`/api/idleClassrooms?name=${filters.name}&day=${filters.day}&startTime=${filters.startTime}&endTime=${filters.endTime}`,
+		`/api/vacantClassrooms?name=${filters.name}&day=${filters.day}&startTime=${filters.startTime}&endTime=${filters.endTime}`,
 		fetcher
 	);
 
@@ -88,7 +88,7 @@ const VacantClassroomsPage: PageType = () => {
 						<div>
 							<Typography variant="h4">Vacant Classrooms</Typography>
 							<Typography variant="subtitle2">
-								Discover empty classrooms for peaceful study sessions.
+								Discover vacant classrooms for peaceful study sessions.
 							</Typography>
 							<Typography variant="subtitle2" color="text.secondary">
 								The information below is derived from the class schedules listed on WebReg.
