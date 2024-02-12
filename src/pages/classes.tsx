@@ -110,7 +110,7 @@ const useClassStore = (searchState: ClassSearchState, quarter: string) => {
 
 const ClassEnrollmentPage: PageType = () => {
 	const { data: session } = useSession();
-	const [quarter, setQuarter] = useState('WI24');
+	const [quarter, setQuarter] = useState(availableQuarters[0]);
 	const classSearch = useClassSearch();
 	const classStore = useClassStore(classSearch.state, quarter);
 
