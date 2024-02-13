@@ -24,6 +24,7 @@ import useSWR from 'swr';
 import { ClassEnrollmentContextProvider } from '@/contexts/ClassEnrollmentContext';
 import { useSession } from 'next-auth/react';
 import { availableQuarters } from '@/constants/availableQuarters';
+import { ClassInfo } from '@/types/class';
 
 interface Filters {
 	name?: string;
@@ -93,13 +94,30 @@ const useClassStore = (searchState: ClassSearchState, quarter: string) => {
 		return { classes: [], classesCount: 0, isLoading: isLoading };
 	}
 
-	const classes = data?.map((obj: any) => {
+	const classes: ClassInfo[] = data?.map((obj: any) => {
 		const { courseId, professorId, course, ...rest } = obj;
 		rest.name = obj.course.name;
 		rest.instructor = obj.instructor.name;
 		rest.description = obj.course.description;
 		return rest;
 	});
+
+	if (classes) {
+		classes.sort((a: ClassInfo, b: ClassInfo) => {
+			const aCode = a.code.split(' ')[1].match(/^(\d+)([A-Za-z]*)$/) ?? '';
+			const bCode = b.code.split(' ')[1].match(/^(\d+)([A-Za-z]*)$/) ?? '';
+			const aNum = parseInt(aCode[1], 10);
+			const bNum = parseInt(bCode[1], 10);
+			// Compare numeric parts
+			if (aNum !== bNum) {
+				return aNum - bNum;
+			}
+
+			const alphaA = aCode[2] || ''; // Ensure there's a fallback if no alphabetic part
+			const alphaB = bCode[2] || '';
+			return alphaA.localeCompare(alphaB);
+		});
+	}
 
 	return {
 		classes: classes,
@@ -110,7 +128,7 @@ const useClassStore = (searchState: ClassSearchState, quarter: string) => {
 
 const ClassEnrollmentPage: PageType = () => {
 	const { data: session } = useSession();
-	const [quarter, setQuarter] = useState('WI24');
+	const [quarter, setQuarter] = useState(availableQuarters[0]);
 	const classSearch = useClassSearch();
 	const classStore = useClassStore(classSearch.state, quarter);
 

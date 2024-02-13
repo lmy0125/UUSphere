@@ -1,10 +1,10 @@
 export interface ClassInfo {
 	id: string;
-	code: string | null;
-	name: string | null;
-	instructor: string | null;
-	description: string | null;
-	quarter: string | null;
+	code: string;
+	name: string;
+	instructor: string;
+	description: string;
+	quarter: string;
 	sections: Section[];
 }
 
