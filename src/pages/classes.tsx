@@ -101,6 +101,21 @@ const useClassStore = (searchState: ClassSearchState, quarter: string) => {
 		return rest;
 	});
 
+	classes.sort((a: any, b: any) => {
+		const aCode = a.code.split(' ')[1].match(/^(\d+)([A-Za-z]*)$/);
+		const bCode = b.code.split(' ')[1].match(/^(\d+)([A-Za-z]*)$/);
+		const aNum = parseInt(aCode[1], 10);
+		const bNum = parseInt(bCode[1], 10);
+		// Compare numeric parts
+		if (aNum !== bNum) {
+			return aNum - bNum;
+		}
+
+		const alphaA = aCode[2] || ''; // Ensure there's a fallback if no alphabetic part
+		const alphaB = bCode[2] || '';
+		return alphaA.localeCompare(alphaB);
+	});
+
 	return {
 		classes: classes,
 		classesCount: classes?.length,
