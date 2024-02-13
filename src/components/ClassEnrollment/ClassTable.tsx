@@ -219,11 +219,25 @@ const ClassRow: FC<{
 						setAnchorEl(e.currentTarget);
 					}}>
 					<Box>
-						<Typography variant="subtitle2">{classInfo.code}</Typography>
+						<Typography variant="subtitle2" sx={{ textDecoration: 'underline' }}>
+							{classInfo.code}
+						</Typography>
 					</Box>
-					<Popper open={Boolean(anchorEl)} anchorEl={anchorEl} placement="right-start">
+					<Popper
+						open={Boolean(anchorEl)}
+						anchorEl={anchorEl}
+						placement={smUp ? 'right-start' : 'bottom-start'}>
 						<ClickAwayListener onClickAway={() => setAnchorEl(null)}>
-							<Paper sx={{ p: 3, width: '50vw', maxWidth: '1000px' }} elevation={10}>
+							<Paper
+								sx={{
+									p: 3,
+									width: '80%',
+									maxWidth: '880px',
+									maxHeight: '65vh',
+									overflow: 'auto',
+									ml: 5,
+								}}
+								elevation={10}>
 								<Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 550 }}>
 									{classInfo.code} - {classInfo.name}
 								</Typography>
