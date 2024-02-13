@@ -1,7 +1,7 @@
 import React, { ChangeEvent, MouseEvent, useCallback, useEffect, useState } from 'react';
 import type { Page as PageType } from '@/types/page';
 import { Layout as DashboardLayout } from '@/layouts/dashboard';
-import { Box, Container, Card, Stack, Typography } from '@mui/material';
+import { Box, Container, Card, Chip, Stack, Typography } from '@mui/material';
 import useSWR from 'swr';
 import axios from 'axios';
 import { ClassroomFilters, ClassroomIdleTimes } from '@/types/classroom';
@@ -86,7 +86,11 @@ const VacantClassroomsPage: PageType = () => {
 				<Container maxWidth="lg">
 					<Stack spacing={2}>
 						<div>
-							<Typography variant="h4">Vacant Classrooms</Typography>
+							<Stack spacing={2} direction="row" alignItems="center" >
+								<Typography variant="h4">Vacant Classrooms</Typography>
+								<Chip label="Winter 24" variant="outlined" />
+							</Stack>
+
 							<Typography variant="subtitle2">
 								Discover vacant classrooms for peaceful study sessions.
 							</Typography>
