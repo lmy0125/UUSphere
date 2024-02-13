@@ -86,7 +86,7 @@ const VacantClassroomsPage: PageType = () => {
 				<Container maxWidth="lg">
 					<Stack spacing={2}>
 						<div>
-							<Stack spacing={2} direction="row" alignItems="center" >
+							<Stack spacing={2} direction="row" alignItems="center">
 								<Typography variant="h4">Vacant Classrooms</Typography>
 								<Chip label="Winter 24" variant="outlined" />
 							</Stack>
