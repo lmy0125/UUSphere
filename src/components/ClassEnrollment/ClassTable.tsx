@@ -235,7 +235,7 @@ const ClassRow: FC<{
 									maxWidth: '880px',
 									maxHeight: '65vh',
 									overflow: 'auto',
-									ml: 5,
+									ml: smUp ? 0 : '20%',
 								}}
 								elevation={10}>
 								<Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 550 }}>
