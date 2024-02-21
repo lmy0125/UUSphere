@@ -2,15 +2,16 @@ import React from 'react';
 import type { Page as PageType } from '@/types/page';
 import { Layout as DashboardLayout } from '@/layouts/dashboard';
 import { Box, CircularProgress, Container, Stack, Typography } from '@mui/material';
-import PostAddForm from '@/components/Feed/PostAddForm';
+import PostCreateForm from '@/components/Feed/PostCreateForm';
 import PostDisplay from '@/components/Feed/PostDisplay';
 import { useSession } from 'next-auth/react';
 import usePost from '@/hooks/usePost';
+import { trpc } from '@/utils/trpc';
 
 const BroadcastPage: PageType = () => {
 	const { data: session, status } = useSession();
 	const { posts, isLoading, mutatePost } = usePost();
-
+	
 	return (
 		<>
 			{/* <Seo title="Dashboard: Social Feed" /> */}
@@ -29,7 +30,7 @@ const BroadcastPage: PageType = () => {
 						</Typography>
 					</Stack>
 					<Stack spacing={2} sx={{ mt: 2 }}>
-						{session && <PostAddForm mutate={mutatePost} />}
+						{session && <PostCreateForm mutate={mutatePost} />}
 						{status === 'loading' || isLoading ? (
 							<Stack sx={{ alignItems: 'center', mt: 8 }}>
 								<CircularProgress />
