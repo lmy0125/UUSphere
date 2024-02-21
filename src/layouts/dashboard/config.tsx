@@ -32,10 +32,12 @@ import SchoolIcon from '@mui/icons-material/School';
 import ChatBubbleOutlineOutlinedIcon from '@mui/icons-material/ChatBubbleOutlineOutlined';
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
 import HubIcon from '@mui/icons-material/Hub';
+import Diversity2Icon from '@mui/icons-material/Diversity2';
 import EmojiPeopleIcon from '@mui/icons-material/Diversity3';
 import ContactMailIcon from '@mui/icons-material/ContactMail';
 import WifiTetheringOutlinedIcon from '@mui/icons-material/WifiTetheringOutlined';
 import ChairAltIcon from '@mui/icons-material/ChairAlt';
+import ConnectWithoutContactIcon from '@mui/icons-material/ConnectWithoutContact';
 import { tokens } from '@/locales/tokens';
 import { paths } from '@/paths';
 
@@ -62,29 +64,11 @@ export const useSections = () => {
 			{
 				items: [
 					{
-						title: t(tokens.nav.vacantClassrooms),
-						path: paths.vacantClassrooms,
-						icon: (
-							<SvgIcon fontSize="small">
-								<ChairAltIcon />
-							</SvgIcon>
-						),
-					},
-					{
 						title: t(tokens.nav.classes),
 						path: paths.classes,
 						icon: (
 							<SvgIcon fontSize="small">
 								<SchoolIcon />
-							</SvgIcon>
-						),
-					},
-					{
-						title: t(tokens.nav.mutualClassmates),
-						path: paths.mutualClassmates,
-						icon: (
-							<SvgIcon fontSize="small">
-								<EmojiPeopleIcon />
 							</SvgIcon>
 						),
 					},
@@ -98,11 +82,30 @@ export const useSections = () => {
 						),
 					},
 					{
+						title: t(tokens.nav.mutualClassmates),
+						path: paths.mutualClassmates,
+						icon: (
+							<SvgIcon fontSize="small">
+								<ConnectWithoutContactIcon />
+							</SvgIcon>
+						),
+					},
+
+					{
 						title: t(tokens.nav.broadcast),
 						path: paths.broadcast,
 						icon: (
 							<SvgIcon fontSize="small">
 								<WifiTetheringOutlinedIcon />
+							</SvgIcon>
+						),
+					},
+					{
+						title: t(tokens.nav.vacantClassrooms),
+						path: paths.vacantClassrooms,
+						icon: (
+							<SvgIcon fontSize="small">
+								<ChairAltIcon />
 							</SvgIcon>
 						),
 					},
