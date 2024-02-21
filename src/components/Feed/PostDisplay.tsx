@@ -3,9 +3,7 @@ import { useCallback, useState } from 'react';
 import Link from 'next/link';
 import PropTypes from 'prop-types';
 import { formatDistanceToNowStrict } from 'date-fns';
-import ClockIcon from '@untitled-ui/icons-react/build/esm/Clock';
 import HeartIcon from '@untitled-ui/icons-react/build/esm/Heart';
-import Share07Icon from '@untitled-ui/icons-react/build/esm/Share07';
 import {
 	Avatar,
 	Box,
@@ -186,9 +184,6 @@ const PostDisplay: FC<PostDisplayProps> = (props) => {
 				}
 				subheader={
 					<Stack alignItems="center" direction="row" spacing={1}>
-						{/* <SvgIcon color="action">
-							<ClockIcon />
-						</SvgIcon> */}
 						<Typography color="text.secondary" variant="caption">
 							{createdAt()}
 						</Typography>
@@ -223,6 +218,11 @@ const PostDisplay: FC<PostDisplayProps> = (props) => {
 									Delete
 								</MenuItem>
 							</Menu>
+							<DeletePostModal
+								open={deletePostModal}
+								setDeletePostModal={setDeletePostModal}
+								postId={post.id}
+							/>
 						</>
 					)
 				}
@@ -245,7 +245,7 @@ const PostDisplay: FC<PostDisplayProps> = (props) => {
 					{displayFullContent ? post.content : getInitialContent()}
 				</pre>
 				{readMoreButton && (
-					<Button onClick={() => setDisplayFullContent(!displayFullContent)}>
+					<Button sx={{ p: 0 }} onClick={() => setDisplayFullContent(!displayFullContent)}>
 						{displayFullContent ? 'Show Less' : 'Read More'}
 					</Button>
 				)}
@@ -263,63 +263,43 @@ const PostDisplay: FC<PostDisplayProps> = (props) => {
 						</CardActionArea>
 					</Box>
 				)}
-				<Stack
-					alignItems="center"
-					direction="row"
-					justifyContent="space-between"
-					spacing={2}
-					sx={{ mt: 2 }}>
-					<div>
-						<Stack alignItems="center" direction="row" spacing={2}>
+				<Stack alignItems="center" direction="row" spacing={2} sx={{ mt: 1 }}>
+					<Stack direction="row" alignItems="center">
+						<IconButton sx={{ p: 0, mr: 1 }} onClick={isLiked ? handleUnlike : handleLike}>
 							{isLiked ? (
-								<Stack direction="row" alignItems="center">
-									<Tooltip title="Unlike">
-										<IconButton onClick={handleUnlike}>
-											<SvgIcon
-												sx={{
-													color: 'error.main',
-													'& path': {
-														fill: (theme) => theme.palette.error.main,
-														fillOpacity: 1,
-													},
-												}}>
-												<HeartIcon />
-											</SvgIcon>
-										</IconButton>
-									</Tooltip>
-									<Typography color="text.secondary" variant="subtitle2">
-										{numOfLikes}
-									</Typography>
-								</Stack>
+								<SvgIcon
+									sx={{
+										color: 'error.main',
+										'& path': {
+											fill: (theme) => theme.palette.error.main,
+											fillOpacity: 1,
+										},
+									}}>
+									<HeartIcon />
+								</SvgIcon>
 							) : (
-								<Stack direction="row" alignItems="center">
-									<Tooltip title="Like">
-										<IconButton onClick={handleLike}>
-											<SvgIcon>
-												<HeartIcon />
-											</SvgIcon>
-										</IconButton>
-									</Tooltip>
-									<Typography color="text.secondary" variant="subtitle2">
-										{numOfLikes}
-									</Typography>
-								</Stack>
+								<SvgIcon>
+									<HeartIcon />
+								</SvgIcon>
 							)}
+						</IconButton>
 
-							<Stack direction="row" alignItems="center">
-								<Tooltip title="Like">
-									<IconButton onClick={() => setDisplayComments(!displayComments)}>
-										<SvgIcon>
-											<CommentIcon />
-										</SvgIcon>
-									</IconButton>
-								</Tooltip>
-								<Typography color="text.secondary" variant="subtitle2">
-									{numOfComments}
-								</Typography>
-							</Stack>
-						</Stack>
-					</div>
+						<Typography color="text.secondary" variant="subtitle2">
+							{numOfLikes}
+						</Typography>
+					</Stack>
+
+					<Stack direction="row" alignItems="center">
+						<IconButton onClick={() => setDisplayComments(!displayComments)}>
+							<SvgIcon>
+								<CommentIcon />
+							</SvgIcon>
+						</IconButton>
+
+						<Typography color="text.secondary" variant="subtitle2">
+							{numOfComments}
+						</Typography>
+					</Stack>
 				</Stack>
 				{displayComments && (
 					<>
@@ -331,17 +311,15 @@ const PostDisplay: FC<PostDisplayProps> = (props) => {
 									key={comment.id}
 									author={comment.author}
 									comment={comment}
+									likes={comment.likes}
+									isLiked={comment.likes.some((obj) => obj.userId === session?.user.id)}
+									postId={post.id}
 								/>
 							))}
 						</Stack>
 					</>
 				)}
 			</Box>
-			<DeletePostModal
-				open={deletePostModal}
-				setDeletePostModal={setDeletePostModal}
-				postId={post.id}
-			/>
 		</Card>
 	);
 };
