@@ -1,7 +1,8 @@
-import { Post, User, Like, Comment } from '@prisma/client';
+import { Post, User, Like } from '@prisma/client';
+import { CommentDetails } from './comment';
 
 export interface PostDetails extends Post {
 	author: User;
 	likes: Like[];
-	comments: Comment[];
+	comments: CommentDetails[];
 }

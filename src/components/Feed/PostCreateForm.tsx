@@ -49,8 +49,9 @@ const PostCreateForm: FC<PostCreateFormProps> = ({ mutate }) => {
 	const { createPost } = usePost();
 
 	const handlePost = async () => {
-		if (session && content) {
-			createPost({ anonymous, content, setContent, userId: session.user.id });
+		if (session && content.trim() != '') {
+			createPost({ anonymous, content, userId: session.user.id });
+			setContent('');
 		}
 	};
 
