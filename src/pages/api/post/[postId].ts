@@ -6,6 +6,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 	const { postId } = query;
 
 	switch (method) {
+		// Get a specific post
 		case 'GET':
 			try {
 				const post = await prisma.post.findUnique({
@@ -21,6 +22,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 				res.status(500).json({ error: 'Error fetching post' });
 			}
 			break;
+		// Modify a post
+		// TODO: Protect this end point so that only author can make changes
 		case 'PUT':
 			try {
 				const { anonymous, content } = JSON.parse(body);
@@ -37,6 +40,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 				res.status(500).json({ error: 'Error updating post' });
 			}
 			break;
+		// Delete a post
+		// TODO: Protect this end point so that only author can make changes
 		case 'DELETE':
 			try {
 				await prisma.post.delete({

@@ -1,10 +1,12 @@
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '../auth/[...nextauth]';
 import prisma from '@/lib/prisma';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 	const { method, body } = req;
-
 	switch (method) {
+		// Get all post
 		case 'GET':
 			try {
 				const posts = await prisma.post.findMany({
@@ -19,7 +21,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 				res.status(500).json({ error: 'Error fetching posts' });
 			}
 			break;
+		// Creare a post
 		case 'POST':
+			// Check if user is authenticated
+			const session = await getServerSession(req, res, authOptions);
+			if (!session) {
+				return res.status(401).json({ message: 'Unauthorized.' });
+			}
 			try {
 				const { anonymous, content, userId } = body;
 				const post = await prisma.post.create({
