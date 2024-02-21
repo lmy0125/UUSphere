@@ -1,30 +1,36 @@
 import prisma from '@/lib/prisma';
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '../auth/[...nextauth]';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 	const { method, query, body } = req;
 	const { commentId } = query;
+	const session = await getServerSession(req, res, authOptions);
 
+	let comment;
+	try {
+		comment = await prisma.comment.findUnique({
+			where: { id: commentId as string },
+		});
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ error: 'Error fetching comment' });
+	}
 	switch (method) {
 		// Get a specific comment
 		case 'GET':
-			try {
-				const comment = await prisma.comment.findUnique({
-					where: { id: commentId as string },
-				});
-				if (!comment) {
-					res.status(404).json({ error: 'Comment not found' });
-				} else {
-					res.status(200).json(comment);
-				}
-			} catch (error) {
-				console.error(error);
-				res.status(500).json({ error: 'Error fetching comment' });
+			if (!comment) {
+				res.status(404).json({ error: 'Comment not found' });
+			} else {
+				res.status(200).json(comment);
 			}
 			break;
 		// Modify a comment
-		// TODO: Protect this end point so that only author can make changes
 		case 'PUT':
+			if (comment?.userId != session.user.id) {
+				return res.status(401).json({ message: 'You are not the author of this comment.' });
+			}
 			try {
 				const { content } = JSON.parse(body);
 				const updateComment = await prisma.comment.update({
@@ -40,8 +46,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 			}
 			break;
 		// Delete a post
-		// TODO: Protect this end point so that only author can make changes
 		case 'DELETE':
+			if (comment?.userId != session.user.id) {
+				return res.status(401).json({ message: 'You are not the author of this comment.' });
+			}
 			try {
 				await prisma.comment.delete({
 					where: { id: commentId as string },
