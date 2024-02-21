@@ -28,7 +28,7 @@ export default function useComment({ postId }: { postId: string }) {
 
 	const deleteComment = async (commentId: string) => {
 		try {
-			await axios.delete(`api/post/${commentId}`);
+			await axios.delete(`api/comment/${commentId}`);
 			mutateComment();
 			toast.success('Comment deleted');
 		} catch (err) {
