@@ -31,11 +31,11 @@ import { KeyedMutator } from 'swr';
 import { PostDetails } from '@/types/post';
 import usePost from '@/hooks/usePost';
 
-interface PostAddFormProps {
+interface PostCreateFormProps {
 	mutate: KeyedMutator<PostDetails[]>;
 }
 
-const PostAddForm: FC<PostAddFormProps> = ({ mutate }) => {
+const PostCreateForm: FC<PostCreateFormProps> = ({ mutate }) => {
 	const { data: session } = useSession();
 	const [content, setContent] = useState('');
 	const [anonymous, setAnonymous] = useState(false);
@@ -165,4 +165,4 @@ const PostAddForm: FC<PostAddFormProps> = ({ mutate }) => {
 	);
 };
 
-export default PostAddForm;
+export default PostCreateForm;
