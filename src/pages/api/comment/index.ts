@@ -11,7 +11,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 			try {
 				const comments = await prisma.comment.findMany({
 					where: { postId: req.query.postId as string },
-					include: { author: true },
+					include: { author: true, likes: true },
 					orderBy: {
 						createdAt: 'desc', // Sort by createdAt in descending order (newest first)
 					},

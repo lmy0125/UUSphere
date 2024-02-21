@@ -1,18 +1,28 @@
-import type { FC } from 'react';
+import { useState, type FC, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { formatDistanceToNow, formatDistanceToNowStrict } from 'date-fns';
-import { Avatar, Box, Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography, IconButton, SvgIcon } from '@mui/material';
+import HeartIcon from '@untitled-ui/icons-react/build/esm/Heart';
+import DeleteIcon from '@mui/icons-material/Delete';
 import UserAvatar from '@/components/UserAvatar';
-import { User, Comment } from '@prisma/client';
+import { User, Like } from '@prisma/client';
 import { CommentDetails } from '@/types/comment';
+import axios from 'axios';
+import toast from 'react-hot-toast';
+import { useSession } from 'next-auth/react';
 
 interface CommentDisplayProps {
 	author: User;
 	comment: CommentDetails;
+	likes: Like[];
+	isLiked: boolean;
 }
 
 export const CommentDisplay: FC<CommentDisplayProps> = (props) => {
-	const { author, comment } = props;
+	const { author, comment, likes } = props;
+	const { data: session } = useSession();
+	const [isLiked, setIsLiked] = useState<boolean>(props.isLiked);
+	const [numOfLikes, setNumOfLikes] = useState<number>(likes.length);
 
 	const createdAt = () => {
 		const timeInfo = formatDistanceToNowStrict(new Date(comment.createdAt));
@@ -21,6 +31,40 @@ export const CommentDisplay: FC<CommentDisplayProps> = (props) => {
 		}
 		return timeInfo + ' ago';
 	};
+
+	const handleLike = useCallback(async () => {
+		if (session) {
+			setIsLiked(true);
+			setNumOfLikes((prevLikes) => prevLikes + 1);
+			try {
+				await axios.post('/api/comment/like', {
+					commentId: comment.id,
+					userId: session.user.id,
+				});
+			} catch (err) {
+				toast.error('Error when like comment');
+				setIsLiked(false);
+				setNumOfLikes((prevLikes) => prevLikes - 1);
+			}
+		}
+	}, [comment.id, session]);
+
+	const handleUnlike = useCallback(async () => {
+		if (session) {
+			setIsLiked(false);
+			setNumOfLikes((prevLikes) => prevLikes - 1);
+			try {
+				await axios.post('/api/comment/like', {
+					commentId: comment.id,
+					userId: session.user.id,
+				});
+			} catch (err) {
+				toast.error('Error when unlike comment');
+				setIsLiked(true);
+				setNumOfLikes((prevLikes) => prevLikes + 1);
+			}
+		}
+	}, [comment.id, session]);
 
 	return (
 		<Stack alignItems="flex-start" direction="row" spacing={2}>
@@ -47,6 +91,38 @@ export const CommentDisplay: FC<CommentDisplayProps> = (props) => {
 				<Typography variant="body2" sx={{ mt: 1 }}>
 					{comment.content}
 				</Typography>
+				<Stack direction="row" spacing={2} mt={1}>
+					<Stack direction="row" alignItems="center">
+						<IconButton
+							sx={{ p: 0, mr: 1 }}
+							size="large"
+							onClick={isLiked ? handleUnlike : handleLike}>
+							{isLiked ? (
+								<SvgIcon
+									sx={{
+										color: 'error.main',
+										'& path': {
+											fill: (theme) => theme.palette.error.main,
+											fillOpacity: 1,
+										},
+									}}>
+									<HeartIcon />
+								</SvgIcon>
+							) : (
+								<HeartIcon fontSize="inherit" />
+							)}
+						</IconButton>
+						<Typography color="text.secondary" variant="subtitle2">
+							{numOfLikes}
+						</Typography>
+					</Stack>
+
+					<Stack direction="row" alignItems="center">
+						<IconButton>
+							<DeleteIcon fontSize="inherit" />
+						</IconButton>
+					</Stack>
+				</Stack>
 			</Box>
 		</Stack>
 	);
