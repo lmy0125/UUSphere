@@ -91,7 +91,7 @@ export const CommentDisplay: FC<CommentDisplayProps> = (props) => {
 						{createdAt()}
 					</Typography>
 				</Box>
-				<Typography variant="body2" sx={{ mt: 1 }}>
+				<Typography variant="body1" sx={{ mt: 1 }}>
 					{comment.content}
 				</Typography>
 				<Stack direction="row" spacing={2} mt={1}>
