@@ -6,7 +6,6 @@ import PostCreateForm from '@/components/Feed/PostCreateForm';
 import PostDisplay from '@/components/Feed/PostDisplay';
 import { useSession } from 'next-auth/react';
 import usePost from '@/hooks/usePost';
-import { trpc } from '@/utils/trpc';
 
 const BroadcastPage: PageType = () => {
 	const { data: session, status } = useSession();
