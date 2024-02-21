@@ -106,7 +106,7 @@ const MutualClassmatesPage: PageType = () => {
 						indicatorColor="primary"
 						onChange={(_, value) => setQuarterIndex(value)}
 						scrollButtons="auto"
-						sx={{ px: 3 }}
+						sx={{ px: 1 }}
 						textColor="primary"
 						value={quarterIndex}
 						variant="scrollable">
