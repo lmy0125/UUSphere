@@ -37,9 +37,9 @@ export const Hero: FC = () => {
 			<Container maxWidth="md">
 				<Box textAlign="center">
 					<Typography variant="h2" sx={{ mb: 2 }}>
-						Ultimate companion for an enriched&nbsp;
+						Ultimate companion<br/> during your journey in&nbsp;
 						<Typography component="span" color="primary.main" variant="inherit">
-							University Experience&nbsp;
+							UCSD&nbsp;
 							<br />
 						</Typography>
 					</Typography>

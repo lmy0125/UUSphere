@@ -22,14 +22,6 @@ interface Feature {
 
 const features: Feature[] = [
 	{
-		id: '1',
-		title: 'Access to vacant classrooms',
-		description:
-			'Find and utilize vacant classrooms on campus with ease. Ideal for studying, group work, or a quiet reading space away from the busy library.',
-		imageDark: '/images/features/vacant-classrooms.png',
-		imageLight: '/images/features/vacant-classrooms.png',
-	},
-	{
 		id: '2',
 		title: 'Join class group chat',
 		description:
@@ -52,6 +44,14 @@ const features: Feature[] = [
 			'Share your experiences, vent, or offer insights on campus life. Engage with peers in a supportive space where everyone can relate and respond.',
 		imageDark: '/images/features/broadcast.png',
 		imageLight: '/images/features/broadcast.png',
+	},
+	{
+		id: '1',
+		title: 'Access to vacant classrooms',
+		description:
+			'Find and utilize vacant classrooms on campus with ease. Ideal for studying, group work, or a quiet reading space away from the busy library.',
+		imageDark: '/images/features/vacant-classrooms.png',
+		imageLight: '/images/features/vacant-classrooms.png',
 	},
 ];
 
