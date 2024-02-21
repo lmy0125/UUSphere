@@ -85,7 +85,7 @@ const PostDisplay: FC<PostDisplayProps> = (props) => {
 			setIsLiked(true);
 			setNumOfLikes((prevLikes) => prevLikes + 1);
 			try {
-				await axios.post('/api/likePost', {
+				await axios.post('/api/post/like', {
 					postId: post.id,
 					userId: session.user.id,
 				});
@@ -102,7 +102,7 @@ const PostDisplay: FC<PostDisplayProps> = (props) => {
 			setIsLiked(false);
 			setNumOfLikes((prevLikes) => prevLikes - 1);
 			try {
-				await axios.post('/api/likePost', {
+				await axios.post('/api/post/like', {
 					postId: post.id,
 					userId: session.user.id,
 				});
