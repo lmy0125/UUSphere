@@ -17,9 +17,11 @@ import { useTheme } from '@mui/material/styles';
 import { RouterLink } from '@/components/router-link';
 import { paths } from '@/paths';
 import AuthModal from '@/components/AuthModal';
+import { useSession } from 'next-auth/react';
 // import { HomeCodeSamples } from './home-code-samples';
 
 export const Hero: FC = () => {
+	const { data: session } = useSession();
 	const router = useRouter();
 	const [authModal, setAuthModal] = useState(false);
 	const theme = useTheme();
@@ -37,7 +39,8 @@ export const Hero: FC = () => {
 			<Container maxWidth="md">
 				<Box textAlign="center">
 					<Typography variant="h2" sx={{ mb: 2 }}>
-						Ultimate companion<br/> during your journey in&nbsp;
+						Ultimate companion
+						<br /> during your journey in&nbsp;
 						<Typography component="span" color="primary.main" variant="inherit">
 							UCSD&nbsp;
 							<br />
@@ -50,8 +53,8 @@ export const Hero: FC = () => {
 							fontWeight: 500,
 							px: 7,
 						}}>
-						Our platform provides additional tools on top of the school&apos;s system and empowers
-						you to create a vibrant network that assist your journey at UCSD.
+						Our platform provides additional tools on top of the school&apos;s system and
+						empowers you to create a vibrant network that assist your journey at UCSD.
 					</Typography>
 
 					<Button
@@ -74,7 +77,7 @@ export const Hero: FC = () => {
 										mt: 3,
 								  }
 						}
-						onClick={() => router.push('/vacantClassrooms')}
+						onClick={() => (session ? router.push('/classes') : setAuthModal(true))}
 						variant="contained">
 						Get Started
 					</Button>
