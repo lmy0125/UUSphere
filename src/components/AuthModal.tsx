@@ -24,7 +24,7 @@ export default function AuthModal({
 
 	return (
 		<Modal open={open} onClose={() => setAuthModal(false)}>
-			<Paper sx={modalStyle} elevation={12}>
+			<Paper sx={modalStyle} elevation={10}>
 				<Box
 					sx={{
 						display: 'flex',
@@ -38,22 +38,25 @@ export default function AuthModal({
 						<Logo width={95} height={42} />
 					</Stack>
 
-					<Typography align="center" color="text.secondary" sx={{ mt: 4 }} variant="body1">
+					<Typography align="center" color="neutral.600" sx={{ mt: 4 }} variant="body1">
 						Login/Signup with your UCSD email account to get full access of the platform.
 					</Typography>
 				</Box>
-				<Stack alignItems="center" direction="row" spacing={3} sx={{ mt: 6 }}>
-					<Button
-						onClick={signInWithGoogle}
-						fullWidth
-						variant="outlined"
-						color="inherit"
-						disabled={disabled}
-						sx={{ boarderColor: 'primary' }}>
-						<Image src="/google.svg" alt="Google" width={32} height={32} />
-						<Typography ml={1}>Login/Signup with Google</Typography>
-					</Button>
-				</Stack>
+
+				<Button
+					onClick={signInWithGoogle}
+					fullWidth
+					variant="outlined"
+					color="inherit"
+					disabled={disabled}
+					sx={{
+						border: '1px solid rgba(0, 0, 0, .12)',
+						boxShadow: '0 2px 4px rgba(0,0,0,.1)',
+						mt: 6,
+					}}>
+					<Image src="/google.svg" alt="Google" width={32} height={32} />
+					<Box ml={1}>Continue with Google</Box>
+				</Button>
 			</Paper>
 		</Modal>
 	);
@@ -67,10 +70,9 @@ const modalStyle = {
 	width: '80%',
 	maxWidth: 400,
 	backgroundImage: 'linear-gradient( rgba(0,196,168,0.6) 0%, white 40%)',
-	bgcolor: 'background.paper',
 	border: '2px',
-	borderRadius: '4px',
-	boxShadow: 24,
+	borderRadius: '16px',
+	// boxShadow: '0 2px 4px rgba(0,0,0,.06)',
 	px: 6,
 	py: 8,
 };
