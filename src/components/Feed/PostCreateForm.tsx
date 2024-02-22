@@ -13,7 +13,6 @@ import {
 	CardContent,
 	Checkbox,
 	IconButton,
-	OutlinedInput,
 	Stack,
 	SvgIcon,
 	useMediaQuery,
@@ -31,11 +30,11 @@ import { KeyedMutator } from 'swr';
 import { PostDetails } from '@/types/post';
 import usePost from '@/hooks/usePost';
 
-interface PostAddFormProps {
+interface PostCreateFormProps {
 	mutate: KeyedMutator<PostDetails[]>;
 }
 
-const PostAddForm: FC<PostAddFormProps> = ({ mutate }) => {
+const PostCreateForm: FC<PostCreateFormProps> = ({ mutate }) => {
 	const { data: session } = useSession();
 	const [content, setContent] = useState('');
 	const [anonymous, setAnonymous] = useState(false);
@@ -49,8 +48,9 @@ const PostAddForm: FC<PostAddFormProps> = ({ mutate }) => {
 	const { createPost } = usePost();
 
 	const handlePost = async () => {
-		if (session && content) {
-			createPost({ anonymous, content, setContent, userId: session.user.id });
+		if (session && content.trim() != '') {
+			createPost({ anonymous, content, userId: session.user.id });
+			setContent('');
 		}
 	};
 
@@ -66,11 +66,11 @@ const PostAddForm: FC<PostAddFormProps> = ({ mutate }) => {
 				<Stack alignItems="flex-start" direction="row" spacing={2}>
 					<UserAvatar userId={session?.user.id} size={40} />
 					<Stack spacing={1} sx={{ flexGrow: 1 }}>
-						<OutlinedInput
+						<TextField
+							variant="outlined"
 							fullWidth
 							multiline
 							placeholder="Share the moment"
-							rows={2}
 							value={content}
 							onChange={(e) => setContent(e.target.value)}
 						/>
@@ -165,4 +165,4 @@ const PostAddForm: FC<PostAddFormProps> = ({ mutate }) => {
 	);
 };
 
-export default PostAddForm;
+export default PostCreateForm;

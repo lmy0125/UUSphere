@@ -120,7 +120,7 @@ export const authOptions = {
 			// if (url.startsWith('/')) return `${baseUrl}${url}`;
 			// // Allows callback URLs on the same origin
 			// else if (new URL(url).origin === baseUrl) return url;
-			return '/vacantClassrooms';
+			return '/classes';
 		},
 		async signIn({ user, account }: { user: User | AdapterUser; account: Account | null }) {
 			// Check if the user is signing in for the first time

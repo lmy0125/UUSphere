@@ -106,7 +106,7 @@ const MutualClassmatesPage: PageType = () => {
 						indicatorColor="primary"
 						onChange={(_, value) => setQuarterIndex(value)}
 						scrollButtons="auto"
-						sx={{ px: 3 }}
+						sx={{ px: 1 }}
 						textColor="primary"
 						value={quarterIndex}
 						variant="scrollable">
@@ -120,7 +120,7 @@ const MutualClassmatesPage: PageType = () => {
 						<Typography variant="h5" sx={{ fontWeight: 500, mb: 1 }}>
 							You have no mutual classmates yet.
 						</Typography>
-						<Button variant="contained" onClick={() => router.push(paths.index)}>
+						<Button variant="contained" onClick={() => router.push(paths.classes)}>
 							Join Classes
 						</Button>
 					</Stack>

@@ -5,39 +5,39 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 	const { method, body } = req;
+
 	switch (method) {
-		// Get all post
 		case 'GET':
 			try {
-				const posts = await prisma.post.findMany({
+				const comments = await prisma.comment.findMany({
+					where: { postId: req.query.postId as string },
 					include: { author: true, likes: true },
 					orderBy: {
 						createdAt: 'desc', // Sort by createdAt in descending order (newest first)
 					},
 				});
-				res.status(200).json(posts);
+				res.status(200).json(comments);
 			} catch (error) {
 				console.error(error);
 				res.status(500).json({ error: 'Error fetching posts' });
 			}
 			break;
-		// Creare a post
 		case 'POST':
-			// Check if user is authenticated
-			const session = await getServerSession(req, res, authOptions);
-			if (!session) {
-				return res.status(401).json({ message: 'Unauthorized.' });
-			}
 			try {
-				const { anonymous, content, userId } = body;
-				const post = await prisma.post.create({
+				// Check if user is authenticated
+				const session = await getServerSession(req, res, authOptions);
+				if (!session) {
+					return res.status(401).json({ message: 'Unauthorized.' });
+				}
+				const { content, userId, postId } = body;
+				const newComment = await prisma.comment.create({
 					data: {
-						anonymous,
 						content,
 						author: { connect: { id: userId } },
+						post: { connect: { id: postId } },
 					},
 				});
-				res.status(200).json(post);
+				res.status(200).json(newComment);
 			} catch (error) {
 				console.error(error);
 				res.status(500).json({ error: 'Error creating post' });

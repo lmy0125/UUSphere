@@ -1,14 +1,13 @@
-import { FC, useMemo } from 'react';
+import { FC, useEffect, useMemo } from 'react';
 import { useCallback, useState } from 'react';
 import Link from 'next/link';
 import PropTypes from 'prop-types';
 import { formatDistanceToNowStrict } from 'date-fns';
-import ClockIcon from '@untitled-ui/icons-react/build/esm/Clock';
 import HeartIcon from '@untitled-ui/icons-react/build/esm/Heart';
-import Share07Icon from '@untitled-ui/icons-react/build/esm/Share07';
 import {
 	Avatar,
 	Box,
+	Button,
 	Card,
 	CardActionArea,
 	CardHeader,
@@ -23,17 +22,21 @@ import {
 	MenuItem,
 } from '@mui/material';
 // import type { Comment } from 'src/types/social';
-// import { SocialComment } from './social-comment';
-// import { SocialCommentAdd } from './social-comment-add';
+// import { Comment } from './Comment';
+import { CommentCreate } from './CommentCreate';
+import { CommentDisplay } from './CommentDisplay';
 import { Post, User, Like, Comment } from '@prisma/client';
 import UserAvatar from '@/components/UserAvatar';
 import { BigHead } from '@bigheads/core';
 import MoreHorizOutlinedIcon from '@mui/icons-material/MoreHorizOutlined';
+import CommentIcon from '@mui/icons-material/Comment';
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { randomNames } from '@/constants/randomNames';
 import { DeletePostModal } from '@/components/Feed/ConfirmModals';
+import { CommentDetails } from '@/types/comment';
+import useComment from '@/hooks/useComment';
 
 interface PostDisplayProps {
 	isLiked: boolean;
@@ -41,16 +44,20 @@ interface PostDisplayProps {
 	post: Post;
 	author: User;
 	likes: Like[];
-	comments: Comment[];
+	comments: CommentDetails[];
 }
 
 const PostDisplay: FC<PostDisplayProps> = (props) => {
 	const { data: session } = useSession();
-	const { post, author, isLiked: isLikedProp, likes, media, ...other } = props;
+	const { post, author, isLiked: isLikedProp, likes, media, comments, ...other } = props;
+	const { comments: fetchedComments } = useComment({ postId: post.id });
+	const [displayComments, setDisplayComments] = useState(false);
 	const [isLiked, setIsLiked] = useState<boolean>(props.isLiked);
 	const [numOfLikes, setNumOfLikes] = useState<number>(likes.length);
+	const [numOfComments, setNumOfComments] = useState<number>(fetchedComments?.length ?? 0);
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const [deletePostModal, setDeletePostModal] = useState(false);
+	const [displayFullContent, setDisplayFullContent] = useState(false);
 	const randomName = useMemo(() => {
 		const randomIndex = Math.floor(Math.random() * randomNames.length);
 		return randomNames[randomIndex];
@@ -65,10 +72,10 @@ const PostDisplay: FC<PostDisplayProps> = (props) => {
 		);
 	}, []);
 
-	const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+	const handleOptionButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
 		setAnchorEl(event.currentTarget);
 	};
-	const handleDelete = async () => {};
+
 	const handleClose = () => {
 		setAnchorEl(null);
 	};
@@ -78,7 +85,7 @@ const PostDisplay: FC<PostDisplayProps> = (props) => {
 			setIsLiked(true);
 			setNumOfLikes((prevLikes) => prevLikes + 1);
 			try {
-				await axios.post('/api/likePost', {
+				await axios.post('/api/post/like', {
 					postId: post.id,
 					userId: session.user.id,
 				});
@@ -95,7 +102,7 @@ const PostDisplay: FC<PostDisplayProps> = (props) => {
 			setIsLiked(false);
 			setNumOfLikes((prevLikes) => prevLikes - 1);
 			try {
-				await axios.post('/api/likePost', {
+				await axios.post('/api/post/like', {
 					postId: post.id,
 					userId: session.user.id,
 				});
@@ -114,6 +121,32 @@ const PostDisplay: FC<PostDisplayProps> = (props) => {
 		}
 		return timeInfo + ' ago';
 	};
+
+	// Assuming roughly 100 characters per line as an example. Adjust this based on your actual layout and font size.
+	const newlineCount = post.content.split('\n').length - 1;
+	const maxCharsPerLine = 120;
+	const maxLines = 3;
+	const readMoreButton =
+		post.content.length > maxCharsPerLine * maxLines || newlineCount > maxLines;
+
+	const getInitialContent = () => {
+		let initContent = post.content;
+		if (readMoreButton) {
+			if (newlineCount <= 3) {
+				// If newline count is within limit, check length
+				initContent = post.content.substring(0, maxCharsPerLine * maxLines) + '...';
+			} else {
+				// If more than 3 newlines, show content up to the third newline
+				let lines = post.content.split('\n');
+				initContent = lines.slice(0, maxLines+1).join('\n') + '\n...';
+			}
+		}
+		return initContent;
+	};
+
+	useEffect(() => {
+		setNumOfComments(fetchedComments?.length ?? 0);
+	}, [fetchedComments]);
 
 	return (
 		<Card {...other}>
@@ -150,9 +183,6 @@ const PostDisplay: FC<PostDisplayProps> = (props) => {
 				}
 				subheader={
 					<Stack alignItems="center" direction="row" spacing={1}>
-						{/* <SvgIcon color="action">
-							<ClockIcon />
-						</SvgIcon> */}
 						<Typography color="text.secondary" variant="caption">
 							{createdAt()}
 						</Typography>
@@ -161,7 +191,7 @@ const PostDisplay: FC<PostDisplayProps> = (props) => {
 				action={
 					session?.user.id === author.id && (
 						<>
-							<IconButton aria-label="settings" onClick={handleClick}>
+							<IconButton aria-label="settings" onClick={handleOptionButtonClick}>
 								<MoreHorizOutlinedIcon />
 							</IconButton>
 							<Menu
@@ -187,6 +217,11 @@ const PostDisplay: FC<PostDisplayProps> = (props) => {
 									Delete
 								</MenuItem>
 							</Menu>
+							<DeletePostModal
+								open={deletePostModal}
+								setDeletePostModal={setDeletePostModal}
+								postId={post.id}
+							/>
 						</>
 					)
 				}
@@ -196,7 +231,24 @@ const PostDisplay: FC<PostDisplayProps> = (props) => {
 					pb: 2,
 					px: 3,
 				}}>
-				<Typography variant="body1">{post.content}</Typography>
+				<pre
+					style={{
+						whiteSpace: 'pre-wrap',
+						margin: 0,
+						fontSize: '1rem',
+						fontWeight: 400,
+						lineHeight: 1.5,
+						fontFamily:
+							'"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji"',
+					}}>
+					{displayFullContent ? post.content : getInitialContent()}
+				</pre>
+				{readMoreButton && (
+					<Button sx={{ p: 0 }} onClick={() => setDisplayFullContent(!displayFullContent)}>
+						{displayFullContent ? 'Show Less' : 'Read More'}
+					</Button>
+				)}
+
 				{media && (
 					<Box sx={{ mt: 3 }}>
 						<CardActionArea>
@@ -210,64 +262,63 @@ const PostDisplay: FC<PostDisplayProps> = (props) => {
 						</CardActionArea>
 					</Box>
 				)}
-				<Stack
-					alignItems="center"
-					direction="row"
-					justifyContent="space-between"
-					spacing={2}
-					sx={{ mt: 2 }}>
-					<div>
-						<Stack alignItems="center" direction="row">
+				<Stack alignItems="center" direction="row" spacing={2} sx={{ mt: 1 }}>
+					<Stack direction="row" alignItems="center">
+						<IconButton sx={{ p: 0, mr: 1 }} onClick={isLiked ? handleUnlike : handleLike}>
 							{isLiked ? (
-								<Tooltip title="Unlike">
-									<IconButton onClick={handleUnlike}>
-										<SvgIcon
-											sx={{
-												color: 'error.main',
-												'& path': {
-													fill: (theme) => theme.palette.error.main,
-													fillOpacity: 1,
-												},
-											}}>
-											<HeartIcon />
-										</SvgIcon>
-									</IconButton>
-								</Tooltip>
+								<SvgIcon
+									sx={{
+										color: 'error.main',
+										'& path': {
+											fill: (theme) => theme.palette.error.main,
+											fillOpacity: 1,
+										},
+									}}>
+									<HeartIcon />
+								</SvgIcon>
 							) : (
-								<Tooltip title="Like">
-									<IconButton onClick={handleLike}>
-										<SvgIcon>
-											<HeartIcon />
-										</SvgIcon>
-									</IconButton>
-								</Tooltip>
+								<SvgIcon>
+									<HeartIcon />
+								</SvgIcon>
 							)}
-							<Typography color="text.secondary" variant="subtitle2">
-								{numOfLikes}
-							</Typography>
+						</IconButton>
+
+						<Typography color="text.secondary" variant="subtitle2">
+							{numOfLikes}
+						</Typography>
+					</Stack>
+
+					<Stack direction="row" alignItems="center">
+						<IconButton onClick={() => setDisplayComments(!displayComments)}>
+							<SvgIcon>
+								<CommentIcon />
+							</SvgIcon>
+						</IconButton>
+
+						<Typography color="text.secondary" variant="subtitle2">
+							{numOfComments}
+						</Typography>
+					</Stack>
+				</Stack>
+				{displayComments && (
+					<>
+						<Divider sx={{ my: 3 }} />
+						<Stack spacing={3}>
+							<CommentCreate postId={post.id} />
+							{fetchedComments?.map((comment) => (
+								<CommentDisplay
+									key={comment.id}
+									author={comment.author}
+									comment={comment}
+									likes={comment.likes}
+									isLiked={comment.likes.some((obj) => obj.userId === session?.user.id)}
+									postId={post.id}
+								/>
+							))}
 						</Stack>
-					</div>
-				</Stack>
-				{/* <Divider sx={{ my: 3 }} />
-				<Stack spacing={3}>
-					{comments.map((comment) => (
-						<SocialComment
-							authorAvatar={comment.author.avatar}
-							authorName={comment.author.name}
-							createdAt={comment.createdAt}
-							key={comment.id}
-							message={comment.message}
-						/>
-					))}
-				</Stack>
-				<Divider sx={{ my: 3 }} />
-				<SocialCommentAdd /> */}
+					</>
+				)}
 			</Box>
-			<DeletePostModal
-				open={deletePostModal}
-				setDeletePostModal={setDeletePostModal}
-				postId={post.id}
-			/>
 		</Card>
 	);
 };

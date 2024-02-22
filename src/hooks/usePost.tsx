@@ -15,12 +15,10 @@ export default function usePost() {
 	const createPost = async ({
 		anonymous,
 		content,
-		setContent,
 		userId,
 	}: {
 		anonymous: boolean;
 		content: string;
-		setContent: React.Dispatch<React.SetStateAction<string>>;
 		userId: string;
 	}) => {
 		try {
@@ -30,10 +28,9 @@ export default function usePost() {
 				userId,
 			});
 			mutatePost();
-			setContent('');
 			toast.success('Post created');
 		} catch (err) {
-			toast.error('Error when create post');
+			toast.error('Error when creating post');
 		}
 	};
 
@@ -41,10 +38,10 @@ export default function usePost() {
 		try {
 			await axios.delete(`api/post/${postId}`);
 			mutatePost();
-            toast.success('Post deleted');
+			toast.success('Post deleted');
 		} catch (err) {
 			alert('Failed joinSection ' + err);
-			toast.error('Error when delete post');
+			toast.error('Error when deleting post');
 		}
 	};
 

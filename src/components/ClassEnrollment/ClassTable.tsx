@@ -488,7 +488,7 @@ const SectionRow: FC<{
 								return;
 							}
 							if (!session.user.email.split('@')[1].includes('ucsd')) {
-								toast.error('Sorry, your account is not a student account.');
+								toast.error('Sorry, you need an university email address to join classes.');
 								return;
 							}
 							setJoinSectionModal(true);

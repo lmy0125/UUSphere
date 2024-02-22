@@ -66,6 +66,8 @@ export const InfoSidebarContainer: React.FC<InfoSidebarContainerProps> = ({
 						borderLeft: '1px solid #F2F4F7',
 						minWidth: 280,
 						width: '25%',
+						overflow: 'auto',
+						pb: 5,
 					}}>
 					{children}
 				</Box>

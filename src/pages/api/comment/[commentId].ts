@@ -5,43 +5,41 @@ import { authOptions } from '../auth/[...nextauth]';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 	const { method, query, body } = req;
-	const { postId } = query;
+	const { commentId } = query;
 	const session = await getServerSession(req, res, authOptions);
 
-	let post;
+	let comment;
 	try {
-		post = await prisma.post.findUnique({
-			where: { id: postId as string },
+		comment = await prisma.comment.findUnique({
+			where: { id: commentId as string },
 		});
 	} catch (error) {
 		console.error(error);
-		res.status(500).json({ error: 'Error fetching post' });
+		res.status(500).json({ error: 'Error fetching comment' });
 	}
-
 	switch (method) {
-		// Get a specific post
+		// Get a specific comment
 		case 'GET':
-			if (!post) {
-				res.status(404).json({ error: 'Post not found' });
+			if (!comment) {
+				res.status(404).json({ error: 'Comment not found' });
 			} else {
-				res.status(200).json(post);
+				res.status(200).json(comment);
 			}
 			break;
-		// Modify a post
+		// Modify a comment
 		case 'PUT':
-			if (post?.userId != session.user.id) {
-				return res.status(401).json({ message: 'You are not the author of this post.' });
+			if (comment?.userId != session.user.id) {
+				return res.status(401).json({ message: 'You are not the author of this comment.' });
 			}
 			try {
-				const { anonymous, content } = JSON.parse(body);
-				const updatedPost = await prisma.post.update({
-					where: { id: postId as string },
+				const { content } = JSON.parse(body);
+				const updateComment = await prisma.comment.update({
+					where: { id: commentId as string },
 					data: {
-						anonymous,
 						content,
 					},
 				});
-				res.status(200).json(updatedPost);
+				res.status(200).json(updateComment);
 			} catch (error) {
 				console.error(error);
 				res.status(500).json({ error: 'Error updating post' });
@@ -49,12 +47,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 			break;
 		// Delete a post
 		case 'DELETE':
-			if (post?.userId != session.user.id) {
-				return res.status(401).json({ message: 'You are not the author of this post.' });
+			if (comment?.userId != session.user.id) {
+				return res.status(401).json({ message: 'You are not the author of this comment.' });
 			}
 			try {
-				await prisma.post.delete({
-					where: { id: postId as string },
+				await prisma.comment.delete({
+					where: { id: commentId as string },
 				});
 				res.status(204).end();
 			} catch (error) {
