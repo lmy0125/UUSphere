@@ -7,5 +7,5 @@ type LogoProps = {
 };
 
 export const Logo: FC<LogoProps> = ({ width, height }) => {
-	return <Image src="/logo-full3.png" width={width} height={height} alt="Logo" />;
+	return <Image src="/logo.png" width={width} height={height} alt="Logo" />;
 };
