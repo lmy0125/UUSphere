@@ -13,7 +13,6 @@ import {
 	CardContent,
 	Checkbox,
 	IconButton,
-	OutlinedInput,
 	Stack,
 	SvgIcon,
 	useMediaQuery,
@@ -67,11 +66,11 @@ const PostCreateForm: FC<PostCreateFormProps> = ({ mutate }) => {
 				<Stack alignItems="flex-start" direction="row" spacing={2}>
 					<UserAvatar userId={session?.user.id} size={40} />
 					<Stack spacing={1} sx={{ flexGrow: 1 }}>
-						<OutlinedInput
+						<TextField
+							variant="outlined"
 							fullWidth
 							multiline
 							placeholder="Share the moment"
-							rows={2}
 							value={content}
 							onChange={(e) => setContent(e.target.value)}
 						/>
