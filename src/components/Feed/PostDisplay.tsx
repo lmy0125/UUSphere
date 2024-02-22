@@ -130,19 +130,18 @@ const PostDisplay: FC<PostDisplayProps> = (props) => {
 		post.content.length > maxCharsPerLine * maxLines || newlineCount > maxLines;
 
 	const getInitialContent = () => {
-		if (newlineCount <= 3) {
-			// If newline count is within limit, check length
-			if (post.content.length > maxCharsPerLine) {
-				return post.content.substring(0, maxCharsPerLine * maxLines) + '...';
+		let initContent = post.content;
+		if (readMoreButton) {
+			if (newlineCount <= 3) {
+				// If newline count is within limit, check length
+				initContent = post.content.substring(0, maxCharsPerLine * maxLines) + '...';
 			} else {
-				return post.content;
+				// If more than 3 newlines, show content up to the third newline
+				let lines = post.content.split('\n');
+				initContent = lines.slice(0, maxLines+1).join('\n') + '\n...';
 			}
-		} else {
-			// If more than 3 newlines, show content up to the third newline
-			let lines = post.content.split('\n');
-			let initialContent = lines.slice(0, 4).join('\n'); // Adjust based on how many lines you want to initially display
-			return initialContent + '\n...';
 		}
+		return initContent;
 	};
 
 	useEffect(() => {
