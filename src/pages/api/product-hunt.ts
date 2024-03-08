@@ -10,7 +10,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 			// Note: This is a simplified way to convert to PST. For more accuracy, especially with daylight saving time,
 			// consider using a library like `moment-timezone` or `date-fns-tz`.
 			const pstTime = new Date(now.getTime() - 8 * 60 * 60 * 1000).toISOString().split('T')[0];
-			console.log(pstTime);
 			const graphQLQuery = {
 				query: `
                     query Posts {
@@ -48,7 +47,32 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 			const response = await fetch(url, options);
 			const data = await response.json();
 			let formattedData = data.data.posts.nodes;
-			res.status(200).json(formattedData);
+			formattedData.forEach((post: any) => {
+				let categories = post.topics.nodes.map((topic: any) => topic.name);
+				post.categories = categories;
+			});
+			let categories: any = {};
+			formattedData.forEach((post: any) => {
+				post.topics.nodes.forEach((topic: any) => {
+					if (categories[topic.name]) {
+						categories[topic.name]++;
+					} else {
+						categories[topic.name] = 1;
+					}
+				});
+				delete post.topics;
+				post.founderNote = post.comments.nodes[0];
+				post.founderNote = post.founderNote ? post.founderNote.body : '';
+				delete post.comments;
+			});
+
+			let votes: any = {};
+			formattedData.forEach((post: any) => {
+				votes[post.name] = post.votesCount;
+			});
+
+			console.log(categories);
+			res.status(200).json({ products: formattedData, categories: categories, votes: votes });
 		} catch (e) {
 			res.status(500).json({ message: 'Failed to access product hunt.' });
 		}
