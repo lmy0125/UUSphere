@@ -64,6 +64,24 @@ export const useSections = () => {
 			{
 				items: [
 					{
+						title: t(tokens.nav.gathering),
+						path: paths.gathering,
+						icon: (
+							<SvgIcon fontSize="small">
+								<Diversity2Icon />
+							</SvgIcon>
+						),
+					},
+					// {
+					// 	title: t(tokens.nav.clubs),
+					// 	path: paths.clubs,
+					// 	icon: (
+					// 		<SvgIcon fontSize="small">
+					// 			<Diversity2Icon />
+					// 		</SvgIcon>
+					// 	),
+					// },
+					{
 						title: t(tokens.nav.classes),
 						path: paths.classes,
 						icon: (

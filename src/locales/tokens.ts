@@ -3,6 +3,8 @@ export const tokens = {
 		languageChanged: 'common.languageChanged',
 	},
 	nav: {
+		gathering: 'Gathering',
+		clubs: 'Clubs',
 		vacantClassrooms: 'Vacant Classrooms',
 		classes: 'Classes',
 		mutualClassmates: 'Mutual Classmates',
