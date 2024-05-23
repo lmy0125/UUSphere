@@ -1,21 +1,6 @@
 import React, { Dispatch, SetStateAction, useState } from 'react';
-import {
-	Box,
-	Stack,
-	Avatar,
-	AvatarGroup,
-	Divider,
-	IconButton,
-	Typography,
-	useMediaQuery,
-	Theme,
-} from '@mui/material';
-import {
-	ChannelHeaderProps,
-	TypingIndicator,
-	useChannelPreviewInfo,
-	useChannelStateContext,
-} from 'stream-chat-react';
+import { Box, Stack, Avatar, AvatarGroup, Divider, IconButton, Typography, useMediaQuery, Theme } from '@mui/material';
+import { ChannelHeaderProps, TypingIndicator, useChannelPreviewInfo, useChannelStateContext } from 'stream-chat-react';
 import InfoIcon from '@mui/icons-material/Info';
 import { useSession } from 'next-auth/react';
 import UserAvatar from '@/components/UserAvatar';
@@ -45,6 +30,42 @@ const CustomChannelHeader = (props: ChannelHeaderProps) => {
 				<Avatar variant="rounded" sx={{ textAlign: 'center' }}>
 					{/* @ts-ignore */}
 					{channel.data?.code}
+				</Avatar>
+
+				<div style={{ overflow: 'hidden' }}>
+					<Typography
+						variant="subtitle1"
+						sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+						{title || name}
+					</Typography>
+					<Typography variant="body2" sx={{ color: '#505050' }}>
+						{Object.keys(members ?? {}).length} members, {watcher_count} online
+					</Typography>
+				</div>
+
+				<TypingIndicator />
+
+				<IconButton
+					color={showInfoSidebar ? 'primary' : 'default'}
+					onClick={() => setShowInfoSidebar((prev) => !prev)}
+					style={{ marginLeft: 'auto' }}>
+					<InfoIcon sx={{ width: 30, height: 30 }} />
+				</IconButton>
+			</Stack>
+		);
+	} else if (channel.type === 'building') {
+		return (
+			<Stack
+				direction="row"
+				spacing={2}
+				alignItems="center"
+				sx={{
+					px: 2,
+					py: 1.5,
+				}}>
+				<Avatar variant="rounded" sx={{ textAlign: 'center' }}>
+					{/* @ts-ignore */}
+					{channel.data?.name[0]}
 				</Avatar>
 
 				<div style={{ overflow: 'hidden' }}>
