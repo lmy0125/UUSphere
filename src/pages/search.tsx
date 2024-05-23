@@ -41,7 +41,7 @@ const SearchResultPage: PageType<SearchResult> = ({ users }) => {
 	const [currentTab, setCurrentTab] = useState(0);
 	const searchParams = useSearchParams();
 	const { data: session } = useSession();
-console.log(users);
+
 	return (
 		<Container maxWidth="xl">
 			<Box sx={{ borderBottom: 1, borderColor: 'divider' }}>

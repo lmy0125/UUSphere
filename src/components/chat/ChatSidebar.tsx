@@ -208,13 +208,9 @@ export const ChatSidebar: FC<ChatSidebarProps> = (props) => {
 							channelRenderFilterFn={customClassroomChannelFilterFunction}
 							filters={classroomFilter}
 							sort={sort}
-							// showChannelSearch
-							// additionalChannelSearchProps={additionalProps}
 							Preview={CustomChannelPreview}
 							List={CustomChannelList}
 							EmptyStateIndicator={EmptyClassroomList}
-							// LoadingErrorIndicator={CustomErrorIndicator}
-							// LoadingIndicator={CustomLoadingIndicator}
 						/>
 					</Collapse>
 				</Box>

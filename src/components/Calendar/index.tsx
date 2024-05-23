@@ -18,6 +18,7 @@ import type { CalendarEvent, CalendarView } from '@/types/calendar';
 import { Section } from '@/types/class';
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
+import { FALSE } from 'sass';
 
 interface CreateDialogData {
 	range?: {
@@ -299,18 +300,22 @@ const Calendar: FC<CalendarProps> = ({ userId, quarter }) => {
 						<Card>
 							<CalendarContainer>
 								<FullCalendar
+									// allDay={false}
+									// filterResourcesWithEvents
+									// height="auto"
+									// contentHeight="auto"
+									// aspectRatio={2}
 									allDayMaintainDuration
 									dayMaxEventRows={3}
 									droppable
 									editable
 									eventClick={handleEventSelect}
-									eventDisplay="block"
+									// eventDisplay="block"
 									// eventDrop={handleEventDrop}
 									eventResizableFromStart
 									// eventResize={handleEventResize}
 									events={events}
 									headerToolbar={false}
-									height={800}
 									initialDate={date}
 									initialView={view}
 									plugins={[
