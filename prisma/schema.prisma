@@ -31,7 +31,7 @@ model User {
   comments        Comment[]
   likes           Like[]
   building        Building?      @relation(fields: [buildingId], references: [id])
-  buildingId      String?        
+  buildingId      String?        @db.Uuid
 }
 
 model Account {
@@ -194,7 +194,7 @@ model ClassroomIdleSchedule {
 }
 
 model Building {
-  id    String @id @default(cuid())
+  id    String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name  String @unique
   users User[]
 }
