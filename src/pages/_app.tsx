@@ -19,6 +19,7 @@ import Toaster from '@/components/Toaster';
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import { Analytics } from '@vercel/analytics/react';
 import ChatStackContextProvider from '@/contexts/ChatStackContext';
+import 'stream-chat-react/dist/css/v2/index.css';
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
 	getLayout?: (page: ReactElement) => ReactNode;
