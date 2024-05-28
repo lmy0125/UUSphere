@@ -29,23 +29,10 @@ import { KeyedMutator } from 'swr';
 import { BigHead } from '@bigheads/core';
 import { GithubPicker } from 'react-color';
 import AutorenewIcon from '@mui/icons-material/Autorenew';
-
-interface PersonalInfo {
-	name: string;
-	email: string;
-	image: string;
-	gender: string;
-	grade: string;
-	college: string;
-	major: string;
-	homeland: string;
-	bio: string;
-	bigHeadAvatar: BigHeadAvatar | undefined;
-}
+import { useUser } from '@/hooks/useUser';
 
 interface ProfileEditFormProps {
 	user: User;
-	mutate: KeyedMutator<User>;
 	setProfileFormToggle: Dispatch<SetStateAction<boolean>>;
 }
 
@@ -69,8 +56,9 @@ const bigHeadOptions: Record<string, string[]> = {
 	skinTone: ['light', 'yellow', 'brown', 'dark', 'red', 'black'],
 };
 
-const ProfileEditForm: FC<ProfileEditFormProps> = ({ user, mutate, setProfileFormToggle }) => {
-	const [personalInfo, setPersonalInfo] = useState<PersonalInfo>({
+const ProfileEditForm: FC<ProfileEditFormProps> = ({ user, setProfileFormToggle }) => {
+	const [personalInfo, setPersonalInfo] = useState<User>({
+		...user,
 		name: user.name,
 		email: user.email,
 		image: user.image,
@@ -82,6 +70,7 @@ const ProfileEditForm: FC<ProfileEditFormProps> = ({ user, mutate, setProfileFor
 		bio: user.bio ?? '',
 		bigHeadAvatar: user.bigHeadAvatar,
 	});
+	const { mutate, updateUser } = useUser({ userId: user.id });
 	const smUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 
 	// pick random value for each attribute in the bigHeadOptions above
@@ -108,7 +97,7 @@ const ProfileEditForm: FC<ProfileEditFormProps> = ({ user, mutate, setProfileFor
 
 	const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-		await axios.put(`/api/user/${user.id}`, personalInfo);
+		updateUser(personalInfo);
 		mutate();
 		setProfileFormToggle(false);
 	};

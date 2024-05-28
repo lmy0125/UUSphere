@@ -21,8 +21,6 @@ import {
 } from '@mui/material';
 import { useComposeModeContext } from '@/contexts/ComposeModeContext';
 import { useChatStackContext } from '@/contexts/ChatStackContext';
-import axios from 'axios';
-import useSWR from 'swr';
 import { User } from '@prisma/client';
 import UserAvatar from '@/components/UserAvatar';
 import BackButton from '@/components/chat/BackButton';
@@ -35,8 +33,7 @@ export default function Composer() {
 	const { client, setActiveChannel } = useChatContext();
 	const { setComposeMode } = useComposeModeContext();
 	const { setShowChannel } = useChatStackContext();
-	const fetcher = (url: string) => axios.get(url).then((res) => res.data);
-	const { data: allUsers, isLoading } = useSWR<User[]>(`/api/user`, fetcher);
+	const { allUsers } = useUser({});
 	// filter out the user themselves so they can't send message to themselves
 	const options = allUsers?.filter((user) => user.id != client.user?.id);
 
@@ -82,14 +79,7 @@ export default function Composer() {
 	const renderTags = (value: User[], getTagProps: AutocompleteRenderGetTagProps) => {
 		return value.map((option, index) => {
 			const { key, ...obj } = { ...getTagProps({ index }) };
-			return (
-				<Chip
-					key={option.id}
-					avatar={<UserAvatar userId={option.id} />}
-					label={option.name}
-					{...obj}
-				/>
-			);
+			return <Chip key={option.id} avatar={<UserAvatar userId={option.id} />} label={option.name} {...obj} />;
 		});
 	};
 
@@ -177,12 +167,7 @@ export default function Composer() {
 					filterOptions={filterOptions}
 					renderOption={renderOption}
 					renderInput={(params) => (
-						<TextField
-							{...params}
-							variant="outlined"
-							placeholder="Name or email"
-							value={input}
-						/>
+						<TextField {...params} variant="outlined" placeholder="Name or email" value={input} />
 					)}
 				/>
 			</Box>
@@ -204,17 +189,13 @@ import {
 	useMessageInputContext,
 	useTranslationContext,
 } from 'stream-chat-react';
+import { useUser } from '@/hooks/useUser';
 
 export const CustomMessageInput = () => {
 	const { t } = useTranslationContext();
 
-	const {
-		closeEmojiPicker,
-		emojiPickerIsOpen,
-		handleEmojiKeyDown,
-		handleSubmit,
-		openEmojiPicker,
-	} = useMessageInputContext();
+	const { closeEmojiPicker, emojiPickerIsOpen, handleEmojiKeyDown, handleSubmit, openEmojiPicker } =
+		useMessageInputContext();
 
 	return (
 		<div className="str-chat__message-input">

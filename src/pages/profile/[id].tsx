@@ -25,22 +25,14 @@ import { Layout as DashboardLayout } from '@/layouts/dashboard';
 // import { SocialConnections } from 'src/sections/dashboard/social/social-connections';
 // import { SocialTimeline } from 'src/sections/dashboard/social/social-timeline';
 import type { Page as PageType } from '@/types/page';
-import type { Connection, Post, Profile } from '@/types/social';
-import { User } from '@/types/User';
-import Calendar from '@/components/Calendar';
 import { useSession } from 'next-auth/react';
 import About from '@/components/Profile/About';
 import Schedule from '@/components/Profile/Schedule';
 import Clubs from '@/components/Profile/Clubs';
 import ProfileEditForm from '@/components/Profile/ProfileEditForm';
-import MaleIcon from '@mui/icons-material/Male';
-import FemaleIcon from '@mui/icons-material/Female';
-import HorizontalRuleIcon from '@mui/icons-material/HorizontalRule';
-import axios from 'axios';
-import HowToRegIcon from '@mui/icons-material/HowToReg';
-import useSWR from 'swr';
 import UserAvatar from '@/components/UserAvatar';
 import UserBadges from '@/components/UserBadges';
+import { useUser } from '@/hooks/useUser';
 
 const tabs = [
 	{ label: 'About', value: 'about' },
@@ -48,64 +40,6 @@ const tabs = [
 	// { label: 'Friends', value: 'friends' },
 	{ label: 'Clubs', value: 'clubs' },
 ];
-
-// const usePosts = (): Post[] => {
-//   const isMounted = useMounted();
-//   const [posts, setPosts] = useState<Post[]>([]);
-
-// //   const handlePostsGet = useCallback(
-// //     async () => {
-// //       try {
-// //         const response = await socialApi.getPosts();
-
-// //         if (isMounted()) {
-// //           setPosts(response);
-// //         }
-// //       } catch (err) {
-// //         console.error(err);
-// //       }
-// //     },
-// //     [isMounted]
-// //   );
-
-//   useEffect(
-//     () => {
-//     //   handlePostsGet();
-//     },
-//     // eslint-disable-next-line react-hooks/exhaustive-deps
-//     []
-//   );
-
-//   return posts;
-// };
-
-// const useConnections = (search: string = ''): Connection[] => {
-//   const [connections, setConnections] = useState<Connection[]>([]);
-//   const isMounted = useMounted();
-
-//   const handleConnectionsGet = useCallback(
-//     async () => {
-//       const response = await socialApi.getConnections();
-
-//       if (isMounted()) {
-//         setConnections(response);
-//       }
-//     },
-//     [isMounted]
-//   );
-
-//   useEffect(
-//     () => {
-//       handleConnectionsGet();
-//     },
-//     // eslint-disable-next-line react-hooks/exhaustive-deps
-//     [search]
-//   );
-
-//   return connections.filter((connection) => {
-//     return connection.name?.toLowerCase().includes(search);
-//   });
-// };
 
 export const ProfilePage: PageType = () => {
 	const { client } = useChatContext();
@@ -118,12 +52,7 @@ export const ProfilePage: PageType = () => {
 	//   const connections = useConnections(connectionsQuery);
 	const [isAuthenticatedUser, setIsAuthenticatedUser] = useState(false);
 	const { data: session } = useSession();
-	const fetcher = (url: string) => axios.get(url).then((res) => res.data);
-	const {
-		data: user,
-		isLoading,
-		mutate,
-	} = useSWR<User>(`/api/user/${router.query.id}`, fetcher);
+	const { user, isLoading } = useUser({ userId: router.query.id as string });
 
 	useEffect(() => {
 		setIsAuthenticatedUser(session?.user.id == user?.id);
@@ -143,12 +72,9 @@ export const ProfilePage: PageType = () => {
 		setCurrentTab(value);
 	}, []);
 
-	const handleConnectionsQueryChange = useCallback(
-		(event: ChangeEvent<HTMLInputElement>): void => {
-			setConnectionsQuery(event.target.value);
-		},
-		[]
-	);
+	const handleConnectionsQueryChange = useCallback((event: ChangeEvent<HTMLInputElement>): void => {
+		setConnectionsQuery(event.target.value);
+	}, []);
 
 	const handleMessageUser = async () => {
 		if (client.user && user) {
@@ -303,16 +229,9 @@ export const ProfilePage: PageType = () => {
 										variant="outlined">
 										Edit Profile
 									</Button>
-									<Dialog
-										open={profileFormToggle}
-										onClose={() => setProfileFormToggle(false)}
-										scroll="body">
+									<Dialog open={profileFormToggle} onClose={() => setProfileFormToggle(false)} scroll="body">
 										<DialogContent>
-											<ProfileEditForm
-												user={user}
-												setProfileFormToggle={setProfileFormToggle}
-												mutate={mutate}
-											/>
+											<ProfileEditForm user={user} setProfileFormToggle={setProfileFormToggle} />
 										</DialogContent>
 									</Dialog>
 								</Stack>
@@ -385,9 +304,7 @@ export const ProfilePage: PageType = () => {
 								query={connectionsQuery}
 							/>
 						)} */}
-						{currentTab === 'about' && (
-							<About user={user} setProfileFormToggle={setProfileFormToggle} />
-						)}
+						{currentTab === 'about' && <About user={user} setProfileFormToggle={setProfileFormToggle} />}
 						{currentTab === 'schedule' && <Schedule userId={router.query.id as string} />}
 
 						{/* {currentTab === 'schedule' && <Calendar userId={router.query.id as string} />} */}
