@@ -29,11 +29,11 @@ import UserAvatar from '@/components/UserAvatar';
 import { InfoSidebarContainer } from '@/components/chat/ChannelInfoSidebar/InfoSidebarContainer';
 import BackButton from '@/components/chat/BackButton';
 import FlatUserProfile from '@/components/chat/ChannelInfoSidebar/FlatUserProfile';
-import CreateGroupModal from '@/components/chat/ChannelInfoSidebar/CreateGroupModal';
+import { DropSectionModal } from '@/components/ClassEnrollment/ConfirmModals';
 import { useChatStackContext } from '@/contexts/ChatStackContext';
 
 export const ChannelInfoSidebar = () => {
-	const [createGroupModal, setCreateGroupModal] = useState(false);
+	const [dropSectionModal, setDropSectionModal] = useState(false);
 	const { data: session } = useSession();
 	const { channel, members } = useChannelStateContext<CustomStreamChatGenerics>();
 	const { displayTitle } = useChannelPreviewInfo({ channel });
@@ -48,11 +48,11 @@ export const ChannelInfoSidebar = () => {
 					})}
 				</MenuList>
 				<Box sx={{ textAlign: 'center', mt: 3 }}>
-					<Button variant="contained" color="error" onClick={() => setCreateGroupModal(true)}>
+					<Button variant="contained" color="error" onClick={() => setDropSectionModal(true)}>
 						Leave Channel
 					</Button>
 				</Box>
-				<CreateGroupModal open={createGroupModal} setOpen={setCreateGroupModal} />
+				{/* <DropSectionModal open={dropSectionModal} setDropSectionModal={setDropSectionModal} /> */}
 			</InfoSidebarContainer>
 		);
 	} else if (channel.type === 'building') {
@@ -65,7 +65,7 @@ export const ChannelInfoSidebar = () => {
 				</MenuList>
 			</InfoSidebarContainer>
 		);
-	}else {
+	} else {
 		// For personal channel type
 		const getRecipient = (
 			obj: Record<string, ChannelMemberResponse<CustomStreamChatGenerics>>,
