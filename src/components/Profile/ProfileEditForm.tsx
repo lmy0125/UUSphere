@@ -108,7 +108,7 @@ const ProfileEditForm: FC<ProfileEditFormProps> = ({ user, mutate, setProfileFor
 
 	const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-		await axios.put('/api/user', personalInfo);
+		await axios.put(`/api/user/${user.id}`, personalInfo);
 		mutate();
 		setProfileFormToggle(false);
 	};
@@ -142,8 +142,7 @@ const ProfileEditForm: FC<ProfileEditFormProps> = ({ user, mutate, setProfileFor
 								/>
 							) : (
 								(() => {
-									const { selected, backgroundColor, ...bigHeadStyle } =
-										personalInfo.bigHeadAvatar;
+									const { selected, backgroundColor, ...bigHeadStyle } = personalInfo.bigHeadAvatar;
 									const cleanedBigHeadStyle = Object.fromEntries(
 										Object.entries(bigHeadStyle).filter(([key, value]) => value !== null)
 									);
@@ -154,9 +153,7 @@ const ProfileEditForm: FC<ProfileEditFormProps> = ({ user, mutate, setProfileFor
 													sx={{
 														height: 160,
 														width: 160,
-														backgroundColor:
-															personalInfo.bigHeadAvatar?.backgroundColor ??
-															'#a9c8e6',
+														backgroundColor: personalInfo.bigHeadAvatar?.backgroundColor ?? '#a9c8e6',
 													}}>
 													<Box sx={{ width: '100%', height: '100%' }}>
 														<BigHead {...cleanedBigHeadStyle} mask={false} />
@@ -183,10 +180,7 @@ const ProfileEditForm: FC<ProfileEditFormProps> = ({ user, mutate, setProfileFor
 																	'#f9e79f', // Light Yellow
 																	'#e6b58d', // Light Brown
 																]}
-																color={
-																	personalInfo.bigHeadAvatar.backgroundColor ??
-																	'#a9c8e6'
-																}
+																color={personalInfo.bigHeadAvatar.backgroundColor ?? '#a9c8e6'}
 																onChangeComplete={(color) => {
 																	setPersonalInfo({
 																		...personalInfo,
@@ -230,10 +224,7 @@ const ProfileEditForm: FC<ProfileEditFormProps> = ({ user, mutate, setProfileFor
 																'#f9e79f', // Light Yellow
 																'#e6b58d', // Light Brown
 															]}
-															color={
-																personalInfo.bigHeadAvatar.backgroundColor ??
-																'#a9c8e6'
-															}
+															color={personalInfo.bigHeadAvatar.backgroundColor ?? '#a9c8e6'}
 															onChangeComplete={(color) => {
 																setPersonalInfo({
 																	...personalInfo,
@@ -269,16 +260,11 @@ const ProfileEditForm: FC<ProfileEditFormProps> = ({ user, mutate, setProfileFor
 											...personalInfo,
 											bigHeadAvatar: {
 												...personalInfo.bigHeadAvatar,
-												selected:
-													(event.target as HTMLInputElement).value === 'bighead',
+												selected: (event.target as HTMLInputElement).value === 'bighead',
 											},
 										})
 									}>
-									<FormControlLabel
-										value="original"
-										control={<Radio />}
-										label="Original"
-									/>
+									<FormControlLabel value="original" control={<Radio />} label="Original" />
 									<FormControlLabel value="bighead" control={<Radio />} label="Big Head" />
 								</RadioGroup>
 							</FormControl>
@@ -349,11 +335,7 @@ const ProfileEditForm: FC<ProfileEditFormProps> = ({ user, mutate, setProfileFor
 					<Grid xs={12} md={6}>
 						<Autocomplete
 							// getOptionLabel={(option) => option.label}
-							value={
-								personalInfo.homeland
-									? { code: '', label: personalInfo.homeland, phone: '' }
-									: null
-							}
+							value={personalInfo.homeland ? { code: '', label: personalInfo.homeland, phone: '' } : null}
 							options={homelands}
 							isOptionEqualToValue={(option, value) => option.label === value.label}
 							renderOption={(props, option) => (

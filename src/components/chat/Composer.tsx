@@ -36,7 +36,7 @@ export default function Composer() {
 	const { setComposeMode } = useComposeModeContext();
 	const { setShowChannel } = useChatStackContext();
 	const fetcher = (url: string) => axios.get(url).then((res) => res.data);
-	const { data: allUsers, isLoading } = useSWR<User[]>(`/api/users`, fetcher);
+	const { data: allUsers, isLoading } = useSWR<User[]>(`/api/user`, fetcher);
 	// filter out the user themselves so they can't send message to themselves
 	const options = allUsers?.filter((user) => user.id != client.user?.id);
 
