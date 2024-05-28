@@ -9,7 +9,7 @@ import { useGeolocated } from 'react-geolocated';
 import axios from 'axios';
 import MainBuilidng from '@/components/Building/MainBuilding';
 import BuildingCard from '@/components/Building/BuildingCard';
-import { DbBuilding } from '@/types/building';
+import { DbBuilding, BuildingInfo } from '@/types/building';
 
 interface Location {
 	latitude: number;
@@ -17,8 +17,8 @@ interface Location {
 }
 
 const GatheringPage: PageType = () => {
-	const [buildings, setBuildings] = useState<DbBuilding[]>([]);
-	const [location, setLocation] = useState<Location | null>(null);
+	const { data: session } = useSession();
+	const [buildings, setBuildings] = useState<BuildingInfo[]>([]);
 	// create two inputs for latitude and longitude
 	const [latitude, setLatitude] = useState<number>(0);
 	const [longitude, setLongitude] = useState<number>(0);
@@ -29,7 +29,7 @@ const GatheringPage: PageType = () => {
 		positionOptions: {
 			enableHighAccuracy: true,
 		},
-		// watchPosition: true,
+		watchPosition: true,
 	});
 
 	const fetchNearestBuilding = async (latitude: number, longitude: number) => {
@@ -51,30 +51,43 @@ const GatheringPage: PageType = () => {
 	};
 
 	// update nearest building when coords change
-	// useEffect(() => {
-	// 	const fetchLocation = () => {
-	// 		if (!isGeolocationAvailable || !isGeolocationEnabled || !coords) {
-	// 			setError('Geolocation is not available or not enabled');
-	// 			return;
-	// 		} else {
-	// 			setError(null);
-	// 		}
-	// 		const { latitude, longitude } = coords;
-	// 		setLocation({ latitude: location?.latitude ?? latitude, longitude: location?.longitude ?? longitude });
-	// 		fetchNearestBuilding(latitude, longitude);
-	// 	};
+	useEffect(() => {
+		const fetchLocation = () => {
+			if (!isGeolocationAvailable || !isGeolocationEnabled || !coords) {
+				setError('Geolocation is not available or not enabled');
+				return;
+			} else {
+				setError(null);
+			}
+			const { latitude, longitude } = coords;
+			fetchNearestBuilding(latitude, longitude);
+		};
 
-	// 	fetchLocation();
-	// }, [isGeolocationAvailable, isGeolocationEnabled, coords, buildings]);
+		fetchLocation();
+	}, [isGeolocationAvailable, isGeolocationEnabled, coords, buildings]);
 
 	useEffect(() => {
 		const getBuildings = async () => {
 			const response = await axios.get(`/api/buildings`);
 			setBuildings(response.data);
-			console.log('buildings', response.data);
 		};
 		getBuildings();
 	}, []);
+
+	useEffect(() => {
+		// Modify database
+		const updateDatabase = async (buildingId: string | undefined) => {
+			await axios.post(`/api/userToBuilding`, {
+				userId: session?.user.id,
+				buildingId: buildingId,
+			});
+		};
+		updateDatabase(nearestBuilding?.id);
+
+		return () => {
+			updateDatabase(undefined);
+		};
+	}, [nearestBuilding]);
 
 	// console.log('nearestBuilding', nearestBuilding?.name);
 
@@ -93,7 +106,7 @@ const GatheringPage: PageType = () => {
 						<Typography variant="subtitle2">Gather here.</Typography>
 					</Stack>
 
-					<form>
+					{/* <form>
 						<label>Latitude:</label>
 						<input value={latitude} onChange={(e) => setLatitude(Number(e.target.value))} />
 						<label>Longitude:</label>
@@ -106,7 +119,7 @@ const GatheringPage: PageType = () => {
 							}}>
 							Set Location
 						</Button>
-					</form>
+					</form> */}
 
 					<div>
 						{error ? (
@@ -129,17 +142,13 @@ const GatheringPage: PageType = () => {
 						)}
 					</div>
 					{nearestBuilding ? <MainBuilidng building={nearestBuilding} /> : <div>Not able to locate you.</div>}
-					<Grid container spacing={2}>
+					{/* <Grid container spacing={4}>
 						{buildings.map((building) => (
-							<Grid item xs={12} sm={6} md={3}>
-								<BuildingCard
-									key={building.id}
-									buildingId={building.id}
-									userBuildingId={nearestBuilding?.id ?? undefined}
-								/>
+							<Grid item xs={12} sm={6} key={building.id}>
+								<BuildingCard key={building.id} buildingInfo={building} />
 							</Grid>
 						))}
-					</Grid>
+					</Grid> */}
 				</Container>
 			</Box>
 		</>

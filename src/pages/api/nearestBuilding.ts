@@ -13,7 +13,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 		const apiKey = process.env.GOOGLE_MAPS_API_KEY;
 
 		try {
-			// const response = await fetch(url);
+			// fetch 20 buildings within 200 meters radius
 			const response = await fetch('https://places.googleapis.com/v1/places:searchNearby', {
 				method: 'POST',
 				headers: {

@@ -8,38 +8,69 @@ import HotelIcon from '@mui/icons-material/Hotel';
 import DiningIcon from '@mui/icons-material/Dining';
 import SelfImprovementIcon from '@mui/icons-material/SelfImprovement';
 import LaptopMacIcon from '@mui/icons-material/LaptopMac';
+import { BuildingInfo } from '@/types/building';
 
-interface BuildingInfo {
-	id: string;
-	name: string;
-	users: User[];
-}
-
-export default function BuildingCard({
-	buildingId,
-	userBuildingId,
-}: {
-	buildingId: string;
-	userBuildingId: string | undefined;
-}) {
+export default function BuildingCard({ buildingInfo }: { buildingInfo: BuildingInfo }) {
 	const { data: session } = useSession();
-	const [buildingInfo, setBuildingInfo] = useState<BuildingInfo | null>(null);
 	const [users, setUsers] = useState<User[]>([]);
 
-	useEffect(() => {
-		const fetchBuildingInfo = async () => {
-			const response = await axios.get(`/api/building?id=${buildingId}`);
-			setBuildingInfo(response.data);
-			setUsers(response.data.users ?? []);
-		};
-		fetchBuildingInfo();
-	}, []);
+	// useEffect(() => {
+	// 	const fetchBuildingInfo = async () => {
+	// 		const response = await axios.get(`/api/building?id=${buildingId}`);
+	// 		setBuildingInfo(response.data);
+	// 		setUsers(response.data.users ?? []);
+	// 	};
+	// 	fetchBuildingInfo();
+	// }, []);
 
 	useEffect(() => {
-		const buildingChannel = supabaseClient.channel(`building`, {
-			config: { presence: { key: buildingId } },
-		});
-	}, []);
+		// Realtime update
+		const buildingChannel = supabaseClient.channel(`buildings`, { config: { presence: { key: buildingInfo.id } } });
+		console.log(buildingInfo.name, buildingChannel);
+
+		buildingChannel
+			.on('presence', { event: 'sync' }, () => {
+				const newState = buildingChannel.presenceState();
+				// console.log(
+				// 	'sync',
+				// 	newState,
+				// 	buildingInfo.name,
+				// 	buildingInfo.id,
+				// 	newState[buildingInfo.id],
+				// 	newState[buildingInfo.id]?.map((object: any) => object.user)
+				// );
+			})
+			.on('presence', { event: 'join' }, ({ key, newPresences }) => {
+				console.log(
+					'join',
+					key,
+					newPresences,
+					buildingInfo.name,
+					newPresences.map((object: any) => object.user)
+				);
+				setUsers(newPresences.map((object: any) => object.user));
+			})
+			.on('presence', { event: 'leave' }, ({ key, leftPresences }) => {
+				console.log('leave', buildingInfo.name, key, leftPresences);
+				setUsers(leftPresences.map((object: any) => object.user));
+			})
+			.subscribe(async (status) => {
+				// const userStatus = {
+				// 	user: session?.user,
+				// 	online_at: new Date().toISOString(),
+				// };
+				// if (status !== 'SUBSCRIBED') {
+				// 	return;
+				// }
+				// const presenceTrackStatus = await buildingChannel.track(userStatus);
+				// console.log('presenceTrackStatus', presenceTrackStatus);
+			});
+
+		// return () => {
+		// 	buildingChannel.unsubscribe();
+		// 	supabaseClient.removeChannel(buildingChannel);
+		// };
+	}, [buildingInfo, session]);
 
 	return (
 		<Card sx={{ maxWidth: 'md', width: '100%' }}>
@@ -52,10 +83,10 @@ export default function BuildingCard({
 				}}>
 				<div>
 					<Typography variant="h6" component="div">
-						Acme Building
+						{buildingInfo.name}
 					</Typography>
 					<Typography variant="body2" color="text.secondary">
-						Total People: 125
+						Total People: {users.length}
 					</Typography>
 				</div>
 			</CardContent>
@@ -67,8 +98,8 @@ export default function BuildingCard({
 				}}>
 				{[
 					// Array of objects representing each status
+					{ icon: <SelfImprovementIcon fontSize="large" />, number: 25, text: 'Chilling' },
 					{ icon: <LaptopMacIcon fontSize="large" />, number: 75, text: 'Studying' },
-					{ icon: <SelfImprovementIcon fontSize="large" />, number: 25, text: 'Relaxing' },
 					{ icon: <DiningIcon fontSize="large" />, number: 15, text: 'Eating' },
 					{ icon: <HotelIcon fontSize="large" />, number: 10, text: 'Sleeping' },
 				].map((status) => (
