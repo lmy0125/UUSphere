@@ -1,9 +1,8 @@
 import axios from 'axios';
 import React from 'react';
-import useSWR from 'swr';
-import { User } from '@/types/User';
 import { Avatar, Box, Skeleton } from '@mui/material';
 import { BigHead } from '@bigheads/core';
+import { useUser } from '@/hooks/useUser';
 
 interface UserAvatar {
 	userId?: string;
@@ -13,7 +12,7 @@ interface UserAvatar {
 
 export default function UserAvatar({ userId, size, border }: UserAvatar) {
 	const fetcher = (url: string) => axios.get(url).then((res) => res.data);
-	const { data: user, isLoading } = useSWR<User>(`/api/user/${userId}`, fetcher);
+	const { user, isLoading } = useUser({ userId });
 
 	if (isLoading) {
 		return <Skeleton variant="circular" width={size} height={size} />;

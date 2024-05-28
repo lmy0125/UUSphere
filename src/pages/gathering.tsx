@@ -85,7 +85,7 @@ const GatheringPage: PageType = () => {
 		return () => {
 			updateDatabase(undefined);
 		};
-	}, [nearestBuilding]);
+	}, [nearestBuilding, session?.user.id]);
 
 	// console.log('nearestBuilding', nearestBuilding?.name);
 

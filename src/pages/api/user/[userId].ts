@@ -51,13 +51,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 					id: userId,
 				},
 				data: {
-					name: data.name,
-					gender: data.gender,
-					grade: data.grade,
-					college: data.college,
-					major: data.major,
-					homeland: data.homeland,
-					bio: data.bio,
+					...data,
 					bigHeadAvatar: {
 						upsert: {
 							create: {
