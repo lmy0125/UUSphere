@@ -3,8 +3,6 @@ import type { Page as PageType } from '@/types/page';
 import { Layout as DashboardLayout } from '@/layouts/dashboard';
 import { useSession } from 'next-auth/react';
 import { Box, Button, Container, Grid, Stack, Typography } from '@mui/material';
-import { supabaseClient } from '@/lib/supabase';
-import { schoolBuildings } from '@/constants/buildings';
 import { useGeolocated } from 'react-geolocated';
 import axios from 'axios';
 import MainBuilidng from '@/components/Building/MainBuilding';
