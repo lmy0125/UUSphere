@@ -13,7 +13,7 @@ interface UserAvatar {
 
 export default function UserAvatar({ userId, size, border }: UserAvatar) {
 	const fetcher = (url: string) => axios.get(url).then((res) => res.data);
-	const { data: user, isLoading } = useSWR<User>(`/api/user/?id=${userId}`, fetcher);
+	const { data: user, isLoading } = useSWR<User>(`/api/user/${userId}`, fetcher);
 
 	if (isLoading) {
 		return <Skeleton variant="circular" width={size} height={size} />;

@@ -1,5 +1,5 @@
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from './auth/[...nextauth]';
+import { authOptions } from '../auth/[...nextauth]';
 import prisma from '@/lib/prisma';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { BigHeadAvatar } from '@prisma/client';
@@ -17,8 +17,8 @@ function excludeProperties<T extends ObjectWithProperties>(obj: T, keysToExclude
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+	const { userId } = req.query as { userId: string };
 	if (req.method === 'GET') {
-		const userId = req.query.id?.toString() ?? '';
 		try {
 			let user = await prisma.user.findUnique({
 				where: {
@@ -44,12 +44,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 			return res.status(401).json({ message: 'Unauthorized.' });
 		}
 
-		const email = session.user?.email ?? '';
 		const data = req.body;
 		try {
 			const updatedUser = await prisma.user.update({
 				where: {
-					email: email,
+					id: userId,
 				},
 				data: {
 					name: data.name,

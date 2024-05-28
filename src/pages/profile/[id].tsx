@@ -123,7 +123,7 @@ export const ProfilePage: PageType = () => {
 		data: user,
 		isLoading,
 		mutate,
-	} = useSWR<User>(`/api/user/?id=${router.query.id}`, fetcher);
+	} = useSWR<User>(`/api/user/${router.query.id}`, fetcher);
 
 	useEffect(() => {
 		setIsAuthenticatedUser(session?.user.id == user?.id);
