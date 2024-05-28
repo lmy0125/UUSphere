@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 import { Box, Paper } from '@mui/material';
 import {
@@ -24,6 +24,7 @@ export default function MainBuilding({ building }: { building: DbBuilding }) {
 	const { data: session } = useSession();
 	const [users, setUsers] = useState<User[] | undefined>([]);
 	const [channel, setChannel] = useState<ChannelType<CustomStreamChatGenerics>>();
+	const channelRef = useRef(channel);
 	const { client, setActiveChannel } = useStreamChatContext<CustomStreamChatGenerics>();
 	const channelId = building.id;
 
@@ -36,11 +37,21 @@ export default function MainBuilding({ building }: { building: DbBuilding }) {
 			const channel = client.channel('building', building.id, {
 				name: building.name,
 			});
+			channelRef.current = channel;
 			await channel.watch();
 			await channel.addMembers([client.user?.id ?? '']);
 			setChannel(channel);
 		};
 		joinBuildingChannel();
+
+		// const leaveBuildingChannel = async () => {
+		// 	console.log('remove', channelRef.current, session?.user?.name);
+		// 	await channelRef.current?.stopWatching();
+		// 	await channelRef.current?.removeMembers([session?.user?.id ?? '']);
+		// };
+		// return () => {
+		// 	leaveBuildingChannel();
+		// };
 	}, [channelId, setActiveChannel, client]);
 
 	useEffect(() => {
@@ -72,17 +83,18 @@ export default function MainBuilding({ building }: { building: DbBuilding }) {
 				console.log('presenceTrackStatus', presenceTrackStatus);
 			});
 
-		// Modify database
-		const updateDatabase = async (buildingId: string | null) => {
-			await axios.post(`/api/userToBuilding`, {
-				userId: session?.user.id,
-				buildingId: buildingId,
-			});
-		};
-		updateDatabase(building.id);
+		// // Modify database
+		// const updateDatabase = async (buildingId: string | null) => {
+		// 	console.log('buildingid', buildingId);
+		// 	await axios.post(`/api/userToBuilding`, {
+		// 		userId: session?.user.id,
+		// 		buildingId: buildingId,
+		// 	});
+		// };
+		// updateDatabase(building.id);
 
 		return () => {
-			updateDatabase(null);
+			// updateDatabase(null);
 			buildingChannel.unsubscribe();
 			supabaseClient.removeChannel(buildingChannel);
 		};
@@ -94,9 +106,6 @@ export default function MainBuilding({ building }: { building: DbBuilding }) {
 
 	return (
 		<Box>
-			{users?.map((user) => (
-				<h3 key={user?.id}>{user?.name}</h3>
-			))}
 			<Paper
 				component="main"
 				elevation={10}

@@ -7,11 +7,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 			const userId = req.body.userId;
 			const buildingId = req.body.buildingId;
 			let users;
-			if (buildingId == null || buildingId == '') {
-				users = await prisma.user.update({
-					where: { id: userId },
-					data: { buildingId: null },
-				});
+			if (!buildingId) {
+				try {
+					users = await prisma.user.update({
+						where: { id: userId },
+						data: { building: { disconnect: true } },
+					});
+				} catch (e) {
+					res.status(200).json({});
+					return;
+				}
 			} else {
 				users = await prisma.user.update({
 					where: { id: userId },
@@ -21,7 +26,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
 			res.status(200).json(users);
 		} catch (e) {
-			res.status(500).json({ message: 'Failed to change building for user.' });
+			res.status(500).json({ message: 'Failed to change building for user.', e });
 		}
 	}
 	// HTTP method not supported!

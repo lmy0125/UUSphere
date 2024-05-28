@@ -2,20 +2,11 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useChatContext } from '@/contexts/ChatContext';
 import {
-	Chat,
 	Channel,
-	ChannelHeader,
-	ChannelList,
 	MessageInput,
 	MessageList,
 	Thread,
 	Window,
-	LoadingIndicator,
-	VirtualizedMessageList,
-	useMessageContext,
-	ChannelListMessengerProps,
-	ChatDownProps,
-	ChannelPreviewUIComponentProps,
 	useChatContext as useStreamChatContext,
 } from 'stream-chat-react';
 import { Channel as ChannelType } from 'stream-chat';
@@ -25,9 +16,7 @@ import { Stack, Box, Divider, Button, Container, Typography } from '@mui/materia
 // import { Seo } from 'src/components/seo';
 // import { usePageView } from 'src/hooks/use-page-view';
 import { Layout as DashboardLayout } from '@/layouts/dashboard';
-import ComposeModeContextProvider, {
-	ComposeModeContextConsumer,
-} from '@/contexts/ComposeModeContext';
+import ComposeModeContextProvider, { ComposeModeContextConsumer } from '@/contexts/ComposeModeContext';
 import { ChatContainer } from '@/components/chat/ChatContainer';
 import { ChatSidebar } from '@/components/chat/ChatSidebar';
 // import { useDispatch } from 'src/store';
@@ -48,7 +37,7 @@ const ChatPage: PageType = () => {
 	const { chatClient } = useChatContext();
 	const { status } = useSession();
 	const [currentChannel, setCurrentChannel] = useState<ChannelType<CustomStreamChatGenerics>>();
-	const { client, setActiveChannel, channel } = useStreamChatContext<CustomStreamChatGenerics>();
+	const { client, setActiveChannel } = useStreamChatContext<CustomStreamChatGenerics>();
 	const rootRef = useRef<HTMLDivElement | null>(null);
 	const searchParams = useSearchParams();
 	const channelId = searchParams.get('channelId') || undefined;
@@ -138,7 +127,9 @@ const ChatPage: PageType = () => {
 										<Channel>
 											<Window hideOnThread>
 												<CustomChannelHeader />
-												<MessageList Message={CustomMessage} />
+												<MessageList
+												// Message={CustomMessage}
+												/>
 												<Divider />
 												<MessageInput
 													grow

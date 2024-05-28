@@ -7,6 +7,7 @@ import UserAvatar from '@/components/UserAvatar';
 import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutlined';
 import { useChatStackContext } from '@/contexts/ChatStackContext';
 import BackButton from '@/components/chat/BackButton';
+import { User } from '@prisma/client';
 
 const CustomChannelHeader = (props: ChannelHeaderProps) => {
 	const { title } = props;
@@ -75,7 +76,7 @@ const CustomChannelHeader = (props: ChannelHeaderProps) => {
 						{title || name}
 					</Typography>
 					<Typography variant="body2" sx={{ color: '#505050' }}>
-						{Object.keys(members ?? {}).length} members, {watcher_count} online
+						{watcher_count} {watcher_count == 1 ? 'watcher' : 'watchers'}
 					</Typography>
 				</div>
 
