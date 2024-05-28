@@ -32,6 +32,14 @@ model User {
   likes           Like[]
   building        Building?      @relation(fields: [buildingId], references: [id])
   buildingId      String?        @db.Uuid
+  status          Status        @default(Chilling)
+}
+
+enum Status {
+  Chilling
+  Studying
+  Eating
+  Sleeping
 }
 
 model Account {
