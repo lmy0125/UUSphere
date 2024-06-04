@@ -36,10 +36,10 @@ export default function StatusDisplay({ users }: { users: User[] | undefined }) 
 	}, [users]);
 
 	const icons = [
-		<SelfImprovementIcon fontSize="large" />,
-		<LaptopMacIcon fontSize="large" />,
-		<DiningIcon fontSize="large" />,
-		<HotelIcon fontSize="large" />,
+		<SelfImprovementIcon key="self-icon" fontSize="large" />,
+		<LaptopMacIcon key="laptop-icon" fontSize="large" />,
+		<DiningIcon key="dining-icon" fontSize="large" />,
+		<HotelIcon key="hotel-icon" fontSize="large" />,
 	];
 
 	return (
@@ -47,7 +47,7 @@ export default function StatusDisplay({ users }: { users: User[] | undefined }) 
 			{statusCounts && (
 				<Stack direction="row" spacing={2}>
 					{Object.entries(statusCounts).map(([status, count], index) => (
-						<Paper key={status} elevation={10} sx={{ p: 1 }}>
+						<Paper key={index} elevation={10} sx={{ p: 1 }}>
 							<Stack direction="row" alignItems="center">
 								{icons[index]}
 								<Typography variant="body2" color="text.priamry">
