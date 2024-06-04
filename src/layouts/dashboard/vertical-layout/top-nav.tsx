@@ -2,25 +2,10 @@ import { useState, type FC } from 'react';
 import PropTypes from 'prop-types';
 import Menu01Icon from '@untitled-ui/icons-react/build/esm/Menu01';
 import type { Theme } from '@mui/material';
-import {
-	Button,
-	ButtonGroup,
-	Box,
-	IconButton,
-	MenuItem,
-	Stack,
-	NativeSelect,
-	SvgIcon,
-	useMediaQuery,
-	Typography,
-} from '@mui/material';
-import HotelIcon from '@mui/icons-material/Hotel';
-import DiningIcon from '@mui/icons-material/Dining';
-import SelfImprovementIcon from '@mui/icons-material/SelfImprovement';
-import LaptopMacIcon from '@mui/icons-material/LaptopMac';
+import { Box, IconButton, Stack, SvgIcon, useMediaQuery, Typography } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 import { AccountButton } from '../account-button';
-import { Status } from '@/types/status';
+import { StatusSelect } from '@/components/StatusSelect';
 // import { ContactsButton } from '../contacts-button';
 // import { LanguageSwitch } from '../language-switch';
 // import { NotificationsButton } from '../notifications-button';
@@ -35,13 +20,8 @@ interface TopNavProps {
 
 export const TopNav: FC<TopNavProps> = (props) => {
 	const { onMobileNavOpen, ...other } = props;
-	const [status, setStatus] = useState<string>(Status.Chilling);
 	const smUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 	const lgUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('lg'));
-
-	const handleStatusChange = (newStatus: string) => {
-		setStatus(newStatus);
-	};
 
 	return (
 		<Box
@@ -86,33 +66,7 @@ export const TopNav: FC<TopNavProps> = (props) => {
 					{/* <SearchBox /> */}
 				</Stack>
 				<Stack alignItems="center" direction="row" spacing={2}>
-					<ButtonGroup aria-label="Basic button group">
-						{[
-							// Array of objects representing each status
-							{ icon: <SelfImprovementIcon sx={{ fontSize: 20 }} />, text: Status.Chilling },
-							{ icon: <LaptopMacIcon sx={{ fontSize: 20 }} />, text: Status.Studying },
-							{ icon: <DiningIcon sx={{ fontSize: 20 }} />, text: Status.Eating },
-							{ icon: <HotelIcon sx={{ fontSize: 20 }} />, text: Status.Sleeping },
-						].map((s, index) =>
-							smUp ? (
-								<Button
-									key={index}
-									variant={s.text == status ? 'contained' : 'outlined'}
-									startIcon={s.icon}
-									onClick={() => handleStatusChange(s.text)}>
-									{s.text}
-								</Button>
-							) : (
-								<Button
-									key={index}
-									sx={{ px: 2, py: 1 }}
-									variant={s.text == status ? 'contained' : 'outlined'}
-									onClick={() => handleStatusChange(s.text)}>
-									{s.icon}
-								</Button>
-							)
-						)}
-					</ButtonGroup>
+					<StatusSelect />
 
 					{/* <LanguageSwitch />
           <NotificationsButton />
