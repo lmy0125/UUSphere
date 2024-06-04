@@ -1,7 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 import { Box, Paper } from '@mui/material';
-import { Channel, MessageInput, MessageList, Thread, Window } from 'stream-chat-react';
+import {
+	Channel,
+	MessageInput,
+	MessageList,
+	Thread,
+	Window,
+	useChatContext as useStreamChatContext,
+} from 'stream-chat-react';
 import CustomChannelHeader from '@/components/chat/CustomChannelHeader';
 import CustomMessage from '@/components/chat/CustomMessage';
 import { Divider } from '@mui/material';
@@ -10,9 +17,11 @@ import { supabaseClient } from '@/lib/supabase';
 import { User } from '@/types/User';
 import { ChannelInfoSidebar } from '@/components/chat/ChannelInfoSidebar';
 import { useLocationContext } from '@/contexts/LocationContext';
+import { CustomStreamChatGenerics } from '@/types/customStreamChat';
 
 export default function MainBuilding() {
 	const { data: session } = useSession();
+	const { client } = useStreamChatContext<CustomStreamChatGenerics>();
 	const [users, setUsers] = useState<User[] | undefined>([]);
 	const { nearestBuilding, buildingChannel } = useLocationContext();
 
@@ -26,8 +35,11 @@ export default function MainBuilding() {
 			buildingChannel
 				.on('presence', { event: 'sync' }, () => {
 					const newState = buildingChannel.presenceState();
-					console.log('sync', newState, newState[nearestBuilding.id]);
-					setUsers(newState[nearestBuilding.id]?.map((object: any) => object.user));
+					// console.log('sync', newState, newState[nearestBuilding.id]);
+					const users = newState[nearestBuilding.id]
+						?.map((object: any) => object.user)
+						.filter((user, index, self) => index === self.findIndex((t) => t.id === user.id));
+					setUsers(users);
 				})
 				.on('presence', { event: 'join' }, ({ key, newPresences }) => {
 					// console.log('join', key, newPresences);
@@ -54,7 +66,7 @@ export default function MainBuilding() {
 		// };
 	}, [nearestBuilding, session]);
 
-	if (!buildingChannel) {
+	if (!buildingChannel || !client?._user || !nearestBuilding) {
 		return null;
 	}
 

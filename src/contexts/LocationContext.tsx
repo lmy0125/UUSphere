@@ -44,7 +44,7 @@ export default function LocationContextProvider({ children }: { children: React.
 			if (!response.ok) throw new Error('Failed to fetch the nearest building');
 
 			const data = await response.json();
-			console.log('nearestBuilding', data.nearestBuilding);
+			console.log('nearestBuilding', data, latitude, longitude);
 			setNearestBuilding(data.nearestBuilding);
 		} catch (error) {
 			console.error(error);
@@ -62,6 +62,7 @@ export default function LocationContextProvider({ children }: { children: React.
 				setError(null);
 			}
 			const { latitude, longitude } = coords;
+			console.log('coordss', latitude, longitude, coords.accuracy);
 			fetchNearestBuilding(latitude, longitude);
 		};
 
@@ -71,10 +72,12 @@ export default function LocationContextProvider({ children }: { children: React.
 	useEffect(() => {
 		// Modify database
 		const updateDatabase = async (buildingId: string | undefined) => {
-			await axios.post(`/api/userToBuilding`, {
-				userId: session?.user.id,
-				buildingId: buildingId,
-			});
+			if (session && session.user) {
+				await axios.post(`/api/userToBuilding`, {
+					userId: session.user.id,
+					buildingId: buildingId,
+				});
+			}
 		};
 		updateDatabase(nearestBuilding?.id);
 
@@ -87,7 +90,7 @@ export default function LocationContextProvider({ children }: { children: React.
 		// Join channel in stream.io
 		const joinBuildingChannel = async () => {
 			const channelId = nearestBuilding?.id;
-			if (!channelId || !client) {
+			if (!channelId || !client || !client._user) {
 				return;
 			}
 			const channel = client.channel('building', nearestBuilding.id, {

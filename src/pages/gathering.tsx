@@ -10,7 +10,6 @@ import { BuildingInfo } from '@/types/building';
 import { useLocationContext } from '@/contexts/LocationContext';
 
 const GatheringPage: PageType = () => {
-	const { data: session } = useSession();
 	const { nearestBuilding, error, buildingChannel } = useLocationContext();
 
 	const [buildings, setBuildings] = useState<BuildingInfo[]>([]);
@@ -22,21 +21,6 @@ const GatheringPage: PageType = () => {
 		};
 		getBuildings();
 	}, []);
-
-	useEffect(() => {
-		// Modify database
-		const updateDatabase = async (buildingId: string | undefined) => {
-			await axios.post(`/api/userToBuilding`, {
-				userId: session?.user.id,
-				buildingId: buildingId,
-			});
-		};
-		updateDatabase(nearestBuilding?.id);
-
-		return () => {
-			updateDatabase(undefined);
-		};
-	}, [nearestBuilding, session?.user.id]);
 
 	return (
 		<>
