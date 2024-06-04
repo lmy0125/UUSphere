@@ -18,7 +18,8 @@ export default function AuthModal({
 		setDisabled(true);
 		// Perform sign in
 		signIn('google', {
-			callbackUrl: window.location.href,
+			callbackUrl: '/gathering',
+			redirect: true,
 		});
 	};
 

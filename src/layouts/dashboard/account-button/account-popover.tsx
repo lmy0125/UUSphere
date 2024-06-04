@@ -1,6 +1,5 @@
 import type { FC } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import User03Icon from '@untitled-ui/icons-react/build/esm/User03';
 import {
@@ -33,12 +32,9 @@ interface AccountPopoverProps {
 export const AccountPopover: FC<AccountPopoverProps> = (props) => {
 	const { anchorEl, onClose, open, user, ...other } = props;
 	const { chatClient: client } = useChatContext();
-	const router = useRouter();
 
 	const handleLogOut = async () => {
-		signOut({ redirect: false }).then(() => {
-			router.push('/'); // Redirect to the dashboard page after signing out
-		});
+		signOut({ callbackUrl: '/', redirect: true });
 		client?.disconnectUser();
 	};
 
@@ -55,9 +51,7 @@ export const AccountPopover: FC<AccountPopoverProps> = (props) => {
 			PaperProps={{ sx: { width: 200 } }}
 			{...other}>
 			<Box sx={{ p: 2 }}>
-				<Typography
-					variant="body1"
-					sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+				<Typography variant="body1" sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
 					{user.name}
 				</Typography>
 				<Typography

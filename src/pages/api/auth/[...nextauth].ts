@@ -117,10 +117,10 @@ export const authOptions = {
 		},
 		async redirect({ url, baseUrl }: { url: string; baseUrl: string }) {
 			// Allows relative callback URLs
-			// if (url.startsWith('/')) return `${baseUrl}${url}`;
-			// // Allows callback URLs on the same origin
-			// else if (new URL(url).origin === baseUrl) return url;
-			return '/classes';
+			if (url.startsWith('/')) return `${baseUrl}${url}`;
+			// Allows callback URLs on the same origin
+			else if (new URL(url).origin === baseUrl) return url;
+			return baseUrl;
 		},
 		async signIn({ user, account }: { user: User | AdapterUser; account: Account | null }) {
 			// Check if the user is signing in for the first time
