@@ -1,1 +1,1 @@
-export const availableQuarters = ['SP24', 'WI24'];
+export const availableQuarters = ['FA24', 'SP24'];
