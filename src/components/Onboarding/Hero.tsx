@@ -2,17 +2,7 @@ import { FC, useState } from 'react';
 import { useRouter } from 'next/router';
 import EyeIcon from '@untitled-ui/icons-react/build/esm/Eye';
 import LayoutBottomIcon from '@untitled-ui/icons-react/build/esm/LayoutBottom';
-import {
-	Box,
-	Button,
-	Container,
-	Rating,
-	Stack,
-	SvgIcon,
-	Typography,
-	useMediaQuery,
-	Theme,
-} from '@mui/material';
+import { Box, Button, Container, Rating, Stack, SvgIcon, Typography, useMediaQuery, Theme } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { RouterLink } from '@/components/router-link';
 import { paths } from '@/paths';
@@ -53,8 +43,8 @@ export const Hero: FC = () => {
 							fontWeight: 500,
 							px: 7,
 						}}>
-						Our platform provides additional tools on top of the school&apos;s system and
-						empowers you to create a vibrant network that assist your journey at UCSD.
+						Our platform provides additional tools on top of the school&apos;s system and empowers you to create a
+						vibrant network that assist your journey at UCSD.
 					</Typography>
 
 					<Button
@@ -77,7 +67,7 @@ export const Hero: FC = () => {
 										mt: 3,
 								  }
 						}
-						onClick={() => (session ? router.push('/classes') : setAuthModal(true))}
+						onClick={() => (session ? router.push('/gathering') : setAuthModal(true))}
 						variant="contained">
 						Get Started
 					</Button>
