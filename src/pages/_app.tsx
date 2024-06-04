@@ -12,6 +12,7 @@ import { createTheme } from '@/theme';
 import { SettingsConsumer, SettingsProvider } from '@/contexts/settings-context';
 import { SessionProvider as AuthProvider } from 'next-auth/react';
 import ChatContextProvider from '@/contexts/ChatContext';
+import LocationContextProvider from '@/contexts/LocationContext';
 // Remove if simplebar is not used
 import 'simplebar-react/dist/simplebar.min.css';
 import nProgress from 'nprogress';
@@ -29,10 +30,7 @@ type AppPropsWithLayout = AppProps & {
 	Component: NextPageWithLayout;
 };
 
-export default function App({
-	Component,
-	pageProps: { session, ...pageProps },
-}: AppPropsWithLayout) {
+export default function App({ Component, pageProps: { session, ...pageProps } }: AppPropsWithLayout) {
 	const getLayout = Component.getLayout ?? ((page) => page);
 	const router = useRouter();
 
@@ -52,42 +50,43 @@ export default function App({
 		<>
 			<AuthProvider session={session}>
 				<ChatContextProvider>
-					<SettingsProvider>
-						<SettingsConsumer>
-							{(settings) => {
-								// Prevent theme flicker when restoring custom settings from browser storage
-								if (!settings.isInitialized) {
-									// return null;
-								}
+					<LocationContextProvider>
+						<SettingsProvider>
+							<SettingsConsumer>
+								{(settings) => {
+									// Prevent theme flicker when restoring custom settings from browser storage
+									if (!settings.isInitialized) {
+										// return null;
+									}
 
-								const theme = createTheme({
-									colorPreset: settings.colorPreset,
-									contrast: settings.contrast,
-									direction: settings.direction,
-									paletteMode: settings.paletteMode,
-									responsiveFontSizes: settings.responsiveFontSizes,
-								});
+									const theme = createTheme({
+										colorPreset: settings.colorPreset,
+										contrast: settings.contrast,
+										direction: settings.direction,
+										paletteMode: settings.paletteMode,
+										responsiveFontSizes: settings.responsiveFontSizes,
+									});
 
-								// Prevent guards from redirecting
-								// const showSlashScreen = !auth.isInitialized;
+									// Prevent guards from redirecting
+									// const showSlashScreen = !auth.isInitialized;
 
-								return (
-									<ThemeProvider theme={theme}>
-										<Head>
-											<meta name="color-scheme" content={settings.paletteMode} />
-											<meta name="theme-color" content={theme.palette.neutral[900]} />
-											<link rel="icon" href="/logo-icon.ico" />
-											<title>UUSphere</title>
-										</Head>
-										{/* <RTL direction={settings.direction}> */}
-										<CssBaseline />
-										{/* {showSlashScreen ? (
+									return (
+										<ThemeProvider theme={theme}>
+											<Head>
+												<meta name="color-scheme" content={settings.paletteMode} />
+												<meta name="theme-color" content={theme.palette.neutral[900]} />
+												<link rel="icon" href="/logo-icon.ico" />
+												<title>UUSphere</title>
+											</Head>
+											{/* <RTL direction={settings.direction}> */}
+											<CssBaseline />
+											{/* {showSlashScreen ? (
 									<SplashScreen />
 								) : ( */}
-										<ChatStackContextProvider>
-											{getLayout(<Component {...pageProps} />)}
+											<ChatStackContextProvider>
+												{getLayout(<Component {...pageProps} />)}
 
-											{/* <SettingsButton onClick={settings.handleDrawerOpen} />
+												{/* <SettingsButton onClick={settings.handleDrawerOpen} />
 										<SettingsDrawer
 											canReset={settings.isCustom}
 											onClose={settings.handleDrawerClose}
@@ -105,15 +104,16 @@ export default function App({
 												navColor: settings.navColor,
 											}}
 										/> */}
-											<Toaster />
-										</ChatStackContextProvider>
-										{/* )}
+												<Toaster />
+											</ChatStackContextProvider>
+											{/* )}
 							</RTL> */}
-									</ThemeProvider>
-								);
-							}}
-						</SettingsConsumer>
-					</SettingsProvider>
+										</ThemeProvider>
+									);
+								}}
+							</SettingsConsumer>
+						</SettingsProvider>
+					</LocationContextProvider>
 				</ChatContextProvider>
 			</AuthProvider>
 			<SpeedInsights route={router.pathname} />

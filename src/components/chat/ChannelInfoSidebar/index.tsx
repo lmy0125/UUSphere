@@ -31,11 +31,12 @@ import BackButton from '@/components/chat/BackButton';
 import FlatUserProfile from '@/components/chat/ChannelInfoSidebar/FlatUserProfile';
 import { DropSectionModal } from '@/components/ClassEnrollment/ConfirmModals';
 import { useChatStackContext } from '@/contexts/ChatStackContext';
+import { User } from '@/types/User';
 
-export const ChannelInfoSidebar = () => {
+export const ChannelInfoSidebar = ({ onlineUsers }: { onlineUsers?: User[] }) => {
 	const [dropSectionModal, setDropSectionModal] = useState(false);
 	const { data: session } = useSession();
-	const { channel, members } = useChannelStateContext<CustomStreamChatGenerics>();
+	const { channel, members, watchers } = useChannelStateContext<CustomStreamChatGenerics>();
 	const { displayTitle } = useChannelPreviewInfo({ channel });
 	const { showInfoSidebar, setShowInfoSidebar } = useChatStackContext();
 
@@ -44,7 +45,7 @@ export const ChannelInfoSidebar = () => {
 			<InfoSidebarContainer open={showInfoSidebar} setOpen={setShowInfoSidebar} title="Channel Details">
 				<MenuList>
 					{Object.entries(members ?? []).map(([key, value]) => {
-						return <PopUpProfileMenuItem key={key} value={value} />;
+						return <PopUpProfileMenuItem key={key} value={value.user!} />;
 					})}
 				</MenuList>
 				<Box sx={{ textAlign: 'center', mt: 3 }}>
@@ -59,7 +60,7 @@ export const ChannelInfoSidebar = () => {
 		return (
 			<InfoSidebarContainer open={showInfoSidebar} setOpen={setShowInfoSidebar} title="Channel Details">
 				<MenuList>
-					{Object.entries(members ?? []).map(([key, value]) => {
+					{onlineUsers?.map((value, key) => {
 						return <PopUpProfileMenuItem key={key} value={value} />;
 					})}
 				</MenuList>
@@ -160,7 +161,7 @@ export const ChannelInfoSidebar = () => {
 	}
 };
 
-const PopUpProfileMenuItem = ({ value }: { value: ChannelMemberResponse<CustomStreamChatGenerics> }) => {
+const PopUpProfileMenuItem = ({ value }: { value: UserResponse<CustomStreamChatGenerics> | User }) => {
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const [showProfileCard, setShowProfileCard] = useState(false);
 	const smUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
@@ -174,14 +175,14 @@ const PopUpProfileMenuItem = ({ value }: { value: ChannelMemberResponse<CustomSt
 				}}
 				sx={{ px: 3 }}>
 				<ListItemIcon>
-					<UserAvatar userId={value.user?.id} size={32} />
+					<UserAvatar userId={value.id} size={32} />
 				</ListItemIcon>
-				<ListItemText sx={{ color: 'black' }}>{value.user?.name}</ListItemText>
+				<ListItemText sx={{ color: 'black' }}>{value.name}</ListItemText>
 			</MenuItem>
 			{smUp ? (
-				<PopUpUserProfile anchorEl={anchorEl} setAnchorEl={setAnchorEl} user={value.user} />
+				<PopUpUserProfile anchorEl={anchorEl} setAnchorEl={setAnchorEl} user={value} />
 			) : (
-				<FlatUserProfile user={value.user} open={showProfileCard} setOpen={setShowProfileCard} />
+				<FlatUserProfile user={value} open={showProfileCard} setOpen={setShowProfileCard} />
 			)}
 		</Box>
 	);

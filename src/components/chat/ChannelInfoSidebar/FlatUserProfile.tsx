@@ -7,6 +7,7 @@ import { UserResponse } from 'stream-chat';
 import { CustomStreamChatGenerics } from '@/types/customStreamChat';
 import { useChatContext } from 'stream-chat-react';
 import { useChatStackContext } from '@/contexts/ChatStackContext';
+import { User } from '@/types/User';
 
 // This component only shows on mobile screen
 export default function FlatUserProfile({
@@ -14,7 +15,7 @@ export default function FlatUserProfile({
 	open,
 	setOpen,
 }: {
-	user: UserResponse<CustomStreamChatGenerics> | undefined;
+	user: UserResponse<CustomStreamChatGenerics> | User | undefined;
 	open: boolean;
 	setOpen: Dispatch<SetStateAction<boolean>>;
 }) {
@@ -107,11 +108,7 @@ export default function FlatUserProfile({
 					</Grid>
 
 					{client.user?.id !== user?.id && (
-						<Button
-							variant="contained"
-							color="primary"
-							onClick={handleMessageUser}
-							sx={{ float: 'right' }}>
+						<Button variant="contained" color="primary" onClick={handleMessageUser} sx={{ float: 'right' }}>
 							Message
 						</Button>
 					)}

@@ -1,16 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 import { Box, Paper } from '@mui/material';
-import {
-	Channel,
-	MessageInput,
-	MessageList,
-	Thread,
-	Window,
-	useChatContext as useStreamChatContext,
-} from 'stream-chat-react';
-import { Channel as ChannelType } from 'stream-chat';
-import { CustomStreamChatGenerics } from '@/types/customStreamChat';
+import { Channel, MessageInput, MessageList, Thread, Window } from 'stream-chat-react';
 import CustomChannelHeader from '@/components/chat/CustomChannelHeader';
 import CustomMessage from '@/components/chat/CustomMessage';
 import { Divider } from '@mui/material';
@@ -18,89 +9,52 @@ import { DbBuilding } from '@/types/building';
 import { supabaseClient } from '@/lib/supabase';
 import { User } from '@/types/User';
 import { ChannelInfoSidebar } from '@/components/chat/ChannelInfoSidebar';
-import axios from 'axios';
+import { useLocationContext } from '@/contexts/LocationContext';
 
-export default function MainBuilding({ building }: { building: DbBuilding }) {
+export default function MainBuilding() {
 	const { data: session } = useSession();
 	const [users, setUsers] = useState<User[] | undefined>([]);
-	const [channel, setChannel] = useState<ChannelType<CustomStreamChatGenerics>>();
-	const channelRef = useRef(channel);
-	const { client, setActiveChannel } = useStreamChatContext<CustomStreamChatGenerics>();
-	const channelId = building.id;
-
-	useEffect(() => {
-		// Join channel in stream.io
-		const joinBuildingChannel = async () => {
-			if (!channelId) {
-				return;
-			}
-			const channel = client.channel('building', building.id, {
-				name: building.name,
-			});
-			channelRef.current = channel;
-			await channel.watch();
-			await channel.addMembers([client.user?.id ?? '']);
-			setChannel(channel);
-		};
-		joinBuildingChannel();
-
-		// const leaveBuildingChannel = async () => {
-		// 	console.log('remove', channelRef.current, session?.user?.name);
-		// 	await channelRef.current?.stopWatching();
-		// 	await channelRef.current?.removeMembers([session?.user?.id ?? '']);
-		// };
-		// return () => {
-		// 	leaveBuildingChannel();
-		// };
-	}, [channelId, setActiveChannel, client]);
+	const { nearestBuilding, buildingChannel } = useLocationContext();
 
 	useEffect(() => {
 		// Realtime update
-		const buildingChannel = supabaseClient.channel(`buildings`, { config: { presence: { key: building.id } } });
-
-		buildingChannel
-			.on('presence', { event: 'sync' }, () => {
-				const newState = buildingChannel.presenceState();
-				console.log('sync', newState, newState[building.id]);
-				setUsers(newState[building.id]?.map((object: any) => object.user));
-			})
-			.on('presence', { event: 'join' }, ({ key, newPresences }) => {
-				console.log('join', key, newPresences);
-			})
-			.on('presence', { event: 'leave' }, ({ key, leftPresences }) => {
-				console.log('leave', key, leftPresences);
-			})
-			.subscribe(async (status) => {
-				const userStatus = {
-					user: session?.user,
-					online_at: new Date().toISOString(),
-				};
-
-				if (status !== 'SUBSCRIBED') {
-					return;
-				}
-				const presenceTrackStatus = await buildingChannel.track(userStatus);
-				console.log('presenceTrackStatus', presenceTrackStatus);
+		if (nearestBuilding) {
+			const buildingChannel = supabaseClient.channel(`buildings`, {
+				config: { presence: { key: nearestBuilding.id } },
 			});
 
-		// // Modify database
-		// const updateDatabase = async (buildingId: string | null) => {
-		// 	console.log('buildingid', buildingId);
-		// 	await axios.post(`/api/userToBuilding`, {
-		// 		userId: session?.user.id,
-		// 		buildingId: buildingId,
-		// 	});
+			buildingChannel
+				.on('presence', { event: 'sync' }, () => {
+					const newState = buildingChannel.presenceState();
+					console.log('sync', newState, newState[nearestBuilding.id]);
+					setUsers(newState[nearestBuilding.id]?.map((object: any) => object.user));
+				})
+				.on('presence', { event: 'join' }, ({ key, newPresences }) => {
+					// console.log('join', key, newPresences);
+				})
+				.on('presence', { event: 'leave' }, ({ key, leftPresences }) => {
+					// console.log('leave', key, leftPresences);
+				})
+				.subscribe(async (status) => {
+					const userStatus = {
+						user: session?.user,
+						online_at: new Date().toISOString(),
+					};
+
+					if (status !== 'SUBSCRIBED') {
+						return;
+					}
+					const presenceTrackStatus = await buildingChannel.track(userStatus);
+					// console.log('presenceTrackStatus', presenceTrackStatus);
+				});
+		}
+		// return () => {
+		// 	buildingChannel?.unsubscribe();
+		// 	supabaseClient.removeChannel(buildingChannel);
 		// };
-		// updateDatabase(building.id);
+	}, [nearestBuilding, session]);
 
-		return () => {
-			// updateDatabase(null);
-			buildingChannel.unsubscribe();
-			supabaseClient.removeChannel(buildingChannel);
-		};
-	}, [building.id, session]);
-
-	if (!channel) {
+	if (!buildingChannel) {
 		return null;
 	}
 
@@ -116,9 +70,9 @@ export default function MainBuilding({ building }: { building: DbBuilding }) {
 					position: 'relative',
 					height: 500,
 				}}>
-				<Channel channel={channel}>
+				<Channel channel={buildingChannel}>
 					<Window hideOnThread>
-						<CustomChannelHeader />
+						<CustomChannelHeader onlineUsers={users} />
 						<MessageList Message={CustomMessage} />
 						<Divider />
 						<MessageInput
@@ -128,7 +82,7 @@ export default function MainBuilding({ building }: { building: DbBuilding }) {
 						/>
 					</Window>
 					<Thread />
-					<ChannelInfoSidebar />
+					<ChannelInfoSidebar onlineUsers={users} />
 				</Channel>
 			</Paper>
 		</Box>

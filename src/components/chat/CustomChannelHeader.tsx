@@ -7,10 +7,14 @@ import UserAvatar from '@/components/UserAvatar';
 import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutlined';
 import { useChatStackContext } from '@/contexts/ChatStackContext';
 import BackButton from '@/components/chat/BackButton';
-import { User } from '@prisma/client';
+import { User } from '@/types/User';
 
-const CustomChannelHeader = (props: ChannelHeaderProps) => {
-	const { title } = props;
+interface CustomChannelHeaderProps extends ChannelHeaderProps {
+	onlineUsers?: User[];
+}
+
+const CustomChannelHeader = (props: CustomChannelHeaderProps) => {
+	const { title, onlineUsers } = props;
 	const { data: session } = useSession();
 	const { channel, members, watcher_count } = useChannelStateContext();
 	const { displayTitle } = useChannelPreviewInfo({ channel });
@@ -76,7 +80,7 @@ const CustomChannelHeader = (props: ChannelHeaderProps) => {
 						{title || name}
 					</Typography>
 					<Typography variant="body2" sx={{ color: '#505050' }}>
-						{watcher_count} {watcher_count == 1 ? 'watcher' : 'watchers'}
+						{onlineUsers?.length} {onlineUsers?.length == 1 ? 'watcher' : 'watchers'}
 					</Typography>
 				</div>
 
