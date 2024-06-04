@@ -80,7 +80,7 @@ const CustomChannelHeader = (props: CustomChannelHeaderProps) => {
 						{title || name}
 					</Typography>
 					<Typography variant="body2" sx={{ color: '#505050' }}>
-						{onlineUsers?.length} {onlineUsers?.length == 1 ? 'watcher' : 'watchers'}
+						{onlineUsers?.length == 1 ? 'I am here with you ^_^' : onlineUsers?.length! - 1 + ' people with you'}
 					</Typography>
 				</div>
 
