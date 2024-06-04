@@ -16,11 +16,12 @@ import { UserResponse } from 'stream-chat';
 import { CustomStreamChatGenerics } from '@/types/customStreamChat';
 import { useChatContext } from 'stream-chat-react';
 import UserAvatar from '@/components/UserAvatar';
+import { User } from '@/types/User';
 
 interface ProfileCardProps {
 	anchorEl: HTMLElement | null;
 	setAnchorEl: React.Dispatch<React.SetStateAction<HTMLElement | null>>;
-	user: UserResponse<CustomStreamChatGenerics> | undefined;
+	user: UserResponse<CustomStreamChatGenerics> | User | undefined;
 }
 
 // This component only shows on large screen
