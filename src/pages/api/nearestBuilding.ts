@@ -4,6 +4,7 @@ import { DbBuilding, MapBuilding } from '@/types/building';
 
 type ResponseData = {
 	nearestBuilding?: DbBuilding | undefined; // Define a more precise type based on the API response
+	mapBuildings?: MapBuilding[];
 	error?: string;
 };
 
@@ -42,7 +43,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
 			const dbBuildings = await prisma.building.findMany({});
 			const nearestBuilding = findMatchBuilding(mapBuildings, dbBuildings);
-			res.status(200).json({ nearestBuilding });
+			res.status(200).json({ nearestBuilding, mapBuildings });
 		} catch (error) {
 			res.status(500).json({ error: 'Failed to fetch nearest building' });
 		}

@@ -34,7 +34,7 @@ const GatheringPage: PageType = () => {
 				<Container maxWidth="lg">
 					<Stack justifyContent="space-between">
 						<Typography variant="h4">Gathering</Typography>
-						<Typography variant="subtitle2">Gather here.</Typography>
+						<Typography variant="subtitle2">You meeting here isn&apos;t mere coincidences.</Typography>
 					</Stack>
 
 					<div>
@@ -49,11 +49,7 @@ const GatheringPage: PageType = () => {
 								) : (
 									<p>Fetching location...</p>
 								)} */}
-								{nearestBuilding ? (
-									<p>Nearest Building: {nearestBuilding.name}</p>
-								) : (
-									<p>Nearest Building: None</p>
-								)}
+								{nearestBuilding ? <p>You are in: {nearestBuilding.name}</p> : <p>Nearest Building: None</p>}
 							</>
 						)}
 					</div>

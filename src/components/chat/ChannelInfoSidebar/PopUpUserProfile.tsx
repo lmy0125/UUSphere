@@ -1,16 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
-import {
-	Avatar,
-	Box,
-	Button,
-	Popper,
-	Typography,
-	Card,
-	CardContent,
-	ClickAwayListener,
-	Divider,
-} from '@mui/material';
+import { useRouter } from 'next/router';
+import { Avatar, Box, Button, Popper, Typography, Card, CardContent, ClickAwayListener, Divider } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import { UserResponse } from 'stream-chat';
 import { CustomStreamChatGenerics } from '@/types/customStreamChat';
@@ -27,9 +18,13 @@ interface ProfileCardProps {
 // This component only shows on large screen
 const PopupUserProfile: React.FC<ProfileCardProps> = ({ anchorEl, setAnchorEl, user }) => {
 	const { client, setActiveChannel } = useChatContext();
+	const router = useRouter();
 
 	const handleMessageUser = async () => {
 		setAnchorEl(null);
+		if (user && !router.pathname.startsWith('/chat')) {
+			router.push(`/chat?channelId=${user?.id}`);
+		}
 		if (client.user && user) {
 			const channel = client.channel('messaging', {
 				members: [client.user.id, user.id],
@@ -117,11 +112,7 @@ const PopupUserProfile: React.FC<ProfileCardProps> = ({ anchorEl, setAnchorEl, u
 						</Grid>
 
 						{client.user?.id !== user?.id && (
-							<Button
-								variant="contained"
-								color="primary"
-								onClick={handleMessageUser}
-								sx={{ float: 'right' }}>
+							<Button variant="contained" color="primary" onClick={handleMessageUser} sx={{ float: 'right' }}>
 								Message
 							</Button>
 						)}

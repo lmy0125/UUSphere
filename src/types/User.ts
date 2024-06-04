@@ -26,5 +26,5 @@ export interface BigHeadAvatar extends BigHeadStyle {
 }
 
 export interface User extends U {
-	bigHeadAvatar: BigHeadAvatar | undefined;
+	bigHeadAvatar?: BigHeadAvatar | undefined;
 }

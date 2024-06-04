@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Button, ButtonGroup, Theme, useMediaQuery } from '@mui/material';
 import HotelIcon from '@mui/icons-material/Hotel';
 import DiningIcon from '@mui/icons-material/Dining';
@@ -6,17 +7,23 @@ import LaptopMacIcon from '@mui/icons-material/LaptopMac';
 import { useUser } from '@/hooks/useUser';
 import { useSession } from 'next-auth/react';
 import { Status } from '@/types/status';
-import { useState } from 'react';
 
 export const StatusSelect = () => {
 	const { data: session } = useSession();
-	const [status, setStatus] = useState<string>(Status.Chilling);
-	const { user, updateUser, mutate } = useUser({ userId: session?.user.id });
+	const { user, updateUser } = useUser({ userId: session?.user.id });
+	const [status, setStatus] = useState<Status | undefined>(user?.status as Status);
 	const smUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 
-	const handleStatusChange = async (newStatus: string) => {
+	const handleStatusChange = async (newStatus: Status) => {
 		setStatus(newStatus);
+		if (user) {
+			updateUser({ ...user, status: newStatus });
+		}
 	};
+
+	useEffect(() => {
+		setStatus(user?.status as Status);
+	}, [user]);
 
 	return (
 		<ButtonGroup aria-label="Basic button group">
