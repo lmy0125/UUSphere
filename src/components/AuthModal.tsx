@@ -38,10 +38,6 @@ export default function AuthModal({
 						</Typography>
 						<Logo width={95} height={42} />
 					</Stack>
-
-					<Typography align="center" color="neutral.600" sx={{ mt: 4 }} variant="body1">
-						Login/Signup with your UCSD email account to get full access of the platform.
-					</Typography>
 				</Box>
 
 				<Button
