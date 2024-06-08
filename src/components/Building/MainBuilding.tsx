@@ -29,7 +29,7 @@ export default function MainBuilding() {
 	const { nearestBuilding, buildingChannel } = useLocationContext();
 
 	useEffect(() => {
-		console.log('status update', user?.status);
+		console.log(user?.status);
 		// Realtime update
 		if (nearestBuilding) {
 			const buildingChannel = supabaseClient.channel(`buildings`, {
@@ -41,8 +41,14 @@ export default function MainBuilding() {
 					const newState = buildingChannel.presenceState();
 					// console.log('sync', newState, newState[nearestBuilding.id]);
 					const users = newState[nearestBuilding.id]
-						?.map((object: any) => object.user)
-						.filter((user, index, self) => index === self.findIndex((t) => t?.id === user?.id));
+						?.map((object: any) => ({
+							...object.user,
+							online_at: object.online_at, // Combine user object with its online_at property
+						}))
+						.sort((a, b) => b.online_at.localeCompare(a.online_at)) // Sort by online_at in descending order
+						.filter(
+							(user, index, self) => index === self.findIndex((t) => t?.id === user?.id) // Filter out duplicates by user id
+						);
 					setUsers(users);
 				})
 				.on('presence', { event: 'join' }, ({ key, newPresences }) => {
@@ -53,7 +59,7 @@ export default function MainBuilding() {
 				})
 				.subscribe(async (status) => {
 					const userStatus = {
-						user: session?.user,
+						user: user,
 						online_at: new Date().toISOString(),
 					};
 
@@ -68,7 +74,7 @@ export default function MainBuilding() {
 		// 	buildingChannel?.unsubscribe();
 		// 	supabaseClient.removeChannel(buildingChannel);
 		// };
-	}, [nearestBuilding, session, user, user?.status]);
+	}, [nearestBuilding, user?.status]);
 
 	if (!buildingChannel || !client?._user || !nearestBuilding) {
 		return null;
