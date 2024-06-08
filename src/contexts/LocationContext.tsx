@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, createContext, useContext } from 'react';
+import { useRouter } from 'next/router';
 import { useGeolocated } from 'react-geolocated';
 import { DbBuilding, BuildingInfo } from '@/types/building';
 import axios from 'axios';
@@ -26,12 +27,17 @@ export default function LocationContextProvider({ children }: { children: React.
 	const [buildingChannel, setBuildingChannel] = useState<ChannelType<CustomStreamChatGenerics> | null>(null);
 	const channelRef = useRef(buildingChannel);
 	const { client } = useStreamChatContext<CustomStreamChatGenerics>();
-	const { coords, isGeolocationAvailable, isGeolocationEnabled } = useGeolocated({
+	const router = useRouter();
+
+	// Always use the hook but control its activation
+	const geoSettings = {
 		positionOptions: {
 			enableHighAccuracy: true,
 		},
-		watchPosition: true,
-	});
+		watchPosition: router.pathname !== '/',
+		suppressLocationOnMount: router.pathname === '/',
+	};
+	const { coords, isGeolocationAvailable, isGeolocationEnabled } = useGeolocated(geoSettings);
 
 	const fetchNearestBuilding = async (latitude: number, longitude: number) => {
 		try {
