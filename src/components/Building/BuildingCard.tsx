@@ -26,7 +26,6 @@ export default function BuildingCard({ buildingInfo }: { buildingInfo: BuildingI
 	useEffect(() => {
 		// Realtime update
 		const buildingChannel = supabaseClient.channel(`buildings`, { config: { presence: { key: buildingInfo.id } } });
-		console.log(buildingInfo.name, buildingChannel);
 
 		buildingChannel
 			.on('presence', { event: 'sync' }, () => {
@@ -41,30 +40,20 @@ export default function BuildingCard({ buildingInfo }: { buildingInfo: BuildingI
 				// );
 			})
 			.on('presence', { event: 'join' }, ({ key, newPresences }) => {
-				console.log(
-					'join',
-					key,
-					newPresences,
-					buildingInfo.name,
-					newPresences.map((object: any) => object.user)
-				);
+				// console.log(
+				// 	'join',
+				// 	key,
+				// 	newPresences,
+				// 	buildingInfo.name,
+				// 	newPresences.map((object: any) => object.user)
+				// );
 				setUsers(newPresences.map((object: any) => object.user));
 			})
 			.on('presence', { event: 'leave' }, ({ key, leftPresences }) => {
-				console.log('leave', buildingInfo.name, key, leftPresences);
+				// console.log('leave', buildingInfo.name, key, leftPresences);
 				setUsers(leftPresences.map((object: any) => object.user));
 			})
-			.subscribe(async (status) => {
-				// const userStatus = {
-				// 	user: session?.user,
-				// 	online_at: new Date().toISOString(),
-				// };
-				// if (status !== 'SUBSCRIBED') {
-				// 	return;
-				// }
-				// const presenceTrackStatus = await buildingChannel.track(userStatus);
-				// console.log('presenceTrackStatus', presenceTrackStatus);
-			});
+			.subscribe();
 
 		// return () => {
 		// 	buildingChannel.unsubscribe();
@@ -73,7 +62,7 @@ export default function BuildingCard({ buildingInfo }: { buildingInfo: BuildingI
 	}, [buildingInfo, session]);
 
 	return (
-		<Card sx={{ maxWidth: 'md', width: '100%' }}>
+		<Card sx={{ maxWidth: 'md', minWidth: '320px', width: '100%' }}>
 			<CardContent
 				sx={{
 					display: 'flex',
