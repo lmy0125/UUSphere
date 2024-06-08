@@ -2,20 +2,33 @@ import { FC, useState } from 'react';
 import { useRouter } from 'next/router';
 import EyeIcon from '@untitled-ui/icons-react/build/esm/Eye';
 import LayoutBottomIcon from '@untitled-ui/icons-react/build/esm/LayoutBottom';
-import { Box, Button, Container, Rating, Stack, SvgIcon, Typography, useMediaQuery, Theme } from '@mui/material';
+import {
+	Box,
+	Button,
+	Container,
+	Card,
+	CardContent,
+	Grid,
+	Stack,
+	Typography,
+	useMediaQuery,
+	Theme,
+} from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { RouterLink } from '@/components/router-link';
-import { paths } from '@/paths';
 import AuthModal from '@/components/AuthModal';
 import { useSession } from 'next-auth/react';
-// import { HomeCodeSamples } from './home-code-samples';
+import BuildingCard from '@/components/Building/BuildingCard';
+import HotelIcon from '@mui/icons-material/Hotel';
+import DiningIcon from '@mui/icons-material/Dining';
+import SelfImprovementIcon from '@mui/icons-material/SelfImprovement';
+import LaptopMacIcon from '@mui/icons-material/LaptopMac';
 
 export const Hero: FC = () => {
 	const { data: session } = useSession();
 	const router = useRouter();
 	const [authModal, setAuthModal] = useState(false);
 	const theme = useTheme();
-	const smUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
+	const mdUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('md'));
 
 	return (
 		<Box
@@ -26,53 +39,107 @@ export const Hero: FC = () => {
 				pt: '150px',
 				pb: 12,
 			}}>
-			<Container maxWidth="md">
-				<Box textAlign="center">
-					<Typography variant="h2" sx={{ mb: 2 }}>
-						Ultimate companion
-						<br /> during your journey in&nbsp;
-						<Typography component="span" color="primary.main" variant="inherit">
-							UCSD&nbsp;
-							<br />
-						</Typography>
-					</Typography>
-					<Typography
-						color="text.secondary"
-						sx={{
-							fontSize: 20,
-							fontWeight: 500,
-							px: 7,
-						}}>
-						Our platform provides additional tools on top of the school&apos;s system and empowers you to create a
-						vibrant network that assist your journey at UCSD.
-					</Typography>
+			<Container maxWidth="lg">
+				<Grid container spacing={8}>
+					<Grid item xs={12} md={7}>
+						<Box maxWidth="md" sx={{ textAlign: mdUp ? 'left' : 'center' }}>
+							<Typography variant="h2" sx={{ mb: 2 }}>
+								Connect with students in the same building and classes in&nbsp;
+								<Typography component="span" color="primary.main" variant="inherit">
+									UCSD&nbsp;
+									<br />
+								</Typography>
+							</Typography>
+							<Typography
+								color="text.secondary"
+								sx={{
+									fontSize: 20,
+									fontWeight: 500,
+								}}>
+								Our platform provides additional tools on top of the school&apos;s system and empowers you to
+								create a vibrant network that assist your journey at UCSD.
+							</Typography>
 
-					<Button
-						sx={(theme) =>
-							theme.palette.mode === 'dark'
-								? {
-										backgroundColor: 'neutral.50',
-										color: 'neutral.900',
-										'&:hover': {
-											backgroundColor: 'neutral.200',
-										},
-										mt: 3,
-								  }
-								: {
-										backgroundColor: 'neutral.900',
-										color: 'neutral.50',
-										'&:hover': {
-											backgroundColor: 'neutral.700',
-										},
-										mt: 3,
-								  }
-						}
-						onClick={() => (session ? router.push('/gathering') : setAuthModal(true))}
-						variant="contained">
-						Get Started
-					</Button>
-					<AuthModal open={authModal} setAuthModal={setAuthModal} />
-				</Box>
+							<Button
+								sx={(theme) =>
+									theme.palette.mode === 'dark'
+										? {
+												backgroundColor: 'neutral.50',
+												color: 'neutral.900',
+												'&:hover': {
+													backgroundColor: 'neutral.200',
+												},
+												mt: 3,
+										  }
+										: {
+												backgroundColor: 'neutral.900',
+												color: 'neutral.50',
+												'&:hover': {
+													backgroundColor: 'neutral.700',
+												},
+												mt: 3,
+										  }
+								}
+								onClick={() => (session ? router.push('/gathering') : setAuthModal(true))}
+								variant="contained">
+								Get Started
+							</Button>
+							<AuthModal open={authModal} setAuthModal={setAuthModal} />
+						</Box>
+					</Grid>
+					<Grid item xs={12} md={5}>
+						<Box
+							sx={{
+								py: mdUp ? '20px' : '0',
+								position: 'relative',
+							}}>
+							<Card sx={{ maxWidth: 'md', minWidth: '320px', width: '100%' }}>
+								<CardContent
+									sx={{
+										display: 'flex',
+										justifyContent: 'space-between',
+										alignItems: 'center',
+										pb: 2,
+									}}>
+									<div>
+										<Typography variant="h6" component="div">
+											Geisel Library
+										</Typography>
+										<Typography variant="body2" color="text.secondary">
+											Total People: 164
+										</Typography>
+									</div>
+								</CardContent>
+								<CardContent
+									sx={{
+										display: 'grid',
+										gridTemplateColumns: 'repeat(2, 1fr)',
+										gap: 2,
+									}}>
+									{[
+										// Array of objects representing each status
+										{ icon: <SelfImprovementIcon fontSize="large" />, number: 62, text: 'Chilling' },
+										{ icon: <LaptopMacIcon fontSize="large" />, number: 75, text: 'Studying' },
+										{ icon: <DiningIcon fontSize="large" />, number: 9, text: 'Eating' },
+										{ icon: <HotelIcon fontSize="large" />, number: 18, text: 'Sleeping' },
+									].map((status) => (
+										<Box
+											key={status.text}
+											sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
+											{status.icon}
+											<Typography variant="h5" component="div" sx={{ fontWeight: 'bold' }}>
+												{status.number}
+											</Typography>
+											<Typography variant="body2" color="text.secondary">
+												{status.text}
+											</Typography>
+										</Box>
+									))}
+								</CardContent>
+							</Card>
+						</Box>
+					</Grid>
+				</Grid>
 
 				{/* <Box
           sx={{

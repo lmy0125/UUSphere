@@ -8,13 +8,11 @@ import { Button, ButtonGroup, Theme, Paper, Stack, Typography, useMediaQuery } f
 import { Status } from '@/types/status';
 
 export default function StatusDisplay({ users }: { users: User[] | undefined }) {
-	console.log(users);
 	const [statusCounts, setStatusCount] = useState<Record<Status, number>>();
 	const smUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 
 	// Function to count users by status
 	function countUsersByStatus(users: User[]): Record<Status, number> {
-		console.log(users);
 		const statusCounts: Record<Status, number> = {
 			[Status.Chilling]: 0,
 			[Status.Studying]: 0,
