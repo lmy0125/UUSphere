@@ -29,7 +29,6 @@ export default function MainBuilding() {
 	const { nearestBuilding, buildingChannel } = useLocationContext();
 
 	useEffect(() => {
-		console.log(user?.status);
 		// Realtime update
 		if (nearestBuilding) {
 			const buildingChannel = supabaseClient.channel(`buildings`, {

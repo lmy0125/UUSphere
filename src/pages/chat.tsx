@@ -127,9 +127,7 @@ const ChatPage: PageType = () => {
 										<Channel>
 											<Window hideOnThread>
 												<CustomChannelHeader />
-												<MessageList
-												// Message={CustomMessage}
-												/>
+												<MessageList Message={CustomMessage} />
 												<Divider />
 												<MessageInput
 													grow
