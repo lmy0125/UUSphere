@@ -53,7 +53,7 @@ const GatheringPage: PageType = () => {
 							</>
 						)}
 					</div>
-					{buildingChannel ? <MainBuilidng /> : <div>Not able to locate you.</div>}
+					{buildingChannel ? <MainBuilidng /> : <div>You are not near a school building.</div>}
 					{/* <Grid container spacing={4}>
 						{buildings.map((building) => (
 							<Grid item xs={12} sm={6} key={building.id}>

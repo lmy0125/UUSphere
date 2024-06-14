@@ -56,8 +56,10 @@ export const Hero: FC = () => {
 									fontSize: 20,
 									fontWeight: 500,
 								}}>
-								Our platform provides additional tools on top of the school&apos;s system and empowers you to
-								create a vibrant network that assist your journey at UCSD.
+								Couldn't get all students to use this app before I graduate. But. Congraduation graduates. I
+								love you all!
+								{/* Our platform provides additional tools on top of the school&apos;s system and empowers you to
+								create a vibrant network that assist your journey at UCSD. */}
 							</Typography>
 
 							<Button
