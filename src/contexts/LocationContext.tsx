@@ -89,13 +89,26 @@ export default function LocationContextProvider({ children }: { children: React.
 	useEffect(() => {
 		// Join channel in stream.io
 		const joinBuildingChannel = async () => {
-			const channelId = nearestBuilding?.id;
+			if (!nearestBuilding) {
+				return;
+			}
+			let channelId = nearestBuilding?.id;
+			if (channelId == '89286e04-b99d-4102-934a-9c08ea566abe') {
+				channelId = 'af998b9a-cac0-456d-92a2-83c0eb90e4ad';
+			}
 			if (!channelId || !client || !client._user) {
 				return;
 			}
-			const channel = client.channel('building', nearestBuilding.id, {
-				name: nearestBuilding.name,
-			});
+			let channel;
+			if (nearestBuilding.name == 'UC San Diego Softball Field' || nearestBuilding.name == 'Triton Soccer Stadium') {
+				channel = client.channel('building', channelId, {
+					name: 'Rimac Field',
+				});
+			} else {
+				channel = client.channel('building', channelId, {
+					name: nearestBuilding.name,
+				});
+			}
 			channelRef.current = channel;
 			await channel.watch();
 			setBuildingChannel(channel);
