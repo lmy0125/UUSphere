@@ -14,15 +14,6 @@ export default function BuildingCard({ buildingInfo }: { buildingInfo: BuildingI
 	const { data: session } = useSession();
 	const [users, setUsers] = useState<User[]>([]);
 
-	// useEffect(() => {
-	// 	const fetchBuildingInfo = async () => {
-	// 		const response = await axios.get(`/api/building?id=${buildingId}`);
-	// 		setBuildingInfo(response.data);
-	// 		setUsers(response.data.users ?? []);
-	// 	};
-	// 	fetchBuildingInfo();
-	// }, []);
-
 	useEffect(() => {
 		// Realtime update
 		const buildingChannel = supabaseClient.channel(`buildings`, { config: { presence: { key: buildingInfo.id } } });
