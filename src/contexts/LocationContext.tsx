@@ -50,7 +50,6 @@ export default function LocationContextProvider({ children }: { children: React.
 			if (!response.ok) throw new Error('Failed to fetch the nearest building');
 
 			const data = await response.json();
-			console.log('nearestBuilding', data, latitude, longitude);
 			setNearestBuilding(data.nearestBuilding);
 		} catch (error) {
 			console.error(error);
@@ -68,7 +67,6 @@ export default function LocationContextProvider({ children }: { children: React.
 				setError(null);
 			}
 			const { latitude, longitude } = coords;
-			console.log('coordss', latitude, longitude, coords.accuracy);
 			fetchNearestBuilding(latitude, longitude);
 		};
 
@@ -95,17 +93,16 @@ export default function LocationContextProvider({ children }: { children: React.
 	useEffect(() => {
 		// Join channel in stream.io
 		const joinBuildingChannel = async () => {
-			if (!nearestBuilding) {
-				return;
-			}
-			let channelId = nearestBuilding?.id;
-			if (channelId == '89286e04-b99d-4102-934a-9c08ea566abe') {
-				channelId = 'af998b9a-cac0-456d-92a2-83c0eb90e4ad';
-			}
-			if (!channelId || !client || !client._user) {
+			if (!client || !client._user || !nearestBuilding) {
 				return;
 			}
 			let channel;
+
+			let channelId = nearestBuilding.id;
+			if (channelId == '89286e04-b99d-4102-934a-9c08ea566abe') {
+				channelId = 'af998b9a-cac0-456d-92a2-83c0eb90e4ad';
+			}
+			// Grouped two buildings into one channel
 			if (nearestBuilding.name == 'UC San Diego Softball Field' || nearestBuilding.name == 'Triton Soccer Stadium') {
 				channel = client.channel('building', channelId, {
 					name: 'Rimac Field',
@@ -115,6 +112,7 @@ export default function LocationContextProvider({ children }: { children: React.
 					name: nearestBuilding.name,
 				});
 			}
+
 			channelRef.current = channel;
 			await channel.watch();
 			setBuildingChannel(channel);

@@ -62,5 +62,6 @@ function findMatchBuilding(mapBuildings: MapBuilding[], dbBuildings: DbBuilding[
 			}
 		}
 	}
-	return undefined;
+	// Hardcoded default building
+	return { id: '9d5f2f63-0538-4311-976a-b843d10bedde', name: 'Public Channel' };
 }

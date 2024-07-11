@@ -31,13 +31,13 @@ export default function MainBuilding() {
 	useEffect(() => {
 		// Realtime update
 		if (nearestBuilding) {
-			const buildingChannel = supabaseClient.channel(`buildings`, {
+			const buildingRealTimeChannel = supabaseClient.channel(`buildings`, {
 				config: { presence: { key: nearestBuilding.id } },
 			});
 
-			buildingChannel
+			buildingRealTimeChannel
 				.on('presence', { event: 'sync' }, () => {
-					const newState = buildingChannel.presenceState();
+					const newState = buildingRealTimeChannel.presenceState();
 					// console.log('sync', newState, newState[nearestBuilding.id]);
 					const users = newState[nearestBuilding.id]
 						?.map((object: any) => ({
@@ -65,7 +65,7 @@ export default function MainBuilding() {
 					if (status !== 'SUBSCRIBED') {
 						return;
 					}
-					const presenceTrackStatus = await buildingChannel.track(userStatus);
+					const presenceTrackStatus = await buildingRealTimeChannel.track(userStatus);
 					// console.log('presenceTrackStatus', presenceTrackStatus);
 				});
 		}
