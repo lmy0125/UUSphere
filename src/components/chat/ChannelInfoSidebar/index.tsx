@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
 	Avatar,
@@ -29,9 +29,10 @@ import UserAvatar from '@/components/UserAvatar';
 import { InfoSidebarContainer } from '@/components/chat/ChannelInfoSidebar/InfoSidebarContainer';
 import BackButton from '@/components/chat/BackButton';
 import FlatUserProfile from '@/components/chat/ChannelInfoSidebar/FlatUserProfile';
-import { DropSectionModal } from '@/components/ClassEnrollment/ConfirmModals';
+import { LeaveChanneModal } from '@/components/ClassEnrollment/ConfirmModals';
 import { useChatStackContext } from '@/contexts/ChatStackContext';
 import { User } from '@/types/User';
+import { useUser } from '@/hooks/useUser';
 
 export const ChannelInfoSidebar = ({ onlineUsers }: { onlineUsers?: User[] }) => {
 	const [dropSectionModal, setDropSectionModal] = useState(false);
@@ -39,6 +40,15 @@ export const ChannelInfoSidebar = ({ onlineUsers }: { onlineUsers?: User[] }) =>
 	const { channel, members, watchers } = useChannelStateContext<CustomStreamChatGenerics>();
 	const { displayTitle } = useChannelPreviewInfo({ channel });
 	const { showInfoSidebar, setShowInfoSidebar } = useChatStackContext();
+	const { user } = useUser({ userId: session?.user.id });
+	// Get session id for the user is in
+	const [sectionId, setSectionId] = useState<string>('');
+	const [classId, setClassId] = useState<string>('');
+
+	useEffect(() => {
+		setSectionId(user?.sections?.filter((section) => section.classId === channel.id)[0]?.id ?? '');
+		setClassId(channel.id ?? '');
+	}, [user, channel]);
 
 	if (channel.type === 'classroom' || (channel.data?.member_count && channel.data?.member_count > 2)) {
 		return (
@@ -53,7 +63,12 @@ export const ChannelInfoSidebar = ({ onlineUsers }: { onlineUsers?: User[] }) =>
 						Leave Channel
 					</Button>
 				</Box>
-				{/* <DropSectionModal open={dropSectionModal} setDropSectionModal={setDropSectionModal} /> */}
+				<LeaveChanneModal
+					open={dropSectionModal}
+					setLeaveChannelModal={setDropSectionModal}
+					sectionId={sectionId}
+					classId={classId}
+				/>
 			</InfoSidebarContainer>
 		);
 	} else if (channel.type === 'building') {

@@ -1,4 +1,4 @@
-import { User as U } from '@prisma/client';
+import { User as U, Class, Section } from '@prisma/client';
 
 export interface BigHeadStyle {
 	accessory?: string;
@@ -27,4 +27,6 @@ export interface BigHeadAvatar extends BigHeadStyle {
 
 export interface User extends U {
 	bigHeadAvatar?: BigHeadAvatar | undefined;
+	classes?: Class[];
+	sections?: Section[];
 }
