@@ -5,7 +5,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 	if (req.method === 'GET') {
 		try {
 			const buildings = await prisma.building.findMany({
-				take: 4,
 				orderBy: {
 					users: {
 						_count: 'desc',

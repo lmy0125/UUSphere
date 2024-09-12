@@ -54,10 +54,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 }
 
 function findMatchBuilding(mapBuildings: MapBuilding[] | undefined, dbBuildings: DbBuilding[]): DbBuilding | undefined {
-	if (!mapBuildings) {
-		return { id: '9d5f2f63-0538-4311-976a-b843d10bedde', name: 'Public Channel' };
-	}
-
+	if (!mapBuildings) return undefined;
+	
 	for (const building of mapBuildings) {
 		const buildingName = building.displayName.text;
 		for (const signatureBuilding of dbBuildings) {
@@ -66,6 +64,4 @@ function findMatchBuilding(mapBuildings: MapBuilding[] | undefined, dbBuildings:
 			}
 		}
 	}
-	// Hardcoded default building
-	return { id: '9d5f2f63-0538-4311-976a-b843d10bedde', name: 'Public Channel' };
 }

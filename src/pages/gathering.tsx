@@ -11,16 +11,15 @@ import { useLocationContext } from '@/contexts/LocationContext';
 
 const GatheringPage: PageType = () => {
 	const { nearestBuilding, error, buildingChannel } = useLocationContext();
+	// const [buildings, setBuildings] = useState<BuildingInfo[]>([]);
 
-	const [buildings, setBuildings] = useState<BuildingInfo[]>([]);
-
-	useEffect(() => {
-		const getBuildings = async () => {
-			const response = await axios.get(`/api/buildings`);
-			setBuildings(response.data);
-		};
-		getBuildings();
-	}, []);
+	// useEffect(() => {
+	// 	const getBuildings = async () => {
+	// 		const response = await axios.get(`/api/buildings`);
+	// 		setBuildings(response.data);
+	// 	};
+	// 	getBuildings();
+	// }, []);
 
 	return (
 		<>
@@ -34,26 +33,13 @@ const GatheringPage: PageType = () => {
 				<Container maxWidth="lg">
 					<Stack justifyContent="space-between">
 						<Typography variant="h4">Gathering</Typography>
-						<Typography variant="subtitle2">You meeting here isn&apos;t mere coincidences.</Typography>
+						<Typography variant="subtitle2">Say 'Hi' to your classmates.</Typography>
 					</Stack>
 
 					<div>
-						{error ? (
-							<p>Error: {error}</p>
-						) : (
-							<>
-								{/* {location ? (
-									<p>
-										Latitude: {location.latitude}, Longitude: {location.longitude}
-									</p>
-								) : (
-									<p>Fetching location...</p>
-								)} */}
-								{nearestBuilding ? <p>You are in: {nearestBuilding.name}</p> : <p>Nearest Building: None</p>}
-							</>
-						)}
+						<p>You are in: {nearestBuilding?.name}</p>
 					</div>
-					{buildingChannel ? <MainBuilidng /> : <div>You are not near a school building.</div>}
+					<MainBuilidng />
 					{/* <Grid container spacing={4}>
 						{buildings.map((building) => (
 							<Grid item xs={12} sm={6} key={building.id}>
