@@ -18,7 +18,7 @@ import type { CalendarEvent, CalendarView } from '@/types/calendar';
 import { Section } from '@/types/class';
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
-import { FALSE } from 'sass';
+import { quarterPeriod } from '@/constants/availableQuarters';
 
 interface CreateDialogData {
 	range?: {
@@ -53,10 +53,7 @@ interface UpdateDialogData {
 //   return events;
 // };
 
-const useCurrentEvent = (
-	events: CalendarEvent[],
-	dialogData?: UpdateDialogData
-): CalendarEvent | undefined => {
+const useCurrentEvent = (events: CalendarEvent[], dialogData?: UpdateDialogData): CalendarEvent | undefined => {
 	return useMemo((): CalendarEvent | undefined => {
 		if (!dialogData) {
 			return undefined;
@@ -80,9 +77,7 @@ const Calendar: FC<CalendarProps> = ({ userId, quarter }) => {
 	useEffect(() => {
 		const getEnrolledClassesMeetings = async () => {
 			try {
-				const response = await axios.get(
-					`/api/enrolledClasses?userId=${userId}&quarter=${quarter}`
-				);
+				const response = await axios.get(`/api/enrolledClasses?userId=${userId}&quarter=${quarter}`);
 				const getMeetings = (section: Section, color: string): EventInput[] => {
 					const meetings = section.meetings.map((meeting) => {
 						const event: EventInput = {
@@ -91,8 +86,8 @@ const Calendar: FC<CalendarProps> = ({ userId, quarter }) => {
 							// description: 'description',
 							startTime: meeting.startTime,
 							endTime: meeting.endTime,
-							startRecur: '2023-09-28',
-							endRecur: '2023-12-08',
+							startRecur: quarterPeriod.start,
+							endRecur: quarterPeriod.end,
 							title: section.class.code + ' ' + meeting.type,
 							daysOfWeek: meeting.daysOfWeek,
 							editable: false,
