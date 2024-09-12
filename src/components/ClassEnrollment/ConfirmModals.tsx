@@ -1,16 +1,5 @@
 import * as React from 'react';
-import {
-	Box,
-	Button,
-	Typography,
-	Modal,
-	Paper,
-	Table,
-	TableHead,
-	TableBody,
-	TableRow,
-	TableCell,
-} from '@mui/material';
+import { Box, Button, Typography, Modal, Paper, Table, TableHead, TableBody, TableRow, TableCell } from '@mui/material';
 import type { Theme } from '@mui/material';
 import { useMediaQuery } from '@mui/material';
 import { ClassInfo } from '@/types/class';
@@ -157,6 +146,57 @@ export const DropSectionModal = ({
 						</TableBody>
 					</Table>
 				</Scrollbar>
+				<Box
+					sx={{
+						display: 'flex',
+						justifyContent: 'flex-end',
+						mt: 2,
+					}}>
+					<Button color="inherit" sx={{ mr: 2 }} onClick={handleClose}>
+						Cancel
+					</Button>
+					<Button variant="contained" onClick={handleConfirm}>
+						Confirm
+					</Button>
+				</Box>
+			</Paper>
+		</Modal>
+	);
+};
+
+export const LeaveChanneModal = ({
+	open,
+	setLeaveChannelModal,
+	sectionId,
+	classId,
+}: {
+	open: boolean;
+	setLeaveChannelModal: React.Dispatch<React.SetStateAction<boolean>>;
+	sectionId: string;
+	classId: string;
+}) => {
+	const { chatClient } = useChatContext();
+	const handleClose = () => setLeaveChannelModal(false);
+	const handleConfirm = () => {
+		if (chatClient) {
+			dropSection(sectionId, classId, chatClient);
+		}
+		setLeaveChannelModal(false);
+	};
+
+	return (
+		<Modal
+			open={open}
+			onClose={handleClose}
+			aria-labelledby="modal-modal-title"
+			aria-describedby="modal-modal-description">
+			<Paper elevation={12} sx={style}>
+				<Typography variant="h6" component="h2">
+					Leave Channel
+				</Typography>
+				<Typography variant="body1" sx={{ mt: 2 }}>
+					Are you sure you want to leave this channel?
+				</Typography>
 				<Box
 					sx={{
 						display: 'flex',
