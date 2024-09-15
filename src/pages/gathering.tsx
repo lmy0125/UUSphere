@@ -24,20 +24,18 @@ const GatheringPage: PageType = () => {
 	// }, []);
 
 	return (
-		<>
-			<Box
-				component="main"
-				sx={{
-					flexGrow: 1,
-					pb: 8,
-					mt: 1,
-				}}>
-				<Container maxWidth="lg">
-					<Stack justifyContent="space-between">
-						<Typography variant="h4">Meet people in the same building</Typography>
-						<Typography variant="subtitle2">You meeting here isn&apos;t mere coincidences.</Typography>
-					</Stack>
-
+		<Box
+			component="main"
+			sx={{
+				flexGrow: 1,
+				pb: 8,
+				mt: 1,
+			}}>
+			<Container maxWidth="lg">
+				<Stack justifyContent="space-between">
+					<Typography variant="h4">Meet people in the same building</Typography>
+					<Typography variant="subtitle2">You meeting here isn&apos;t mere coincidences.</Typography>
+				</Stack>
 
 				<div>
 					<p>You are in: {nearestBuilding?.name}</p>
