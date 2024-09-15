@@ -26,6 +26,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 				},
 				include: {
 					bigHeadAvatar: true,
+					classes: true,
+					sections: true,
 				},
 			});
 			// exclude id and userId in bigHeadAvatar to match type defined in @/types/User

@@ -38,7 +38,7 @@ const tabs = [
 	{ label: 'About', value: 'about' },
 	{ label: 'Schedule', value: 'schedule' },
 	// { label: 'Friends', value: 'friends' },
-	{ label: 'Clubs', value: 'clubs' },
+	// { label: 'Clubs', value: 'clubs' },
 ];
 
 export const ProfilePage: PageType = () => {
@@ -190,9 +190,9 @@ export const ProfilePage: PageType = () => {
 							<Stack alignItems="center" direction="row" spacing={2}>
 								<UserAvatar userId={router.query.id as string} size={64} />
 								<div>
-									<Typography color="text.secondary" variant="overline">
+									{/* <Typography color="text.secondary" variant="overline">
 										Rookie
-									</Typography>
+									</Typography> */}
 									<Stack direction="row" alignItems="center">
 										<Typography
 											variant="h6"
@@ -308,7 +308,7 @@ export const ProfilePage: PageType = () => {
 						{currentTab === 'schedule' && <Schedule userId={router.query.id as string} />}
 
 						{/* {currentTab === 'schedule' && <Calendar userId={router.query.id as string} />} */}
-						{currentTab === 'clubs' && <Clubs />}
+						{/* {currentTab === 'clubs' && <Clubs />} */}
 					</Box>
 				</Container>
 			</Box>

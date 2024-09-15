@@ -8,7 +8,8 @@ export const useUser = ({ userId }: { userId?: string }) => {
 	const { data: allUsers } = useSWR<User[]>(`/api/user`, fetcher);
 
 	const updateUser = async (data: User) => {
-		await axios.put(`/api/user/${userId}`, data);
+		let { sections, classes, ...user } = data;
+		await axios.put(`/api/user/${userId}`, user);
 		mutate();
 	};
 
