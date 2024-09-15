@@ -7,6 +7,7 @@ import { useSession } from 'next-auth/react';
 import { Channel as ChannelType } from 'stream-chat';
 import { CustomStreamChatGenerics } from '@/types/customStreamChat';
 import { useChatContext as useStreamChatContext } from 'stream-chat-react';
+import { PublicChannel } from '@/constants/publicChannel';
 
 interface LocationContextType {
 	nearestBuilding: DbBuilding | null;
@@ -50,10 +51,16 @@ export default function LocationContextProvider({ children }: { children: React.
 			if (!response.ok) throw new Error('Failed to fetch the nearest building');
 
 			const data = await response.json();
-			setNearestBuilding(data.nearestBuilding);
+			if (data.nearestBuilding) {
+				setNearestBuilding(data.nearestBuilding);
+			} else {
+				setError('No building found nearby');
+				setNearestBuilding(PublicChannel);
+			}
 		} catch (error) {
 			console.error(error);
 			setError('Failed to communicate with the API');
+			setNearestBuilding(PublicChannel);
 		}
 	};
 
@@ -62,6 +69,7 @@ export default function LocationContextProvider({ children }: { children: React.
 		const fetchLocation = () => {
 			if (!isGeolocationAvailable || !isGeolocationEnabled || !coords) {
 				setError('Geolocation is not available or not enabled');
+				setNearestBuilding(PublicChannel);
 				return;
 			} else {
 				setError(null);
