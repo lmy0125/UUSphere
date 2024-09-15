@@ -33,8 +33,8 @@ const GatheringPage: PageType = () => {
 			}}>
 			<Container maxWidth="lg">
 				<Stack justifyContent="space-between">
-					<Typography variant="h4">Gathering</Typography>
-					<Typography variant="subtitle2">Say &apos;Hi&apos; to your classmates.</Typography>
+					<Typography variant="h4">Meet people in the same building</Typography>
+					<Typography variant="subtitle2">You meeting here isn&apos;t mere coincidences.</Typography>
 				</Stack>
 
 				<div>
