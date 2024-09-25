@@ -5,8 +5,8 @@ import { RouterLink } from '@/components/router-link';
 import { paths } from '@/paths';
 import { Box, Button, Container, Paper, Stack, SvgIcon, Typography } from '@mui/material';
 // import SignupForm from '@/components/SignupForm';
-import { Hero } from '@/components/Onboarding/Hero';
-import { Features } from '@/components/Onboarding/Features';
+import { Hero } from '@/components/Landing/Hero';
+import { Features } from '@/components/Landing/Features';
 
 const HomePage: PageType = () => {
 	return (
