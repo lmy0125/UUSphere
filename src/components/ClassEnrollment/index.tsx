@@ -4,6 +4,7 @@ import { ClassTable } from '@/components/ClassEnrollment/ClassTable';
 import axios from 'axios';
 import useSWR from 'swr';
 import { ClassInfo } from '@/types/class';
+import { ClassEnrollmentContextProvider } from '@/contexts/ClassEnrollmentContext';
 
 interface Filters {
 	name?: string;
@@ -108,7 +109,7 @@ export default function ClassEnrollment({ quarter }: { quarter: string }) {
 	}, [quarter]);
 
 	return (
-		<>
+		<ClassEnrollmentContextProvider>
 			<ClassSearch onFiltersChange={classSearch.handleFiltersChange} data-isloading={classStore.isLoading} />
 			<ClassTable
 				onPageChange={classSearch.handlePageChange}
@@ -118,6 +119,6 @@ export default function ClassEnrollment({ quarter }: { quarter: string }) {
 				page={classSearch.state.page}
 				rowsPerPage={classSearch.state.rowsPerPage}
 			/>
-		</>
+		</ClassEnrollmentContextProvider>
 	);
 }
