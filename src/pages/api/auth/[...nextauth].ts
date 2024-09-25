@@ -11,6 +11,7 @@ import { readFileSync } from 'fs';
 import path from 'path';
 import prisma from '@/lib/prisma';
 import { StreamChat } from 'stream-chat';
+import { userAgent } from 'next/server';
 
 // const transporter = nodemailer.createTransport({
 // 	host: process.env.EMAIL_SERVER_HOST,
@@ -77,6 +78,7 @@ function getEmailDomain(email: string): string | null {
 }
 
 export const authOptions = {
+	adapter: PrismaAdapter(prisma),
 	pages: {
 		signIn: '/',
 		signOut: '/',
@@ -89,30 +91,47 @@ export const authOptions = {
 			clientSecret: process.env.GOOGLE_SECRET as string,
 		}),
 	],
-	adapter: PrismaAdapter(prisma),
 	callbacks: {
+		async signIn({ user, account, profile }: any) {
+			return true; // Default to next-auth default callback behavior
+		},
 		async session({ session, token, user }: any) {
 			const serverClient = StreamChat.getInstance(
 				process.env.STREAMCHAT_KEY! as string,
 				process.env.STREAMCHAT_SECRET! as string
 			);
 			// Set verified Student
-			const emailDomain = getEmailDomain(user.email);
+			const { email } = user;
+			const emailDomain = getEmailDomain(email);
 			user.verifiedStudent = emailDomain === 'ucsd.edu';
 			await prisma.user.update({
 				where: {
-					email: user.email,
+					email: email,
 				},
 				data: {
 					verifiedStudent: user.verifiedStudent,
 				},
 			});
 
+			// Check if the user is signing in for the first time
+			const userCreationTime = await prisma.user.findUnique({
+				where: { id: user.id },
+				select: { created_at: true },
+			});
+
+			// Consider a user new if their account was created in the last 1 minutes
+			const isNewUser =
+				userCreationTime && new Date().getTime() - userCreationTime.created_at.getTime() < 1 * 60 * 1000;
+			console.log(
+				userCreationTime && new Date().getTime() - userCreationTime.created_at.getTime(),
+				userCreationTime?.created_at.getTime()
+			);
+			user.isNewUser = isNewUser;
+
 			// Create User Token
 			token = serverClient.createToken(user?.id);
 			session.streamChatToken = token;
 			session.user = user;
-
 			return session;
 		},
 		async redirect({ url, baseUrl }: { url: string; baseUrl: string }) {
@@ -121,14 +140,6 @@ export const authOptions = {
 			// Allows callback URLs on the same origin
 			else if (new URL(url).origin === baseUrl) return url;
 			return baseUrl;
-		},
-		async signIn({ user, account }: { user: User | AdapterUser; account: Account | null }) {
-			// Check if the user is signing in for the first time
-			// if (account?.provider === 'google' && user.id === account?.id) {
-			// 	// Redirect to a different URL for first-time login
-			// 	return '/first-time-login'; // Replace with your desired URL
-			// }
-			return true;
 		},
 	},
 
