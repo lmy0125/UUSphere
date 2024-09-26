@@ -14,13 +14,9 @@ export default function AuthModal({
 }) {
 	const [disabled, setDisabled] = useState(false);
 	const signInWithGoogle = () => {
-		// toast.loading('Redirecting...');
 		setDisabled(true);
 		// Perform sign in
-		signIn('google', {
-			callbackUrl: '/gathering',
-			redirect: true,
-		});
+		signIn('google');
 	};
 
 	return (

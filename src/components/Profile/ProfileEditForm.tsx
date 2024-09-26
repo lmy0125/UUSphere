@@ -8,7 +8,6 @@ import {
 	CardActions,
 	CardContent,
 	CardHeader,
-	Switch,
 	TextField,
 	Typography,
 	Unstable_Grid2 as Grid,
@@ -23,17 +22,16 @@ import {
 } from '@mui/material';
 import { genders, majors, homelands, grades, colleges } from '@/constants/personalInfoOptions';
 import { User } from '@/types/User';
-import { BigHeadAvatar, BigHeadStyle } from '@/types/User';
-import axios from 'axios';
-import { KeyedMutator } from 'swr';
+import { BigHeadStyle } from '@/types/User';
 import { BigHead } from '@bigheads/core';
 import { GithubPicker } from 'react-color';
 import AutorenewIcon from '@mui/icons-material/Autorenew';
 import { useUser } from '@/hooks/useUser';
+import { useSession } from 'next-auth/react';
 
 interface ProfileEditFormProps {
 	user: User;
-	setProfileFormToggle: Dispatch<SetStateAction<boolean>>;
+	setProfileFormToggle?: Dispatch<SetStateAction<boolean>>;
 }
 
 const bigHeadOptions: Record<string, string[]> = {
@@ -57,6 +55,8 @@ const bigHeadOptions: Record<string, string[]> = {
 };
 
 const ProfileEditForm: FC<ProfileEditFormProps> = ({ user, setProfileFormToggle }) => {
+	const { data: session } = useSession();
+	const { mutate, updateUser } = useUser({ userId: session?.user.id });
 	const [personalInfo, setPersonalInfo] = useState<User>({
 		...user,
 		name: user.name,
@@ -70,7 +70,7 @@ const ProfileEditForm: FC<ProfileEditFormProps> = ({ user, setProfileFormToggle 
 		bio: user.bio ?? '',
 		bigHeadAvatar: user.bigHeadAvatar,
 	});
-	const { mutate, updateUser } = useUser({ userId: user.id });
+
 	const smUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 
 	// pick random value for each attribute in the bigHeadOptions above
@@ -99,7 +99,7 @@ const ProfileEditForm: FC<ProfileEditFormProps> = ({ user, setProfileFormToggle 
 		event.preventDefault();
 		updateUser(personalInfo);
 		mutate();
-		setProfileFormToggle(false);
+		setProfileFormToggle?.(false);
 	};
 
 	useEffect(() => {
@@ -244,15 +244,15 @@ const ProfileEditForm: FC<ProfileEditFormProps> = ({ user, setProfileFormToggle 
 								<RadioGroup
 									row
 									value={personalInfo.bigHeadAvatar?.selected ? 'bighead' : 'original'}
-									onChange={(event) =>
+									onChange={(event) => {
 										setPersonalInfo({
 											...personalInfo,
 											bigHeadAvatar: {
 												...personalInfo.bigHeadAvatar,
 												selected: (event.target as HTMLInputElement).value === 'bighead',
 											},
-										})
-									}>
+										});
+									}}>
 									<FormControlLabel value="original" control={<Radio />} label="Original" />
 									<FormControlLabel value="bighead" control={<Radio />} label="Big Head" />
 								</RadioGroup>
