@@ -96,7 +96,7 @@ export default function LocationContextProvider({ children }: { children: React.
 		return () => {
 			updateDatabase(undefined);
 		};
-	}, [nearestBuilding, session?.user.id]);
+	}, [nearestBuilding, session, session?.user.id]);
 
 	useEffect(() => {
 		// Join channel in stream.io

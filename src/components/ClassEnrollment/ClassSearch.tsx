@@ -2,7 +2,7 @@ import type { FC, KeyboardEvent } from 'react';
 import { FormEvent, useCallback, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import SearchMdIcon from '@untitled-ui/icons-react/build/esm/SearchMd';
-import { Input, Stack, SvgIcon, Button } from '@mui/material';
+import { Box, Input, Stack, SvgIcon, Button } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 
 interface Filters {
@@ -30,14 +30,14 @@ export const ClassSearch: FC<ClassSearchProps> = (props) => {
 	};
 
 	return (
-		<div {...other}>
+		<Box>
 			<Stack
 				alignItems="center"
 				component="form"
 				direction="row"
 				onSubmit={handleQueryChange}
 				spacing={2}
-				sx={{ p: 2 }}>
+				sx={{ p: 1 }}>
 				<SvgIcon>
 					<SearchMdIcon />
 				</SvgIcon>
@@ -46,7 +46,23 @@ export const ClassSearch: FC<ClassSearchProps> = (props) => {
 					fullWidth
 					inputProps={{ ref: queryRef }}
 					placeholder="Search by class name"
-					sx={{ flexGrow: 1 }}
+					sx={{
+						flexGrow: 1,
+						borderBottom: '2px solid #e0e0e0', // Soft, light underline by default
+						transition: 'border-color 0.3s ease', // Smooth transition for underl
+						'&:hover': {
+							borderBottom: '2px solid #bdbdbd', // Slightly darker underline on hover
+						},
+						'&.Mui-focused': {
+							borderBottom: '2px solid #7bdece', // Material UI blue underline on focus
+						},
+						'&:before': {
+							borderBottom: 'none', // Remove the default underline before styling
+						},
+						'&:after': {
+							borderBottom: 'none', // Remove the default underline after styling
+						},
+					}}
 					value={inputValue}
 					onChange={(e) => {
 						setInputValue(e.target.value);
@@ -61,11 +77,12 @@ export const ClassSearch: FC<ClassSearchProps> = (props) => {
 				<LoadingButton
 					onClick={handleSearchClass}
 					loading={props['data-isloading']}
-					variant="outlined">
+					variant="outlined"
+					sx={{ p: 1 }}>
 					Search
 				</LoadingButton>
 			</Stack>
-		</div>
+		</Box>
 	);
 };
 

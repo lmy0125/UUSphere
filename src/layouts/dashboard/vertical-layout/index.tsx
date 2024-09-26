@@ -65,7 +65,6 @@ export const VerticalLayout: FC<VerticalLayoutProps> = (props) => {
 
 	useEffect(() => {
 		const bannerShown = localStorage.getItem('bannerShown');
-    console.log('bannerShown', bannerShown, numOfCurrentQuarterClasses);
 		if (!bannerShown && numOfCurrentQuarterClasses < 1) {
 			setBannerOpen(true);
 		} else {

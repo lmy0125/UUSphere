@@ -37,14 +37,14 @@ export const Hero: FC = () => {
 				backgroundPosition: 'top center',
 				backgroundImage: 'url("/assets/gradient-bg.svg")',
 				pt: '150px',
-				pb: 12,
+				pb: 10,
 			}}>
 			<Container maxWidth="lg">
 				<Grid container spacing={8}>
 					<Grid item xs={12} md={7}>
-						<Box maxWidth="md" sx={{ textAlign: mdUp ? 'left' : 'center' }}>
+						<Box maxWidth="md" sx={{ textAlign: mdUp ? 'left' : 'center',  }}>
 							<Typography variant="h2" sx={{ mb: 2 }}>
-								Connect with students in the same building and classes in&nbsp;
+								Meet your future best friend and partner in&nbsp;
 								<Typography component="span" color="primary.main" variant="inherit">
 									UCSD&nbsp;
 									<br />
@@ -56,8 +56,8 @@ export const Hero: FC = () => {
 									fontSize: 20,
 									fontWeight: 500,
 								}}>
-								Our platform provides additional tools on top of the school&apos;s system and empowers you to
-								create a vibrant network that assist your journey at UCSD.
+								UUSphere is built by a single student in UCSD, and he hope that students who are attending UCSD
+								can find this platform somewhat helpful, and enjoy the life in San Diego.
 							</Typography>
 
 							<Button
@@ -90,8 +90,8 @@ export const Hero: FC = () => {
 					<Grid item xs={12} md={5}>
 						<Box
 							sx={{
-								py: mdUp ? '20px' : '0',
-								position: 'relative',
+								// py: mdUp ? '20px' : '0',
+								// position: 'relative',
 							}}>
 							<Card sx={{ maxWidth: 'md', minWidth: '320px', width: '100%' }}>
 								<CardContent

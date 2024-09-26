@@ -16,17 +16,13 @@ import {
 import { RouterLink } from '@/components/router-link';
 import { signOut } from 'next-auth/react';
 import { useChatContext } from '@/contexts/ChatContext';
+import { User } from '@/types/User';
 
 interface AccountPopoverProps {
 	anchorEl: null | Element;
 	onClose?: () => void;
 	open?: boolean;
-	user: {
-		id: string;
-		email: string;
-		name: string;
-		image: string;
-	};
+	user: User;
 }
 
 export const AccountPopover: FC<AccountPopoverProps> = (props) => {
