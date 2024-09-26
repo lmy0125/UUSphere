@@ -8,9 +8,11 @@ import { AccountPopover } from './account-popover';
 import AuthModal from '@/components/AuthModal';
 import { useSession } from 'next-auth/react';
 import UserAvatar from '@/components/UserAvatar';
+import { useUser } from '@/hooks/useUser';
 
 export const AccountButton: FC = () => {
 	const { data: session, status } = useSession();
+	const { user } = useUser({ userId: session?.user.id });
 	const [authModal, setAuthModal] = useState(false);
 	const popover = usePopover<HTMLButtonElement>();
 
@@ -18,7 +20,7 @@ export const AccountButton: FC = () => {
 		return <Skeleton variant="circular" width={40} height={40} />;
 	}
 
-	if (!session) {
+	if (!session || !user) {
 		return (
 			<>
 				<Button onClick={() => setAuthModal(!authModal)} variant="contained">
@@ -51,7 +53,7 @@ export const AccountButton: FC = () => {
 				anchorEl={popover.anchorRef.current}
 				onClose={popover.handleClose}
 				open={popover.open}
-				user={session.user}
+				user={user}
 			/>
 		</>
 	);
