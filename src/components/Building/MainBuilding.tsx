@@ -73,7 +73,7 @@ export default function MainBuilding() {
 		// 	buildingChannel?.unsubscribe();
 		// 	supabaseClient.removeChannel(buildingChannel);
 		// };
-	}, [nearestBuilding, user?.status]);
+	}, [nearestBuilding, user?.status, user]);
 
 	if (!buildingChannel || !client?._user || !nearestBuilding) {
 		return null;
