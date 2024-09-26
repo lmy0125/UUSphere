@@ -3,6 +3,7 @@ import type { Page as PageType } from '@/types/page';
 import {
 	Box,
 	Button,
+	CircularProgress,
 	Stepper,
 	Step,
 	StepLabel,
@@ -19,6 +20,7 @@ import { useRouter } from 'next/router';
 import { useUser } from '@/hooks/useUser';
 import { User } from '@/types/User';
 import { GetServerSideProps } from 'next';
+import { Logo } from '@/components/logo';
 
 const steps = ['Profile Completion', 'Join Classes'];
 
@@ -68,7 +70,25 @@ const OnBoardingPage: PageType = () => {
 	}, [user]);
 
 	if (!personalInfo) {
-		return null;
+		return (
+			<Box
+				sx={{
+					display: 'flex',
+					flexDirection: 'column',
+					justifyContent: 'center',
+					alignItems: 'center',
+					height: '100vh',
+				}}>
+				<Logo width={135} height={60} />
+				<CircularProgress
+					sx={{
+						color: '#7bdece',
+					}}
+					size={60} // Size of the spinner
+					thickness={4} // Thickness of the spinner
+				/>
+			</Box>
+		);
 	}
 
 	return (
