@@ -115,7 +115,7 @@ const ClassRow: FC<{
 	const [numOfEnrolledStudentForClass, setNumOfEnrolledStudentForClass] = useState(0);
 	const [totalSeats, setTotalSeats] = useState(0);
 	const [enrollmentRatio, setEnrollmentRatio] = useState(0);
-	const [profRating, setProfRating] = useState(0);
+	// const [profRating, setProfRating] = useState(0);
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const smUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 
@@ -157,32 +157,22 @@ const ClassRow: FC<{
 		}
 	}, [classInfo.id]);
 
-	const getProfessorRating = useCallback(async () => {
-		try {
-			const res = await axios.get(`/api/professorRating?professor=${classInfo.instructor}`);
-			if (res.data) {
-				setProfRating(res.data);
-			}
-		} catch (err) {
-			console.error('Failed to getProfessorRating' + err);
-		}
-	}, [classInfo.instructor]);
-
-	useEffect(() => {
-		checkHasClass();
-		getNumOfEnrolledStudent();
-		getProfessorRating();
-	}, [checkHasClass, getNumOfEnrolledStudent, getProfessorRating]);
-
-	// useEffect(() => {
-	// 	const fetchRating = async () => {
+	// const getProfessorRating = useCallback(async () => {
+	// 	try {
 	// 		const res = await axios.get(`/api/professorRating?professor=${classInfo.instructor}`);
 	// 		if (res.data) {
 	// 			setProfRating(res.data);
 	// 		}
-	// 	};
-	// 	fetchRating();
-	// }, [classInfo]);
+	// 	} catch (err) {
+	// 		console.error('Failed to getProfessorRating' + err);
+	// 	}
+	// }, [classInfo.instructor]);
+
+	useEffect(() => {
+		checkHasClass();
+		getNumOfEnrolledStudent();
+		// getProfessorRating();
+	}, [checkHasClass, getNumOfEnrolledStudent]);
 
 	const StyledRating = styled(Rating)({
 		'& .MuiRating-iconFilled': {
@@ -254,7 +244,7 @@ const ClassRow: FC<{
 				<TableCell>
 					<Box>
 						<Typography variant="subtitle2">{classInfo.instructor}</Typography>
-						<Stack direction="row" alignItems="center" spacing={0.5}>
+						{/* <Stack direction="row" alignItems="center" spacing={0.5}>
 							<StyledRating
 								value={1}
 								max={1}
@@ -264,7 +254,7 @@ const ClassRow: FC<{
 							<Typography sx={{ fontSize: '14px', fontWeight: 450 }}>
 								{profRating == 0 ? 'N/A' : profRating}
 							</Typography>
-						</Stack>
+						</Stack> */}
 					</Box>
 				</TableCell>
 
