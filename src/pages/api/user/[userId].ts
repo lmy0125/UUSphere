@@ -3,6 +3,7 @@ import { authOptions } from '../auth/[...nextauth]';
 import prisma from '@/lib/prisma';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { BigHeadAvatar } from '@prisma/client';
+import { StreamChat } from 'stream-chat';
 
 type ObjectWithProperties = Record<string, any>;
 
@@ -71,6 +72,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 					bigHeadAvatar: true,
 				},
 			});
+			const serverClient = new StreamChat(
+				process.env.NEXT_PUBLIC_STREAMCHAT_KEY! as string,
+				process.env.STREAMCHAT_SECRET! as string
+			);
+			console.log(serverClient.createToken(userId));
+			const { bigHeadAvatar, ...userData } = data;
+			const updatedChatUser = await serverClient.partialUpdateUser({
+				id: userId,
+				set: { ...userData },
+			});
+			console.log(updatedChatUser);
 			res.status(200).json(updatedUser);
 		} catch (e) {
 			res.status(500).json({ message: 'Failed to update user. ' + e });
