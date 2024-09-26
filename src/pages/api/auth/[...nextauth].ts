@@ -90,7 +90,7 @@ export const authOptions = {
 		},
 		async session({ session, token, user }: any) {
 			const serverClient = StreamChat.getInstance(
-				process.env.STREAMCHAT_KEY! as string,
+				process.env.NEXT_PUBLIC_STREAMCHAT_KEY! as string,
 				process.env.STREAMCHAT_SECRET! as string
 			);
 			// Set verified Student
