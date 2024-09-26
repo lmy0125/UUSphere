@@ -1,17 +1,10 @@
-import NextAuth, { AuthOptions, Awaitable, Session, User, Profile, Account } from 'next-auth';
-import { JWT } from 'next-auth/jwt';
-import { AdapterUser } from 'next-auth/adapters';
+import NextAuth from 'next-auth';
 // import EmailProvider from 'next-auth/providers/email';
 import GoogleProvider from 'next-auth/providers/google';
 // import nodemailer from 'nodemailer';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
-import { PrismaClient } from '@prisma/client';
-// import Handlebars from 'handlebars';
-import { readFileSync } from 'fs';
-import path from 'path';
 import prisma from '@/lib/prisma';
 import { StreamChat } from 'stream-chat';
-import { userAgent } from 'next/server';
 
 // const transporter = nodemailer.createTransport({
 // 	host: process.env.EMAIL_SERVER_HOST,
@@ -122,10 +115,6 @@ export const authOptions = {
 			// Consider a user new if their account was created in the last 1 minutes
 			const isNewUser =
 				userCreationTime && new Date().getTime() - userCreationTime.created_at.getTime() < 1 * 60 * 1000;
-			console.log(
-				userCreationTime && new Date().getTime() - userCreationTime.created_at.getTime(),
-				userCreationTime?.created_at.getTime()
-			);
 			user.isNewUser = isNewUser;
 
 			// Create User Token

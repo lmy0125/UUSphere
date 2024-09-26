@@ -22,8 +22,7 @@ HomePage.getLayout = (page) => <MarketingLayout>{page}</MarketingLayout>;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
 	const session = await getSession(context);
-	console.log('server side props', session);
-
+	
 	if (session) {
 		if ((session as any).user.isNewUser) {
 			return {
@@ -35,7 +34,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 		} else {
 			return {
 				redirect: {
-					destination: '/gathering',
+					destination: '/chat',
 					permanent: false,
 				},
 			};
