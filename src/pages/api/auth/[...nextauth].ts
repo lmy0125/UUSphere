@@ -112,9 +112,9 @@ export const authOptions = {
 				select: { created_at: true },
 			});
 
-			// Consider a user new if their account was created in the last 1 minutes
+			// Consider a user new if their account was created in the last 5 minutes
 			const isNewUser =
-				userCreationTime && new Date().getTime() - userCreationTime.created_at.getTime() < 1 * 60 * 1000;
+				userCreationTime && new Date().getTime() - userCreationTime.created_at.getTime() < 5 * 60 * 1000;
 			user.isNewUser = isNewUser;
 
 			// Create User Token
