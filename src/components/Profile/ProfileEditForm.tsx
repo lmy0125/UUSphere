@@ -30,6 +30,7 @@ import { useUser } from '@/hooks/useUser';
 import { useSession } from 'next-auth/react';
 
 interface ProfileEditFormProps {
+	user: User;
 	setProfileFormToggle?: Dispatch<SetStateAction<boolean>>;
 }
 
@@ -53,28 +54,22 @@ const bigHeadOptions: Record<string, string[]> = {
 	skinTone: ['light', 'yellow', 'brown', 'dark', 'red', 'black'],
 };
 
-const ProfileEditForm: FC<ProfileEditFormProps> = ({ setProfileFormToggle }) => {
+const ProfileEditForm: FC<ProfileEditFormProps> = ({ user, setProfileFormToggle }) => {
 	const { data: session } = useSession();
-	const { user, mutate, updateUser } = useUser({ userId: session?.user.id });
-	const [personalInfo, setPersonalInfo] = useState<User | null>(null);
-
-	useEffect(() => {
-		if (user) {
-			setPersonalInfo({
-				...user,
-				name: user.name,
-				email: user.email,
-				image: user.image,
-				gender: user.gender ?? '',
-				grade: user.grade ?? '',
-				college: user.college ?? '',
-				major: user.major ?? '',
-				homeland: user.homeland ?? '',
-				bio: user.bio ?? '',
-				bigHeadAvatar: user.bigHeadAvatar,
-			});
-		}
-	}, [user]);
+	const { mutate, updateUser } = useUser({ userId: session?.user.id });
+	const [personalInfo, setPersonalInfo] = useState<User>({
+		...user,
+		name: user.name,
+		email: user.email,
+		image: user.image,
+		gender: user.gender ?? '',
+		grade: user.grade ?? '',
+		college: user.college ?? '',
+		major: user.major ?? '',
+		homeland: user.homeland ?? '',
+		bio: user.bio ?? '',
+		bigHeadAvatar: user.bigHeadAvatar,
+	});
 
 	const smUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 
@@ -90,36 +85,30 @@ const ProfileEditForm: FC<ProfileEditFormProps> = ({ setProfileFormToggle }) => 
 		for (const key in bigHeadOptions) {
 			randomSelections[key as keyof BigHeadStyle] = getRandomValue(key as keyof BigHeadStyle);
 		}
-		if (personalInfo) {
-			setPersonalInfo({
-				...personalInfo,
-				bigHeadAvatar: {
-					...randomSelections,
-					selected: personalInfo.bigHeadAvatar?.selected ?? false,
-					backgroundColor: personalInfo.bigHeadAvatar?.backgroundColor ?? '#a9c8e6',
-				},
-			});
-		}
+		setPersonalInfo({
+			...personalInfo,
+			bigHeadAvatar: {
+				...randomSelections,
+				selected: personalInfo.bigHeadAvatar?.selected ?? false,
+				backgroundColor: personalInfo.bigHeadAvatar?.backgroundColor ?? '#a9c8e6',
+			},
+		});
 	};
 
 	const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-		if (personalInfo) {
-			updateUser(personalInfo);
-			mutate();
-		}
+		updateUser(personalInfo);
+		mutate();
 		setProfileFormToggle?.(false);
 	};
 
 	useEffect(() => {
 		// init the bigHeadAvatar for the first time for users.
 		// So that the avatar won't change if user switch between original and bighead
-		if (!personalInfo?.bigHeadAvatar) {
+		if (!personalInfo.bigHeadAvatar) {
 			generateRandomAvatar();
 		}
 	}, []);
-
-	if (!personalInfo) return null;
 
 	return (
 		<form onSubmit={(e) => handleSubmit(e)}>
@@ -255,15 +244,15 @@ const ProfileEditForm: FC<ProfileEditFormProps> = ({ setProfileFormToggle }) => 
 								<RadioGroup
 									row
 									value={personalInfo.bigHeadAvatar?.selected ? 'bighead' : 'original'}
-									onChange={(event) =>
+									onChange={(event) => {
 										setPersonalInfo({
 											...personalInfo,
 											bigHeadAvatar: {
 												...personalInfo.bigHeadAvatar,
 												selected: (event.target as HTMLInputElement).value === 'bighead',
 											},
-										})
-									}>
+										});
+									}}>
 									<FormControlLabel value="original" control={<Radio />} label="Original" />
 									<FormControlLabel value="bighead" control={<Radio />} label="Big Head" />
 								</RadioGroup>

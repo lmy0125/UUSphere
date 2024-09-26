@@ -231,7 +231,7 @@ export const ProfilePage: PageType = () => {
 									</Button>
 									<Dialog open={profileFormToggle} onClose={() => setProfileFormToggle(false)} scroll="body">
 										<DialogContent>
-											<ProfileEditForm setProfileFormToggle={setProfileFormToggle} />
+											<ProfileEditForm user={user} setProfileFormToggle={setProfileFormToggle} />
 										</DialogContent>
 									</Dialog>
 								</Stack>
