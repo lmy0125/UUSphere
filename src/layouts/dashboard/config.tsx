@@ -64,6 +64,25 @@ export const useSections = () => {
 			{
 				items: [
 					{
+						title: t(tokens.nav.chat),
+						path: paths.chat,
+						icon: (
+							<SvgIcon fontSize="small">
+								<QuestionAnswerIcon />
+							</SvgIcon>
+						),
+					},
+					{
+						title: t(tokens.nav.classes),
+						path: paths.classes,
+						icon: (
+							<SvgIcon fontSize="small">
+								<SchoolIcon />
+							</SvgIcon>
+						),
+					},
+
+					{
 						title: t(tokens.nav.gathering),
 						path: paths.gathering,
 						icon: (
@@ -81,24 +100,7 @@ export const useSections = () => {
 					// 		</SvgIcon>
 					// 	),
 					// },
-					{
-						title: t(tokens.nav.classes),
-						path: paths.classes,
-						icon: (
-							<SvgIcon fontSize="small">
-								<SchoolIcon />
-							</SvgIcon>
-						),
-					},
-					{
-						title: t(tokens.nav.chat),
-						path: paths.chat,
-						icon: (
-							<SvgIcon fontSize="small">
-								<QuestionAnswerIcon />
-							</SvgIcon>
-						),
-					},
+
 					{
 						title: t(tokens.nav.mutualClassmates),
 						path: paths.mutualClassmates,
