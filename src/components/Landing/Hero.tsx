@@ -42,7 +42,7 @@ export const Hero: FC = () => {
 			<Container maxWidth="lg">
 				<Grid container spacing={8}>
 					<Grid item xs={12} md={7}>
-						<Box maxWidth="md" sx={{ textAlign: mdUp ? 'left' : 'center',  }}>
+						<Box maxWidth="md" sx={{ textAlign: mdUp ? 'left' : 'center' }}>
 							<Typography variant="h2" sx={{ mb: 2 }}>
 								Meet your future best friend and partner in&nbsp;
 								<Typography component="span" color="primary.main" variant="inherit">
@@ -80,7 +80,7 @@ export const Hero: FC = () => {
 												mt: 3,
 										  }
 								}
-								onClick={() => (session ? router.push('/gathering') : setAuthModal(true))}
+								onClick={() => (session ? router.push('/chat') : setAuthModal(true))}
 								variant="contained">
 								Get Started
 							</Button>
@@ -89,10 +89,12 @@ export const Hero: FC = () => {
 					</Grid>
 					<Grid item xs={12} md={5}>
 						<Box
-							sx={{
-								// py: mdUp ? '20px' : '0',
-								// position: 'relative',
-							}}>
+							sx={
+								{
+									// py: mdUp ? '20px' : '0',
+									// position: 'relative',
+								}
+							}>
 							<Card sx={{ maxWidth: 'md', minWidth: '320px', width: '100%' }}>
 								<CardContent
 									sx={{
