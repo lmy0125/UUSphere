@@ -21,6 +21,7 @@ import { useUser } from '@/hooks/useUser';
 import { User } from '@/types/User';
 import { GetServerSideProps } from 'next';
 import { Logo } from '@/components/logo';
+import { ClassEnrollmentContextProvider } from '@/contexts/ClassEnrollmentContext';
 
 const steps = ['Profile Completion', 'Join Classes'];
 
@@ -128,7 +129,11 @@ const OnBoardingPage: PageType = () => {
 							{/* <Typography sx={{ mt: 2, mb: 1 }}>Step {activeStep + 1} content</Typography> */}
 
 							{activeStep === 0 && <ProfileForm personalInfo={personalInfo} setPersonalInfo={setPersonalInfo} />}
-							{activeStep === 1 && <ClassEnrollment quarter={quarter} />}
+							{activeStep === 1 && (
+								<ClassEnrollmentContextProvider>
+									<ClassEnrollment quarter={quarter} />
+								</ClassEnrollmentContextProvider>
+							)}
 
 							<Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
 								{activeStep > 0 && (
@@ -155,21 +160,21 @@ const OnBoardingPage: PageType = () => {
 	);
 };
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-	const session = await getSession(context);
+// export const getServerSideProps: GetServerSideProps = async (context) => {
+// 	const session = await getSession(context);
 
-	if (session) {
-		if (!(session as any).user.isNewUser) {
-			return {
-				redirect: {
-					destination: '/chat',
-					permanent: false,
-				},
-			};
-		}
-	}
+// 	if (session) {
+// 		if (!(session as any).user.isNewUser) {
+// 			return {
+// 				redirect: {
+// 					destination: '/chat',
+// 					permanent: false,
+// 				},
+// 			};
+// 		}
+// 	}
 
-	return { props: {} };
-};
+// 	return { props: {} };
+// };
 
 export default OnBoardingPage;
