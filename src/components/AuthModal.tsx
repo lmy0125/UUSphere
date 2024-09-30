@@ -3,7 +3,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { signIn } from 'next-auth/react';
 import { Modal, Box, Typography, Button, Stack, Paper } from '@mui/material';
-import { Logo } from '@/components/logo';
+import { Logo } from '@/components/Logo';
 
 export default function AuthModal({
 	open,

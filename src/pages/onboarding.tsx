@@ -20,7 +20,7 @@ import { useRouter } from 'next/router';
 import { useUser } from '@/hooks/useUser';
 import { User } from '@/types/User';
 import { GetServerSideProps } from 'next';
-import { Logo } from '@/components/logo';
+import { Logo } from '@/components/Logo';
 import { ClassEnrollmentContextProvider } from '@/contexts/ClassEnrollmentContext';
 
 const steps = ['Profile Completion', 'Join Classes'];
