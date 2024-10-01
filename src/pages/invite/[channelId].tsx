@@ -1,6 +1,7 @@
 // pages/channels/join/[channelId].tsx
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import Image from 'next/image';
 import { useSession, signIn } from 'next-auth/react';
 import {
 	Typography,
@@ -36,6 +37,7 @@ const InvitePage: React.FC<InvitePageProps> = ({ channelId }) => {
 	const { data: session } = useSession();
 	const { client: chatClient } = useStreamChatContext<CustomStreamChatGenerics>();
 	const [channel, setChannel] = useState<ChannelType<CustomStreamChatGenerics>>();
+	const [channelName, setChannelName] = useState<string>('');
 	const [isJoining, setIsJoining] = useState<boolean>(false);
 	const [authModal, setAuthModal] = useState(false);
 	const [sections, setSections] = useState<SectionWithString[]>([]);
@@ -57,6 +59,13 @@ const InvitePage: React.FC<InvitePageProps> = ({ channelId }) => {
 		}
 	};
 
+	const [disabled, setDisabled] = useState(false);
+	const signInWithGoogle = () => {
+		setDisabled(true);
+		// Perform sign in
+		signIn('google', { callbackUrl: `/custom-page` });
+	};
+
 	useEffect(() => {
 		const fetchChannel = async () => {
 			const filter = { type: 'classroom', id: { $eq: channelId } };
@@ -68,7 +77,10 @@ const InvitePage: React.FC<InvitePageProps> = ({ channelId }) => {
 		};
 		const fetchSections = async () => {
 			const response = await axios.get(`/api/class/${channelId}`);
-			const sections: Section[] = response.data;
+			const className = response.data.code;
+			setChannelName(className);
+
+			const sections: Section[] = response.data.sections;
 
 			const getDaysOfWeek = (days: number[]): string => {
 				const daysMapping: { [key: number]: string } = {
@@ -80,10 +92,10 @@ const InvitePage: React.FC<InvitePageProps> = ({ channelId }) => {
 					6: 'Sa', // Saturday
 					7: 'Su', // Sunday
 				};
-
 				// Map the days to abbreviations and join them as a string
 				return days.map((day) => daysMapping[day]).join('');
 			};
+
 			const sectionsWithString = sections.map((section) => {
 				const { code, meetings } = section;
 				const lecture = meetings.filter((meeting) => meeting.type == 'LE')[0];
@@ -131,19 +143,18 @@ const InvitePage: React.FC<InvitePageProps> = ({ channelId }) => {
 					Join Group Chat
 				</Typography>
 				<Typography variant="h6" gutterBottom>
-					{String(channel?.data?.code)}
+					{channelName}
 				</Typography>
 
 				<Box sx={{ m: 1, mt: 3 }}>
 					<FormControl sx={{ minWidth: 80 }}>
-						<InputLabel id="demo-simple-select-autowidth-label">Section</InputLabel>
+						<InputLabel id="section-label">Section</InputLabel>
 						<Select
-							labelId="demo-simple-select-autowidth-label"
-							id="demo-simple-select-autowidth"
+							labelId="section-label"
 							value={selectedSection}
 							onChange={(e) => setSelectedSection(e.target.value as string)}
 							autoWidth
-							label="Age">
+							label="Section">
 							{sections.map((section) => (
 								<MenuItem key={section.id} value={section.id}>
 									{section.formatString}
@@ -156,10 +167,18 @@ const InvitePage: React.FC<InvitePageProps> = ({ channelId }) => {
 				{!session ? (
 					<>
 						<Button
-							variant="contained"
-							onClick={() => signIn(undefined, { callbackUrl: `/channels/join/${channel?.id}` })}
-							sx={{ mt: 2 }}>
-							Login to Join
+							onClick={signInWithGoogle}
+							fullWidth
+							variant="outlined"
+							color="inherit"
+							disabled={disabled}
+							sx={{
+								border: '1px solid rgba(0, 0, 0, .12)',
+								boxShadow: '0 2px 4px rgba(0,0,0,.1)',
+								mt: 2,
+							}}>
+							<Image src="/google.svg" alt="Google" width={20} height={20} />
+							<Box ml={1}>Continue with Google</Box>
 						</Button>
 						<AuthModal open={authModal} setAuthModal={setAuthModal} />
 					</>
