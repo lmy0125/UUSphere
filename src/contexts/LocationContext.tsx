@@ -13,12 +13,14 @@ interface LocationContextType {
 	nearestBuilding: DbBuilding | null;
 	error: string | null;
 	buildingChannel: ChannelType<CustomStreamChatGenerics> | null;
+	getPosition: () => void;
 }
 
 const LocationContext = createContext<LocationContextType>({
 	nearestBuilding: null,
 	error: null,
 	buildingChannel: null,
+	getPosition: () => {},
 });
 
 export default function LocationContextProvider({ children }: { children: React.ReactNode }) {
@@ -36,9 +38,9 @@ export default function LocationContextProvider({ children }: { children: React.
 			enableHighAccuracy: true,
 		},
 		watchPosition: router.pathname !== '/',
-		suppressLocationOnMount: router.pathname === '/',
+		suppressLocationOnMount: true,
 	};
-	const { coords, isGeolocationAvailable, isGeolocationEnabled } = useGeolocated(geoSettings);
+	const { coords, isGeolocationAvailable, isGeolocationEnabled, getPosition } = useGeolocated(geoSettings);
 
 	const fetchNearestBuilding = async (latitude: number, longitude: number) => {
 		try {
@@ -138,7 +140,7 @@ export default function LocationContextProvider({ children }: { children: React.
 	}, [nearestBuilding, client]);
 
 	return (
-		<LocationContext.Provider value={{ nearestBuilding, error, buildingChannel }}>
+		<LocationContext.Provider value={{ nearestBuilding, error, buildingChannel, getPosition }}>
 			{children}
 		</LocationContext.Provider>
 	);

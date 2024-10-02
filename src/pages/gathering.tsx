@@ -11,7 +11,12 @@ import { BuildingInfo } from '@/types/building';
 import { useLocationContext } from '@/contexts/LocationContext';
 
 const GatheringPage: PageType = () => {
-	const { nearestBuilding, error, buildingChannel } = useLocationContext();
+	const { nearestBuilding, error, buildingChannel, getPosition } = useLocationContext();
+
+	// request for geolocation
+	useEffect(() => {
+		getPosition();
+	}, []);
 
 	// const [buildings, setBuildings] = useState<BuildingInfo[]>([]);
 
