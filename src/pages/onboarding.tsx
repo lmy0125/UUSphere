@@ -22,6 +22,7 @@ import { User } from '@/types/User';
 import { GetServerSideProps } from 'next';
 import { Logo } from '@/components/Logo';
 import { ClassEnrollmentContextProvider } from '@/contexts/ClassEnrollmentContext';
+import Loading from '@/components/Loading';
 
 const steps = ['Profile Completion', 'Join Classes'];
 
@@ -71,25 +72,7 @@ const OnBoardingPage: PageType = () => {
 	}, [user]);
 
 	if (!personalInfo) {
-		return (
-			<Box
-				sx={{
-					display: 'flex',
-					flexDirection: 'column',
-					justifyContent: 'center',
-					alignItems: 'center',
-					height: '100vh',
-				}}>
-				<Logo width={135} height={60} />
-				<CircularProgress
-					sx={{
-						color: '#7bdece',
-					}}
-					size={60} // Size of the spinner
-					thickness={4} // Thickness of the spinner
-				/>
-			</Box>
-		);
+		return <Loading />;
 	}
 
 	return (
