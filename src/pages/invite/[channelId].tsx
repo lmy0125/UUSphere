@@ -58,8 +58,6 @@ const InvitePage: React.FC<InvitePageProps> = ({ channelId }) => {
 			router.push(`/chat?channelId=${channel?.id}`);
 		} catch (error) {
 			console.error('Failed to join channel:', error);
-		} finally {
-			setIsJoining(false);
 		}
 	};
 
@@ -135,6 +133,8 @@ const InvitePage: React.FC<InvitePageProps> = ({ channelId }) => {
 
 	if (status == 'loading' || sections.length == 0 || hasClass === null || isStudent === null) {
 		return <Loading />;
+	} else if (session && !user) {
+		return <Loading />;
 	}
 
 	return (
@@ -150,7 +150,9 @@ const InvitePage: React.FC<InvitePageProps> = ({ channelId }) => {
 			<Paper
 				elevation={3}
 				sx={{
-					padding: 6,
+					pt: 3,
+					px: 6,
+					pb: 6,
 					borderRadius: 2,
 					minWidth: 380, // Set fixed width
 					textAlign: 'center',
