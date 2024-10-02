@@ -127,7 +127,7 @@ export const ChatSidebar: FC<ChatSidebarProps> = (props) => {
 			return (
 				<Stack sx={{ alignItems: 'center', textAlign: 'center', p: 5 }}>
 					<Typography sx={{ mb: 2, fontWeight: 500 }} color="text.secondary" variant="h6">
-						Need to use school email address
+						Require school email for class chat
 					</Typography>
 				</Stack>
 			);
