@@ -8,6 +8,8 @@ import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutl
 import { useChatStackContext } from '@/contexts/ChatStackContext';
 import BackButton from '@/components/chat/BackButton';
 import { User } from '@/types/User';
+import GroupAddIcon from '@mui/icons-material/GroupAdd';
+import ShareChannelModal from './ShareChannelModal';
 
 interface CustomChannelHeaderProps extends ChannelHeaderProps {
 	onlineUsers?: User[];
@@ -15,6 +17,7 @@ interface CustomChannelHeaderProps extends ChannelHeaderProps {
 
 const CustomChannelHeader = (props: CustomChannelHeaderProps) => {
 	const { title, onlineUsers } = props;
+	const [shareChannelModal, setShareChannelModal] = useState(false);
 	const { data: session } = useSession();
 	const { channel, members, watcher_count } = useChannelStateContext();
 	const { displayTitle } = useChannelPreviewInfo({ channel });
@@ -50,12 +53,22 @@ const CustomChannelHeader = (props: CustomChannelHeaderProps) => {
 
 				<TypingIndicator />
 
-				<IconButton
-					color={showInfoSidebar ? 'primary' : 'default'}
-					onClick={() => setShowInfoSidebar((prev) => !prev)}
-					style={{ marginLeft: 'auto' }}>
-					<InfoIcon sx={{ width: 30, height: 30 }} />
-				</IconButton>
+				<Stack direction="row" style={{ marginLeft: 'auto' }}>
+					<IconButton aria-label="share" onClick={() => setShareChannelModal(true)} color="primary">
+						<GroupAddIcon />
+					</IconButton>
+					<ShareChannelModal
+						channelId={channel.id ?? ''}
+						channelName={channel.data?.code as string}
+						isOpen={shareChannelModal}
+						onClose={() => setShareChannelModal(false)}
+					/>
+					<IconButton
+						color={showInfoSidebar ? 'primary' : 'default'}
+						onClick={() => setShowInfoSidebar((prev) => !prev)}>
+						<InfoIcon sx={{ width: 30, height: 30 }} />
+					</IconButton>
+				</Stack>
 			</Stack>
 		);
 	} else if (channel.type === 'building') {

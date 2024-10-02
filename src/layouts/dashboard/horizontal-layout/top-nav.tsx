@@ -5,7 +5,7 @@ import Menu01Icon from '@untitled-ui/icons-react/build/esm/Menu01';
 import type { Theme } from '@mui/material';
 import { Box, Typography, IconButton, Stack, SvgIcon, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { Logo } from '@/components/logo';
+import { Logo } from '@/components/Logo';
 import { RouterLink } from '@/components/router-link';
 import { Scrollbar } from '@/components/scrollbar';
 import { usePathname } from '@/hooks/use-pathname';

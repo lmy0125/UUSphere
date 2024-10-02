@@ -14,7 +14,7 @@ import {
 	useMediaQuery,
 } from '@mui/material';
 import { alpha } from '@mui/material/styles';
-import { Logo } from '@/components/logo';
+import { Logo } from '@/components/Logo';
 import { RouterLink } from '@/components/router-link';
 import { usePathname } from '@/hooks/use-pathname';
 // import { useWindowScroll } from '@/hooks/use-window-scroll';

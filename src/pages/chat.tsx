@@ -12,7 +12,7 @@ import {
 import { Channel as ChannelType } from 'stream-chat';
 import { CustomStreamChatGenerics } from '@/types/customStreamChat';
 import 'stream-chat-react/dist/css/v2/index.css';
-import { Stack, Box, Divider, Button, Container, Typography } from '@mui/material';
+import { Stack, Box, Divider, Button, Container, Typography, Dialog, DialogContent } from '@mui/material';
 // import { Seo } from 'src/components/seo';
 // import { usePageView } from 'src/hooks/use-page-view';
 import { Layout as DashboardLayout } from '@/layouts/dashboard';
@@ -31,6 +31,8 @@ import CustomMessage from '@/components/chat/CustomMessage';
 import AuthModal from '@/components/AuthModal';
 import Composer from '@/components/chat/Composer';
 import { useChatStackContext } from '@/contexts/ChatStackContext';
+import ProfileEditForm from '@/components/Profile/ProfileEditForm';
+import { useUser } from '@/hooks/useUser';
 
 const ChatPage: PageType = () => {
 	const [authModal, setAuthModal] = useState(false);
@@ -42,6 +44,9 @@ const ChatPage: PageType = () => {
 	const searchParams = useSearchParams();
 	const channelId = searchParams.get('channelId') || undefined;
 	const { setShowChannel } = useChatStackContext();
+	const { data: session } = useSession();
+	const { user } = useUser({ userId: session?.user?.id });
+	const [isNewUser, setIsNewUser] = useState(searchParams.get('isNew') == 'true');
 
 	useEffect(() => {
 		// handle navigation from another page with query channelId
@@ -67,7 +72,7 @@ const ChatPage: PageType = () => {
 		displayChannel();
 	}, [channelId, setActiveChannel, client, currentChannel, setShowChannel]);
 
-	if (status === 'loading') {
+	if (status === 'loading' || !client) {
 		return <></>;
 	} else if (status !== 'authenticated' || !chatClient) {
 		return (
@@ -145,6 +150,13 @@ const ChatPage: PageType = () => {
 					</ChatContainer>
 				</Box>
 			</Box>
+			{user && (
+				<Dialog open={isNewUser} onClose={() => setIsNewUser(false)} scroll="body">
+					<DialogContent>
+						<ProfileEditForm user={user} setProfileFormToggle={setIsNewUser} />
+					</DialogContent>
+				</Dialog>
+			)}
 		</ComposeModeContextProvider>
 	);
 };

@@ -14,6 +14,7 @@ import { useChatContext } from '@/contexts/ChatContext';
 import { MessageChatSquare } from '@untitled-ui/icons-react/build/esm';
 import UserAvatar from '@/components/UserAvatar';
 import UserBadges from '@/components/UserBadges';
+import { availableQuarters } from '@/constants/availableQuarters';
 
 interface ProfileCardProps {
 	user: User;
@@ -34,17 +35,12 @@ const ProfileCard: FC<ProfileCardProps> = (props) => {
 	const { chatClient: client } = useChatContext();
 
 	const fetcher = (url: string) => axios.get(url).then((res) => res.data);
-	const { data: profileCardInfo } = useSWR<ProfileCardInfo>(
-		`/api/mutualClassmatesInfo?userId=${user.id}`,
-		fetcher
-	);
+	const { data: profileCardInfo } = useSWR<ProfileCardInfo>(`/api/mutualClassmatesInfo?userId=${user.id}`, fetcher);
 
 	// put mutual classes at the front of the array
 	function sortWithMutualClasses(longerArray: Class[], subsetArray: string[]) {
 		// Find common elements between the two arrays
-		const commonElements = longerArray.filter((obj) =>
-			subsetArray.some((subsetObj) => subsetObj === obj.code)
-		);
+		const commonElements = longerArray.filter((obj) => subsetArray.some((subsetObj) => subsetObj === obj.code));
 		// Sort the longer array based on the position of common elements in the subset array
 		longerArray.sort((a, b) => {
 			const aCommon = commonElements.some((obj) => obj.code === a.code);
@@ -94,24 +90,14 @@ const ProfileCard: FC<ProfileCardProps> = (props) => {
 		return <></>;
 	}
 
-	const userInfoString = [
-		user.grade,
-		user.college,
-		user.major,
-		user.homeland,
-	]
+	const userInfoString = [user.grade, user.college, user.major, user.homeland]
 		.filter((s) => s !== null && s !== '')
 		.join(' • ');
 
 	return (
 		<Box>
 			<Card variant="outlined" sx={{ height: '100%' }}>
-				<Stack
-					alignItems="flex-start"
-					direction="row"
-					justifyContent="space-between"
-					spacing={2}
-					sx={{ p: 2 }}>
+				<Stack alignItems="flex-start" direction="row" justifyContent="space-between" spacing={2} sx={{ p: 2 }}>
 					<Stack alignItems="flex-start" direction="row" spacing={2}>
 						<Link href={`/profile/${user.id}`}>
 							<UserAvatar userId={user.id} size={56} />
@@ -139,25 +125,20 @@ const ProfileCard: FC<ProfileCardProps> = (props) => {
 							<Typography color="text.secondary" variant="body2">
 								{userInfoString}
 							</Typography>
-							<Typography
-								color="text.primary"
-								variant="caption"
-								sx={{ fontSize: '0.875rem' }}>
-								Taking:{' '}
-								{profileCardInfo.classes.map((c, idx) => (
-									<Typography
-										key={c.id}
-										variant="caption"
-										color={
-											profileCardInfo.mutualClasses?.includes(c.code)
-												? 'blue'
-												: 'text.secondary'
-										}
-										sx={{ fontSize: '0.875rem' }}>
-										{c.code}
-										{idx != profileCardInfo.classes.length - 1 ? ',' : ''}{' '}
-									</Typography>
-								))}
+							<Typography color="text.primary" variant="caption" sx={{ fontSize: '0.875rem' }}>
+								Taking:
+								{profileCardInfo.classes
+									.filter((c) => c.quarter === availableQuarters[0])
+									.map((c, idx) => (
+										<Typography
+											key={c.id}
+											variant="caption"
+											color={profileCardInfo.mutualClasses?.includes(c.code) ? 'blue' : 'text.secondary'}
+											sx={{ fontSize: '0.875rem' }}>
+											{c.code}
+											{idx != profileCardInfo.classes.length - 1 ? ',' : ''}{' '}
+										</Typography>
+									))}
 							</Typography>
 						</Box>
 					</Stack>

@@ -3,17 +3,7 @@ import { useCallback, useState } from 'react';
 import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import { SvgIcon, Theme } from '@mui/material';
-import {
-	Box,
-	Button,
-	Collapse,
-	Divider,
-	Drawer,
-	IconButton,
-	Stack,
-	Typography,
-	useMediaQuery,
-} from '@mui/material';
+import { Box, Button, Collapse, Divider, Drawer, IconButton, Stack, Typography, useMediaQuery } from '@mui/material';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
@@ -122,26 +112,33 @@ export const ChatSidebar: FC<ChatSidebarProps> = (props) => {
 	// };
 
 	const EmptyClassroomList = () => {
-		return (
-			<Stack sx={{ alignItems: 'center', py: 5 }}>
-				<Typography sx={{ mb: 2, fontWeight: 500 }} color="text.secondary" variant="h5">
-					You have no classes yet
-				</Typography>
-				<Button variant="contained" onClick={() => router.push(paths.classes)}>
-					Join Classes
-				</Button>
-			</Stack>
-		);
+		if (session?.user.verifiedStudent) {
+			return (
+				<Stack sx={{ alignItems: 'center', py: 5 }}>
+					<Typography sx={{ mb: 2, fontWeight: 500 }} color="text.secondary" variant="h5">
+						You have no classes yet
+					</Typography>
+					<Button variant="contained" onClick={() => router.push(paths.classes)}>
+						Join Group Chat
+					</Button>
+				</Stack>
+			);
+		} else {
+			return (
+				<Stack sx={{ alignItems: 'center', textAlign: 'center', p: 5 }}>
+					<Typography sx={{ mb: 2, fontWeight: 500 }} color="text.secondary" variant="h6">
+						Require school email for class chat
+					</Typography>
+				</Stack>
+			);
+		}
 	};
 
 	const EmptyPersonalMessageList = () => {
 		return (
 			<Stack sx={{ alignItems: 'center', py: 5 }}>
-				<Typography
-					sx={{ textAlign: 'center', mb: 2, fontWeight: 500 }}
-					color="text.secondary"
-					variant="h5">
-					You have no conversations yet
+				<Typography sx={{ textAlign: 'center', mb: 2, fontWeight: 500 }} color="text.secondary" variant="h6">
+					No conversations yet
 				</Typography>
 			</Stack>
 		);
@@ -189,11 +186,7 @@ export const ChatSidebar: FC<ChatSidebarProps> = (props) => {
       /> */}
 			<Stack sx={{ overflowY: 'auto' }}>
 				<Box>
-					<Stack
-						direction="row"
-						justifyContent="space-between"
-						alignItems="center"
-						sx={{ px: 2, py: 1 }}>
+					<Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ px: 2, py: 1 }}>
 						<Typography variant="subtitle1">Classrooms</Typography>
 						<IconButton
 							onClick={() => setClassroomOpen(!classroomOpen)}
@@ -217,11 +210,7 @@ export const ChatSidebar: FC<ChatSidebarProps> = (props) => {
 
 				<Divider />
 				<Box>
-					<Stack
-						direction="row"
-						justifyContent="space-between"
-						alignItems="center"
-						sx={{ px: 2, py: 1 }}>
+					<Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ px: 2, py: 1 }}>
 						<Typography variant="subtitle1">Personal</Typography>
 						<IconButton
 							onClick={() => setPersonalOpen(!personalOpen)}

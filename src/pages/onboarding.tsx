@@ -20,7 +20,9 @@ import { useRouter } from 'next/router';
 import { useUser } from '@/hooks/useUser';
 import { User } from '@/types/User';
 import { GetServerSideProps } from 'next';
-import { Logo } from '@/components/logo';
+import { Logo } from '@/components/Logo';
+import { ClassEnrollmentContextProvider } from '@/contexts/ClassEnrollmentContext';
+import Loading from '@/components/Loading';
 
 const steps = ['Profile Completion', 'Join Classes'];
 
@@ -70,25 +72,7 @@ const OnBoardingPage: PageType = () => {
 	}, [user]);
 
 	if (!personalInfo) {
-		return (
-			<Box
-				sx={{
-					display: 'flex',
-					flexDirection: 'column',
-					justifyContent: 'center',
-					alignItems: 'center',
-					height: '100vh',
-				}}>
-				<Logo width={135} height={60} />
-				<CircularProgress
-					sx={{
-						color: '#7bdece',
-					}}
-					size={60} // Size of the spinner
-					thickness={4} // Thickness of the spinner
-				/>
-			</Box>
-		);
+		return <Loading />;
 	}
 
 	return (
@@ -128,7 +112,11 @@ const OnBoardingPage: PageType = () => {
 							{/* <Typography sx={{ mt: 2, mb: 1 }}>Step {activeStep + 1} content</Typography> */}
 
 							{activeStep === 0 && <ProfileForm personalInfo={personalInfo} setPersonalInfo={setPersonalInfo} />}
-							{activeStep === 1 && <ClassEnrollment quarter={quarter} />}
+							{activeStep === 1 && (
+								<ClassEnrollmentContextProvider>
+									<ClassEnrollment quarter={quarter} />
+								</ClassEnrollmentContextProvider>
+							)}
 
 							<Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
 								{activeStep > 0 && (
@@ -155,21 +143,21 @@ const OnBoardingPage: PageType = () => {
 	);
 };
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-	const session = await getSession(context);
+// export const getServerSideProps: GetServerSideProps = async (context) => {
+// 	const session = await getSession(context);
 
-	if (session) {
-		if (!(session as any).user.isNewUser) {
-			return {
-				redirect: {
-					destination: '/chat',
-					permanent: false,
-				},
-			};
-		}
-	}
+// 	if (session) {
+// 		if (!(session as any).user.isNewUser) {
+// 			return {
+// 				redirect: {
+// 					destination: '/chat',
+// 					permanent: false,
+// 				},
+// 			};
+// 		}
+// 	}
 
-	return { props: {} };
-};
+// 	return { props: {} };
+// };
 
 export default OnBoardingPage;

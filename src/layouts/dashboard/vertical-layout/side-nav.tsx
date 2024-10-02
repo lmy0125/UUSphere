@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 // import File04Icon from '@untitled-ui/icons-react/build/esm/File04';
 import { Box, Button, Drawer, Stack, SvgIcon, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { Logo } from '@/components/logo';
+import { Logo } from '@/components/Logo';
 import { RouterLink } from '@/components/router-link';
 import { Scrollbar } from '@/components/scrollbar';
 import { usePathname } from '@/hooks/use-pathname';

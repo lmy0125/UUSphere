@@ -113,7 +113,7 @@ const ProfileEditForm: FC<ProfileEditFormProps> = ({ user, setProfileFormToggle 
 	return (
 		<form onSubmit={(e) => handleSubmit(e)}>
 			<CardHeader
-				title="Edit Profile"
+				title="Profile"
 				sx={{ textAlign: 'center', py: 1, pb: 0 }}
 				titleTypographyProps={{ variant: 'h5' }}
 			/>

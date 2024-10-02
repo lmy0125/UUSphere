@@ -9,12 +9,12 @@ import { MobileNav } from '../mobile-nav';
 import { SideNav } from './side-nav';
 import { TopNav } from './top-nav';
 import { useMobileNav } from './use-mobile-nav';
-import { Box, Button, Stack, Typography, Fade, Paper } from '@mui/material';
-import TrapFocus from '@mui/material/Unstable_TrapFocus';
-import { useUser } from '@/hooks/useUser';
-import { useSession } from 'next-auth/react';
-import { availableQuarters } from '@/constants/availableQuarters';
-import { useRouter } from 'next/router';
+// import { Box, Button, Stack, Typography, Fade, Paper } from '@mui/material';
+// import TrapFocus from '@mui/material/Unstable_TrapFocus';
+// import { useUser } from '@/hooks/useUser';
+// import { useSession } from 'next-auth/react';
+// import { availableQuarters } from '@/constants/availableQuarters';
+// import { useRouter } from 'next/router';
 
 const SIDE_NAV_WIDTH: number = 280;
 
@@ -45,36 +45,36 @@ export const VerticalLayout: FC<VerticalLayoutProps> = (props) => {
 	const lgUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('lg'));
 	const mobileNav = useMobileNav();
 
-	const { data: session } = useSession();
-	const { user } = useUser({ userId: session?.user.id });
-	const [bannerOpen, setBannerOpen] = useState(false);
-	const [numOfCurrentQuarterClasses, setNumOfCurrentQuarterClasses] = useState(0);
-	const router = useRouter();
+	// const { data: session } = useSession();
+	// const { user } = useUser({ userId: session?.user.id });
+	// const [bannerOpen, setBannerOpen] = useState(false);
+	// const [numOfCurrentQuarterClasses, setNumOfCurrentQuarterClasses] = useState(1);
+	// const router = useRouter();
 
-	const closeBanner = () => {
-		setBannerOpen(false);
-		localStorage.setItem('bannerShown', 'true');
-	};
+	// const closeBanner = () => {
+	// 	setBannerOpen(false);
+	// 	localStorage.setItem('bannerShown', 'true');
+	// };
 
-	useEffect(() => {
-		if (user?.classes) {
-			const currentQuarterClasses = user.classes.filter((c) => c.quarter === availableQuarters[0]);
-			setNumOfCurrentQuarterClasses(currentQuarterClasses.length);
-		}
-	}, [user]);
+	// useEffect(() => {
+	// 	if (user?.classes) {
+	// 		const currentQuarterClasses = user.classes.filter((c) => c.quarter === availableQuarters[0]);
+	// 		setNumOfCurrentQuarterClasses(currentQuarterClasses.length);
+	// 	}
+	// }, [user]);
 
-	useEffect(() => {
-		const bannerShown = localStorage.getItem('bannerShown');
-		if (!bannerShown && numOfCurrentQuarterClasses < 1) {
-			setBannerOpen(true);
-		} else {
-			setBannerOpen(false);
-		}
-	}, [numOfCurrentQuarterClasses]);
+	// useEffect(() => {
+	// 	const bannerShown = localStorage.getItem('bannerShown');
+	// 	if (!bannerShown && numOfCurrentQuarterClasses < 1) {
+	// 		setBannerOpen(true);
+	// 	} else {
+	// 		setBannerOpen(false);
+	// 	}
+	// }, [numOfCurrentQuarterClasses]);
 
 	return (
 		<>
-			{bannerOpen && (
+			{/* {bannerOpen && (
 				<TrapFocus open disableAutoFocus disableEnforceFocus>
 					<Fade appear={false} in={bannerOpen}>
 						<Paper
@@ -100,9 +100,6 @@ export const VerticalLayout: FC<VerticalLayoutProps> = (props) => {
 									<Typography sx={{ fontWeight: 'bold' }}>
 										Join classes to meet your future best friends
 									</Typography>
-									{/* <Typography variant="body2">
-										example.com relies on cookies to improve your experience.
-									</Typography> */}
 								</Box>
 								<Stack
 									direction={{
@@ -132,7 +129,7 @@ export const VerticalLayout: FC<VerticalLayoutProps> = (props) => {
 						</Paper>
 					</Fade>
 				</TrapFocus>
-			)}
+			)} */}
 
 			<TopNav onMobileNavOpen={mobileNav.handleOpen} />
 			{lgUp && <SideNav color={navColor} sections={sections} />}

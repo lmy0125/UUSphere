@@ -51,6 +51,7 @@
 		"nodemailer": "^6.9.5",
 		"nprogress": "^0.2.0",
 		"postcss": "8.4.21",
+		"qrcode.react": "^4.0.1",
 		"react": "18.2.0",
 		"react-color": "^2.19.3",
 		"react-dom": "18.2.0",
