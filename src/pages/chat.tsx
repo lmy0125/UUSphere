@@ -72,7 +72,7 @@ const ChatPage: PageType = () => {
 		displayChannel();
 	}, [channelId, setActiveChannel, client, currentChannel, setShowChannel]);
 
-	if (status === 'loading' || !client) {
+	if (status === 'loading') {
 		return <></>;
 	} else if (status !== 'authenticated' || !chatClient) {
 		return (
