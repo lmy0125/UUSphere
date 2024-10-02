@@ -38,10 +38,11 @@ const InvitePage: React.FC<InvitePageProps> = ({ channelId }) => {
 	const { client: chatClient } = useStreamChatContext<CustomStreamChatGenerics>();
 	const [channel, setChannel] = useState<ChannelType<CustomStreamChatGenerics>>();
 	const [channelName, setChannelName] = useState<string>('');
+	const [professorName, setProfessorName] = useState<string>('');
 	const [isJoining, setIsJoining] = useState<boolean>(false);
 	const [authModal, setAuthModal] = useState(false);
 	const [sections, setSections] = useState<SectionWithString[]>([]);
-	const [selectedSection, setSelectedSection] = useState<string>('');
+	const [sectionId, setSectionId] = useState<string>('');
 
 	const handleJoinChannel = async () => {
 		setIsJoining(true);
@@ -49,7 +50,7 @@ const InvitePage: React.FC<InvitePageProps> = ({ channelId }) => {
 			// add user to the channel
 			await channel?.addMembers([chatClient.user?.id ?? '']); // join corresponding class
 			// join corresponding class
-			axios.post('/api/joinClass', { sectionId: selectedSection });
+			await axios.post('/api/joinClass', { sectionId: sectionId });
 			// Redirect to the channel page after successful join
 			router.push(`/chat?channelId=${channel?.id}`);
 		} catch (error) {
@@ -63,7 +64,7 @@ const InvitePage: React.FC<InvitePageProps> = ({ channelId }) => {
 	const signInWithGoogle = () => {
 		setDisabled(true);
 		// Perform sign in
-		signIn('google', { callbackUrl: `/custom-page` });
+		signIn('google', { callbackUrl: `/handleInvite?c=${channelId}&s=${sectionId}` });
 	};
 
 	useEffect(() => {
@@ -79,6 +80,8 @@ const InvitePage: React.FC<InvitePageProps> = ({ channelId }) => {
 			const response = await axios.get(`/api/class/${channelId}`);
 			const className = response.data.code;
 			setChannelName(className);
+			const instructor = response.data.instructor.name;
+			setProfessorName(instructor);
 
 			const sections: Section[] = response.data.sections;
 
@@ -109,7 +112,7 @@ const InvitePage: React.FC<InvitePageProps> = ({ channelId }) => {
 				return { ...section, formatString };
 			});
 			setSections(sectionsWithString);
-			setSelectedSection(sectionsWithString[0].id);
+			setSectionId(sectionsWithString[0].id);
 		};
 
 		fetchSections();
@@ -142,17 +145,22 @@ const InvitePage: React.FC<InvitePageProps> = ({ channelId }) => {
 				<Typography variant="h5" gutterBottom>
 					Join Group Chat
 				</Typography>
-				<Typography variant="h6" gutterBottom>
-					{channelName}
-				</Typography>
+				<Box sx={{ my: 3 }}>
+					<Typography variant="h6" gutterBottom>
+						{channelName}
+					</Typography>
+					<Typography variant="body1" gutterBottom>
+						<strong>Instructor:</strong> {professorName}
+					</Typography>
+				</Box>
 
 				<Box sx={{ m: 1, mt: 3 }}>
 					<FormControl sx={{ minWidth: 80 }}>
 						<InputLabel id="section-label">Section</InputLabel>
 						<Select
 							labelId="section-label"
-							value={selectedSection}
-							onChange={(e) => setSelectedSection(e.target.value as string)}
+							value={sectionId}
+							onChange={(e) => setSectionId(e.target.value as string)}
 							autoWidth
 							label="Section">
 							{sections.map((section) => (
@@ -163,7 +171,6 @@ const InvitePage: React.FC<InvitePageProps> = ({ channelId }) => {
 						</Select>
 					</FormControl>
 				</Box>
-
 				{!session ? (
 					<>
 						<Button

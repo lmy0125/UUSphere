@@ -9,7 +9,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 		try {
 			const c = await prisma.class.findUnique({
 				where: { id: classId as string },
-				select: { code: true, sections: { include: { meetings: true } } },
+				select: { code: true, sections: { include: { meetings: true } }, instructor: { select: { name: true } } },
 			});
 
 			res.status(200).json(c);
