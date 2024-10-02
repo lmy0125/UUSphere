@@ -23,6 +23,7 @@ import AuthModal from '@/components/AuthModal';
 import axios from 'axios';
 import { GetServerSideProps } from 'next';
 import { Section } from '@/types/class';
+import Loading from '@/components/Loading';
 
 interface InvitePageProps {
 	channelId: string;
@@ -120,7 +121,7 @@ const InvitePage: React.FC<InvitePageProps> = ({ channelId }) => {
 	}, [channelId]);
 
 	if (sections.length == 0) {
-		return null;
+		return <Loading />;
 	}
 
 	return (
