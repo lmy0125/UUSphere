@@ -115,9 +115,6 @@ export const ChatSidebar: FC<ChatSidebarProps> = (props) => {
 		if (session?.user.verifiedStudent) {
 			return (
 				<Stack sx={{ alignItems: 'center', py: 5 }}>
-					<Typography sx={{ mb: 2, fontWeight: 500 }} color="text.secondary" variant="h5">
-						You have no classes yet
-					</Typography>
 					<Button variant="contained" onClick={() => router.push(paths.classes)}>
 						Join Group Chat
 					</Button>
