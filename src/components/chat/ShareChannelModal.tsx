@@ -46,7 +46,7 @@ const ShareChannelModal = ({
 					borderRadius: 2,
 				}}>
 				<Typography variant="h6" component="h2">
-					Invite students to {channelName}
+					Share group chat for {channelName}
 				</Typography>
 				<TextField
 					fullWidth
