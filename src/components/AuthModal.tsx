@@ -46,10 +46,14 @@ export default function AuthModal({
 						border: '1px solid rgba(0, 0, 0, .12)',
 						boxShadow: '0 2px 4px rgba(0,0,0,.1)',
 						mt: 6,
+						mb: 2,
 					}}>
 					<Image src="/google.svg" alt="Google" width={32} height={32} />
 					<Box ml={1}>Continue with Google</Box>
 				</Button>
+				<Typography variant="body2" color="text.secondary">
+					Use school email for class chat feature
+				</Typography>
 			</Paper>
 		</Modal>
 	);
@@ -57,6 +61,7 @@ export default function AuthModal({
 
 const modalStyle = {
 	position: 'absolute' as 'absolute',
+	textAlign: 'center',
 	top: '50%',
 	left: '50%',
 	transform: 'translate(-50%, -50%)',
@@ -67,5 +72,5 @@ const modalStyle = {
 	borderRadius: '16px',
 	// boxShadow: '0 2px 4px rgba(0,0,0,.06)',
 	px: 6,
-	py: 8,
+	py: 6,
 };

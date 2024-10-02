@@ -477,8 +477,8 @@ const SectionRow: FC<{
 								setAuthModal(!authModal);
 								return;
 							}
-							if (!session.user.email.split('@')[1].includes('ucsd')) {
-								toast.error('Sorry, you need an university email address to join classes.');
+							if (!session.user.verifiedStudent) {
+								toast.error('Sorry, require a school email to join classes.');
 								return;
 							}
 							setJoinSectionModal(true);
