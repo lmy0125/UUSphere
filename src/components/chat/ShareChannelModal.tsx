@@ -18,12 +18,12 @@ const ShareChannelModal = ({
 	const [link, setLink] = useState('');
 
 	// Generate the invite link based on your app URL structure
-	const generateInviteLink = () => {
-		const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-		return `${baseUrl}/invite/${channelId}`;
-	};
 
 	useEffect(() => {
+		const generateInviteLink = () => {
+			const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+			return `${baseUrl}/invite/${channelId}`;
+		};
 		if (channelId && session?.user) {
 			const inviteLink = generateInviteLink();
 			setLink(inviteLink);

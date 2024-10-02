@@ -78,7 +78,7 @@ const InvitePage: React.FC<InvitePageProps> = ({ channelId }) => {
 			setIsStudent(false);
 			setHasClass(false);
 		}
-	}, [session, user]);
+	}, [session, user, channelId]);
 
 	// get sections data
 	useEffect(() => {
@@ -131,7 +131,7 @@ const InvitePage: React.FC<InvitePageProps> = ({ channelId }) => {
 
 		fetchSections();
 		fetchChannel();
-	}, [channelId]);
+	}, [channelId, chatClient]);
 
 	if (status == 'loading' || sections.length == 0 || hasClass === null || isStudent === null) {
 		return <Loading />;
