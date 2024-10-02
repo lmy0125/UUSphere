@@ -19,7 +19,6 @@ import { useChatContext as useStreamChatContext } from 'stream-chat-react';
 import { Channel as ChannelType } from 'stream-chat';
 import { CustomStreamChatGenerics } from '@/types/customStreamChat';
 import { Logo } from '@/components/Logo';
-import AuthModal from '@/components/AuthModal';
 import axios from 'axios';
 import { GetServerSideProps } from 'next';
 import { Section } from '@/types/class';
@@ -36,17 +35,17 @@ interface SectionWithString extends Section {
 
 const InvitePage: React.FC<InvitePageProps> = ({ channelId }) => {
 	const router = useRouter();
-	const { data: session } = useSession();
+	const { data: session, status } = useSession();
 	const { user } = useUser({ userId: session?.user?.id });
 	const { client: chatClient } = useStreamChatContext<CustomStreamChatGenerics>();
 	const [channel, setChannel] = useState<ChannelType<CustomStreamChatGenerics>>();
 	const [channelName, setChannelName] = useState<string>('');
 	const [professorName, setProfessorName] = useState<string>('');
 	const [isJoining, setIsJoining] = useState<boolean>(false);
-	const [authModal, setAuthModal] = useState(false);
 	const [sections, setSections] = useState<SectionWithString[]>([]);
 	const [sectionId, setSectionId] = useState<string>('');
-	const [hasClass, setHasClass] = useState<boolean | undefined>(undefined);
+	const [hasClass, setHasClass] = useState<boolean | null>(null);
+	const [isStudent, setIsStudent] = useState<boolean | null>(null);
 
 	const handleJoinChannel = async () => {
 		setIsJoining(true);
@@ -73,7 +72,11 @@ const InvitePage: React.FC<InvitePageProps> = ({ channelId }) => {
 
 	useEffect(() => {
 		if (session && user) {
+			setIsStudent(user.verifiedStudent);
 			setHasClass(user.classes?.some((c) => c.id == channelId) ?? false);
+		} else {
+			setIsStudent(false);
+			setHasClass(false);
 		}
 	}, [session, user]);
 
@@ -130,7 +133,7 @@ const InvitePage: React.FC<InvitePageProps> = ({ channelId }) => {
 		fetchChannel();
 	}, [channelId]);
 
-	if (sections.length == 0 || hasClass === undefined) {
+	if (status == 'loading' || sections.length == 0 || hasClass === null || isStudent === null) {
 		return <Loading />;
 	}
 
@@ -165,25 +168,28 @@ const InvitePage: React.FC<InvitePageProps> = ({ channelId }) => {
 					</Typography>
 				</Box>
 
-				<Box sx={{ m: 1, mt: 3 }}>
-					<FormControl sx={{ minWidth: 80 }}>
-						<InputLabel id="section-label">Section</InputLabel>
-						<Select
-							labelId="section-label"
-							value={sectionId}
-							onChange={(e) => setSectionId(e.target.value as string)}
-							autoWidth
-							label="Section">
-							{sections.map((section) => (
-								<MenuItem key={section.id} value={section.id}>
-									{section.formatString}
-								</MenuItem>
-							))}
-						</Select>
-					</FormControl>
-				</Box>
+				{!hasClass && (
+					<Box sx={{ m: 1, mt: 3 }}>
+						<FormControl sx={{ minWidth: 80 }}>
+							<InputLabel id="section-label">Section</InputLabel>
+							<Select
+								labelId="section-label"
+								value={sectionId}
+								onChange={(e) => setSectionId(e.target.value as string)}
+								autoWidth
+								label="Section">
+								{sections.map((section) => (
+									<MenuItem key={section.id} value={section.id}>
+										{section.formatString}
+									</MenuItem>
+								))}
+							</Select>
+						</FormControl>
+					</Box>
+				)}
+
 				{!session ? (
-					<>
+					<Box>
 						<Button
 							onClick={signInWithGoogle}
 							fullWidth
@@ -194,12 +200,22 @@ const InvitePage: React.FC<InvitePageProps> = ({ channelId }) => {
 								border: '1px solid rgba(0, 0, 0, .12)',
 								boxShadow: '0 2px 4px rgba(0,0,0,.1)',
 								mt: 2,
+								mb: 1,
 							}}>
 							<Image src="/google.svg" alt="Google" width={20} height={20} />
 							<Box ml={1}>Continue with Google</Box>
 						</Button>
-						<AuthModal open={authModal} setAuthModal={setAuthModal} />
-					</>
+						<Typography variant="body2" color="text.secondary">
+							Require school email for class chat
+						</Typography>
+					</Box>
+				) : !isStudent ? (
+					<Box sx={{ mt: 3 }}>
+						<Typography variant="body1">Need to use school email to join class chat</Typography>
+						<Button variant="contained" color="primary" onClick={() => router.push(`/chat`)} sx={{ mt: 1 }}>
+							Dashboard
+						</Button>
+					</Box>
 				) : hasClass ? (
 					<Box sx={{ mt: 3 }}>
 						<Typography variant="body1">You have already joined this class</Typography>
