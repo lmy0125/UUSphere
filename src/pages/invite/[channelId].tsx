@@ -24,6 +24,7 @@ import axios from 'axios';
 import { GetServerSideProps } from 'next';
 import { Section } from '@/types/class';
 import Loading from '@/components/Loading';
+import { useUser } from '@/hooks/useUser';
 
 interface InvitePageProps {
 	channelId: string;
@@ -36,6 +37,7 @@ interface SectionWithString extends Section {
 const InvitePage: React.FC<InvitePageProps> = ({ channelId }) => {
 	const router = useRouter();
 	const { data: session } = useSession();
+	const { user } = useUser({ userId: session?.user?.id });
 	const { client: chatClient } = useStreamChatContext<CustomStreamChatGenerics>();
 	const [channel, setChannel] = useState<ChannelType<CustomStreamChatGenerics>>();
 	const [channelName, setChannelName] = useState<string>('');
@@ -44,6 +46,7 @@ const InvitePage: React.FC<InvitePageProps> = ({ channelId }) => {
 	const [authModal, setAuthModal] = useState(false);
 	const [sections, setSections] = useState<SectionWithString[]>([]);
 	const [sectionId, setSectionId] = useState<string>('');
+	const [hasClass, setHasClass] = useState<boolean | undefined>(undefined);
 
 	const handleJoinChannel = async () => {
 		setIsJoining(true);
@@ -68,6 +71,13 @@ const InvitePage: React.FC<InvitePageProps> = ({ channelId }) => {
 		signIn('google', { callbackUrl: `/handleInvite?c=${channelId}&s=${sectionId}` });
 	};
 
+	useEffect(() => {
+		if (session && user) {
+			setHasClass(user.classes?.some((c) => c.id == channelId) ?? false);
+		}
+	}, [session, user]);
+
+	// get sections data
 	useEffect(() => {
 		const fetchChannel = async () => {
 			const filter = { type: 'classroom', id: { $eq: channelId } };
@@ -120,7 +130,7 @@ const InvitePage: React.FC<InvitePageProps> = ({ channelId }) => {
 		fetchChannel();
 	}, [channelId]);
 
-	if (sections.length == 0) {
+	if (sections.length == 0 || hasClass === undefined) {
 		return <Loading />;
 	}
 
@@ -190,6 +200,17 @@ const InvitePage: React.FC<InvitePageProps> = ({ channelId }) => {
 						</Button>
 						<AuthModal open={authModal} setAuthModal={setAuthModal} />
 					</>
+				) : hasClass ? (
+					<Box sx={{ mt: 3 }}>
+						<Typography variant="body1">You have already joined this class</Typography>
+						<Button
+							variant="contained"
+							color="primary"
+							onClick={() => router.push(`/chat?channelId=${channel?.id}`)}
+							sx={{ mt: 1 }}>
+							Open Chat
+						</Button>
+					</Box>
 				) : (
 					<Button
 						variant="contained"
