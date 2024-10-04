@@ -23,7 +23,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 	const { query } = context; // Extract query parameters from context
 	const { c: channelId, s: sectionId } = query;
-
 	try {
 		const serverClient = StreamChat.getInstance(
 			process.env.NEXT_PUBLIC_STREAMCHAT_KEY! as string,
@@ -35,45 +34,57 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 		const handleJoinChannel = async () => {
 			try {
-				const filter = { type: 'classroom', id: { $eq: channelId as string } };
-
-				const channels = await serverClient?.queryChannels(filter as ChannelFilters<DefaultGenerics>);
-				const channel = channels[0];
-
-				// add user to the channel
-				await channel.addMembers([session.user.id]); // join corresponding class
-
-				// check if user is already in the class
-				const user = await prisma.user.findUnique({
+				// Get class info
+				const classInfo = await prisma.class.findUnique({
 					where: {
-						email: session.user.email,
+						id: channelId as string,
 					},
-					select: {
-						classes: true,
-					},
+					include: { course: { select: { name: true } }, instructor: { select: { name: true } } },
 				});
-				const hasClass = user?.classes?.some((c) => c.id == channelId) ?? false;
-				if (hasClass) {
-					return;
-				} else {
-					// join corresponding class
-					await prisma.user.update({
+				if (classInfo) {
+					// Join the channel
+					const channel = serverClient.channel('classroom', classInfo.id, {
+						code: classInfo.code,
+						name: classInfo.course?.name ?? undefined,
+						instructor: classInfo.instructor,
+						quarter: classInfo.quarter,
+						created_by_id: session.user?.id,
+					});
+					await channel.create(); // Create if not exists
+					await channel.addMembers([session.user?.id ?? '']);
+
+					// check if user is already in the class
+					const user = await prisma.user.findUnique({
 						where: {
 							email: session.user.email,
 						},
-						data: {
-							sections: {
-								connect: {
-									id: sectionId as string,
-								},
-							},
-							classes: {
-								connect: {
-									id: channelId as string,
-								},
-							},
+						select: {
+							classes: true,
 						},
 					});
+					const hasClass = user?.classes?.some((c) => c.id == channelId) ?? false;
+					if (hasClass) {
+						return;
+					} else {
+						// join corresponding class
+						await prisma.user.update({
+							where: {
+								email: session.user.email,
+							},
+							data: {
+								sections: {
+									connect: {
+										id: sectionId as string,
+									},
+								},
+								classes: {
+									connect: {
+										id: channelId as string,
+									},
+								},
+							},
+						});
+					}
 				}
 			} catch (error) {
 				console.error('Failed to join channel:', error);

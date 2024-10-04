@@ -49,16 +49,7 @@ const InvitePage: React.FC<InvitePageProps> = ({ channelId }) => {
 
 	const handleJoinChannel = async () => {
 		setIsJoining(true);
-		try {
-			// add user to the channel
-			await channel?.addMembers([chatClient.user?.id ?? '']); // join corresponding class
-			// join corresponding class
-			await axios.post('/api/joinClass', { sectionId: sectionId });
-			// Redirect to the channel page after successful join
-			router.push(`/chat?channelId=${channel?.id}`);
-		} catch (error) {
-			console.error('Failed to join channel:', error);
-		}
+		router.push(`/handleInvite?c=${channelId}&s=${sectionId}`);
 	};
 
 	const [disabled, setDisabled] = useState(false);
@@ -68,6 +59,7 @@ const InvitePage: React.FC<InvitePageProps> = ({ channelId }) => {
 		signIn('google', { callbackUrl: `/handleInvite?c=${channelId}&s=${sectionId}` });
 	};
 
+	// Set user status: isStudent and hasClass
 	useEffect(() => {
 		if (session && user) {
 			setIsStudent(user.verifiedStudent);
@@ -80,6 +72,7 @@ const InvitePage: React.FC<InvitePageProps> = ({ channelId }) => {
 
 	// get sections data
 	useEffect(() => {
+		// Set channel if exist
 		const fetchChannel = async () => {
 			const filter = { type: 'classroom', id: { $eq: channelId } };
 
