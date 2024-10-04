@@ -47,7 +47,7 @@ export const dropSection = async (
 
 	const channels = await chatClient.queryChannels(filter);
 	if (channels) {
-		await channels[0].stopWatching();
-		await channels[0].removeMembers([chatClient.user?.id ?? '']);
+		await channels[0]?.stopWatching();
+		await channels[0]?.removeMembers([chatClient.user?.id ?? '']);
 	}
 };
