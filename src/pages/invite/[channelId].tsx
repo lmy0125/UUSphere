@@ -49,7 +49,10 @@ const InvitePage: React.FC<InvitePageProps> = ({ channelId }) => {
 
 	const handleJoinChannel = async () => {
 		setIsJoining(true);
-		router.push(`/handleInvite?c=${channelId}&s=${sectionId}`);
+		router.replace({
+			pathname: `/handleInvite`,
+			query: { c: channelId, s: sectionId },
+		});
 	};
 
 	const [disabled, setDisabled] = useState(false);
